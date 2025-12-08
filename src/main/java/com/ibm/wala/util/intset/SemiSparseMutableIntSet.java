@@ -41,6 +41,7 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
   }
 
   public SemiSparseMutableIntSet(SemiSparseMutableIntSet set) throws IllegalArgumentException {
+    this.sparsePart = MutableSparseIntSet.makeEmpty();
     if (set == null) {
       throw new IllegalArgumentException("set == null");
     }
