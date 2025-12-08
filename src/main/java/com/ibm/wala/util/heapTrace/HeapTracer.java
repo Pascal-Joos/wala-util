@@ -594,7 +594,9 @@ public class HeapTracer {
       public int compare(Object o1, Object o2) {
         Integer i1 = sizeCount.get(o1);
         Integer i2 = sizeCount.get(o2);
-        return i2 - i1;
+        int v1 = (i1 == null) ? 0 : i1;
+        int v2 = (i2 == null) ? 0 : i2;
+        return Integer.compare(v2, v1);
       }
     }
 
