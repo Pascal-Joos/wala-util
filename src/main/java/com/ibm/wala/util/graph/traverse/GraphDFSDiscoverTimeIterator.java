@@ -12,6 +12,7 @@ package com.ibm.wala.util.graph.traverse;
 
 import com.ibm.wala.util.graph.Graph;
 import java.util.Iterator;
+import java.util.Objects;
 import javax.annotation.Nullable;
 
 abstract class GraphDFSDiscoverTimeIterator<T> extends DFSDiscoverTimeIterator<T> {
@@ -31,6 +32,6 @@ abstract class GraphDFSDiscoverTimeIterator<T> extends DFSDiscoverTimeIterator<T
 
   @Override
   protected Iterator<? extends T> getConnected(T n) {
-    return G.getSuccNodes(n);
+    return Objects.requireNonNull(G).getSuccNodes(n);
   }
 }
