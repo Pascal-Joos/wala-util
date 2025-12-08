@@ -300,7 +300,8 @@ public class GraphSlicer {
             if (!preds.containsKey(dst)) {
               setPredNodes(dst);
             }
-            return preds.get(dst).contains(src);
+            java.util.Collection<E> predSet = preds.get(dst);
+            return predSet != null && predSet.contains(src);
           }
 
           @Override
