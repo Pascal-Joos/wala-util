@@ -64,11 +64,6 @@ public class SparseIntSet implements IntSet {
   }
 
   protected SparseIntSet(SparseIntSet S) {
-    if (S == null) {
-      throw new IllegalArgumentException("S == null");
-    }
-    // ensure elements is non-null before delegating to cloneState
-    this.elements = new int[0];
     cloneState(S);
   }
 
