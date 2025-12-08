@@ -90,6 +90,9 @@ public class BimodalMap<K, V> implements Map<K, V> {
   private void transferBackingStore() {
     assert backingStore instanceof SmallMap;
     SmallMap<K, V> S = (SmallMap<K, V>) backingStore;
+    if (S == null) {
+      throw new IllegalStateException("backingStore SmallMap is null");
+    }
     backingStore = HashMapFactory.make(2 * S.size());
     backingStore.putAll(S);
   }
