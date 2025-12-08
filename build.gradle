@@ -25,6 +25,10 @@ dependencies {
     errorprone "com.google.errorprone:error_prone_core:2.35.1"
     errorproneJavac "com.google.errorprone:javac:9+181-r4173-1"
     compileOnly "com.uber.nullaway:nullaway-annotations:0.12.4-SNAPSHOT"
+    testImplementation(
+			'junit:junit:4.13.2',
+			'org.hamcrest:hamcrest:2.2',
+	)
 }
 
 def scanner_path = projectDir.absolutePath + "/annotator-out/scanner.xml"
