@@ -13,8 +13,9 @@ package com.ibm.wala.util.intset;
 import com.ibm.wala.util.collections.EmptyIterator;
 import com.ibm.wala.util.collections.Iterator2Collection;
 import com.ibm.wala.util.debug.Assertions;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 /** A Set backed by a set of integers. */
@@ -27,13 +28,61 @@ public class OrdinalSet<T> implements Iterable<T> {
   @SuppressWarnings("rawtypes")
   private static final OrdinalSet EMPTY = new OrdinalSet();
 
+  /**
+   * A dummy mapping used for the singleton empty set. It should never actually be invoked, since
+   * the empty set has no elements and its iterator is always empty.
+   */
+  private static final OrdinalSetMapping<Object> EMPTY_MAPPING =
+      new OrdinalSetMapping<Object>() {
+        @Override
+        public Object getMappedObject(int n) throws NoSuchElementException {
+          throw new UnsupportedOperationException("EMPTY OrdinalSet has no mapping");
+        }
+
+        @Override
+        public int getMappedIndex(Object o) {
+          return -1;
+        }
+
+        @Override
+        public boolean hasMappedIndex(Object o) {
+          return false;
+        }
+
+        @Override
+        public int getMaximumIndex() {
+          return -1;
+        }
+
+        @Override
+        public int getSize() {
+          return 0;
+        }
+
+        @Override
+        public int add(Object o) {
+          throw new UnsupportedOperationException("EMPTY OrdinalSet has no mapping");
+        }
+
+        @Override
+        public Stream<Object> stream() {
+          return Stream.empty();
+        }
+
+        @Override
+        public Iterator<Object> iterator() {
+          return EmptyIterator.instance();
+        }
+      };
+
   public static <T> OrdinalSet<T> empty() {
     return EMPTY;
   }
 
+  @SuppressWarnings("unchecked")
   private OrdinalSet() {
     S = null;
-    mapping = null;
+    mapping = (OrdinalSetMapping<T>) EMPTY_MAPPING;
   }
 
   public OrdinalSet(@Nullable IntSet S, OrdinalSetMapping<T> mapping) {
@@ -110,8 +159,7 @@ public class OrdinalSet<T> implements Iterable<T> {
 
     assert a != null && b != null;
     if (a.size() == b.size()) {
-      if (a.mapping == b.mapping
-          || (a.mapping != null && b.mapping != null && a.mapping.equals(b.mapping))) {
+      if (a.mapping == b.mapping || a.mapping.equals(b.mapping)) {
         return a.S == b.S || (a.S != null && b.S != null && a.S.sameValue(b.S));
       }
     }
@@ -156,61 +204,5 @@ public class OrdinalSet<T> implements Iterable<T> {
   /** */
   public SparseIntSet makeSparseCopy() {
     return (S == null) ? new SparseIntSet() : new SparseIntSet(S);
-  }
-
-  /**
-   * Dangerous. Added for performance reasons. Use this only if you really know what you are doing.
-   */
-  @Nullable
-  public IntSet getBackingSet() {
-    return S;
-  }
-
-  /**
-   * @return true iff this set contains object
-   */
-  public boolean contains(T object) {
-    if (this == EMPTY || S == null || object == null) {
-      return false;
-    }
-    int index = mapping.getMappedIndex(object);
-    return (index == -1) ? false : S.contains(index);
-  }
-
-  public boolean isEmpty() {
-    return size() == 0;
-  }
-
-  /**
-   * @throws NullPointerException if instances is null
-   */
-  public static <T> Collection<T> toCollection(OrdinalSet<T> instances) {
-    return Iterator2Collection.toSet(instances.iterator());
-  }
-
-  /**
-   * Precondition: the ordinal set mapping has an index for every element of c Convert a "normal"
-   * collection to an OrdinalSet, based on the given mapping.
-   *
-   * @throws IllegalArgumentException if c is null
-   */
-  public static <T> OrdinalSet<T> toOrdinalSet(Collection<T> c, OrdinalSetMapping<T> m) {
-    if (c == null) {
-      throw new IllegalArgumentException("c is null");
-    }
-    if (m == null) {
-      throw new IllegalArgumentException("m is null");
-    }
-    MutableSparseIntSet s = MutableSparseIntSet.makeEmpty();
-    for (T t : c) {
-      int index = m.getMappedIndex(t);
-      assert index >= 0;
-      s.add(index);
-    }
-    return new OrdinalSet<>(s, m);
-  }
-
-  public OrdinalSetMapping<T> getMapping() {
-    return mapping;
   }
 }
