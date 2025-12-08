@@ -101,8 +101,9 @@ public abstract class DFSDiscoverTimeIterator<T> extends ArrayList<T> implements
     } while (!empty());
 
     // search for the next unvisited root.
-    while (roots.hasNext()) {
-      T nextRoot = roots.next();
+    Iterator<? extends T> nonNullRoots = (roots != null) ? roots : EmptyIterator.instance();
+    while (nonNullRoots.hasNext()) {
+      T nextRoot = nonNullRoots.next();
       if (getPendingChildren(nextRoot) == null) {
         push(nextRoot);
         setPendingChildren(nextRoot, getConnected(nextRoot));
