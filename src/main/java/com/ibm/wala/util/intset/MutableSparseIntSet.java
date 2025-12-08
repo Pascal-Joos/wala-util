@@ -229,7 +229,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
       if (that.contains(elements[0])) {
         return;
       } else {
-        elements = null;
+        elements = new int[0];
         size = 0;
         return;
       }
@@ -243,7 +243,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
         elements[0] = that.elements[0];
         return;
       } else {
-        elements = null;
+        elements = new int[0];
         size = 0;
         return;
       }
