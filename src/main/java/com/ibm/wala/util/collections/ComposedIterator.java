@@ -50,8 +50,12 @@ public abstract class ComposedIterator<O, I> implements Iterator<I> {
 
   @Override
   public I next() {
-    I result = inner.next();
-    if (!inner.hasNext()) {
+    if (inner == null) {
+      throw new java.util.NoSuchElementException();
+    }
+    Iterator<? extends I> nonNullInner = inner;
+    I result = nonNullInner.next();
+    if (!nonNullInner.hasNext()) {
       advanceOuter();
     }
     return result;
