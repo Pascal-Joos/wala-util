@@ -88,14 +88,9 @@ public class BimodalMap<K, V> implements Map<K, V> {
 
   /** Switch backing implementation from a SmallMap to a HashMap */
   private void transferBackingStore() {
-    final Map<K, V> tmp = backingStore;
-    if (tmp == null) {
-      return;
-    }
-    assert tmp instanceof SmallMap;
-    @SuppressWarnings("unchecked")
-    SmallMap<K, V> S = (SmallMap<K, V>) tmp;
-    backingStore = HashMapFactory.make(2 * tmp.size());
+    assert backingStore instanceof SmallMap;
+    SmallMap<K, V> S = (SmallMap<K, V>) backingStore;
+    backingStore = HashMapFactory.make(2 * S.size());
     backingStore.putAll(S);
   }
 
