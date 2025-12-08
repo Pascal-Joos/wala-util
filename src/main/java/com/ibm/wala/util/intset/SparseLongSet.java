@@ -63,7 +63,7 @@ public class SparseLongSet implements LongSet {
 
   /** Subclasses should use this with extreme care. */
   public SparseLongSet() {
-    elements = null;
+    elements = new long[0];
     this.size = 0;
   }
 
@@ -72,16 +72,33 @@ public class SparseLongSet implements LongSet {
   }
 
   private void cloneState(SparseLongSet S) {
-    elements = S.elements.clone();
-    this.size = S.size;
+    if (S == null) {
+      throw new IllegalArgumentException("S == null");
+    }
+    if (S.elements != null) {
+      this.elements = S.elements.clone();
+      this.size = S.size;
+    } else {
+      this.elements = new long[0];
+      this.size = 0;
+    }
   }
 
   public SparseLongSet(IntSet S) throws IllegalArgumentException {
     if (S == null) {
       throw new IllegalArgumentException("S == null");
     }
+    // Ensure elements is always non-null in this constructor
+    elements = new long[0];
     if (S instanceof SparseLongSet) {
-      cloneState((SparseLongSet) S);
+      SparseLongSet other = (SparseLongSet) S;
+      if (other.elements != null) {
+        elements = other.elements.clone();
+        size = other.size;
+      } else {
+        // other.elements is null; keep elements as empty and size as 0
+        size = 0;
+      }
     } else {
       elements = new long[S.size()];
       size = S.size();
