@@ -237,13 +237,20 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
         }
         cr[ci++] = ar[ai];
         ai++;
-        bi++;
       }
     }
 
-    // now compact cr to 'just enough'
+    // now compact cr to "just enough"
+    if (ci == 0) {
+      // no intersection; represent empty set by size = 0 while keeping existing backing store
+      size = 0;
+      return;
+    }
+    long[] compact = new long[ci];
+    System.arraycopy(cr, 0, compact, 0, ci);
     size = ci;
-    elements = cr;
+    elements = compact;
+    return;
     return;
   }
 
