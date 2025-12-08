@@ -378,7 +378,10 @@ public final class BitVectorIntSet implements MutableIntSet {
    * @see com.ibm.wala.util.intset.IntSet#isSubset(com.ibm.wala.util.intset.IntSet)
    */
   @Override
-  public boolean isSubset(@Nullable IntSet that) {
+  public boolean isSubset(IntSet that) {
+    if (that == null) {
+      return isEmpty();
+    }
     if (that instanceof BitVectorIntSet) {
       return bitVector.isSubset(((BitVectorIntSet) that).bitVector);
     } else if (that instanceof SparseIntSet) {
