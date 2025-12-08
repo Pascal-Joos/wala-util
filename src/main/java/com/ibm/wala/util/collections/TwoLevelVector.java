@@ -137,8 +137,12 @@ public class TwoLevelVector<T> implements IVector<T>, Serializable {
 
       @Override
       public T next() {
-        T result = inner.next();
-        if (!inner.hasNext()) {
+        if (inner == null) {
+          throw new java.util.NoSuchElementException();
+        }
+        Iterator<T> current = inner;
+        T result = current.next();
+        if (!current.hasNext()) {
           inner = null;
           while (outer.hasNext()) {
             IVector<T> v = outer.next();

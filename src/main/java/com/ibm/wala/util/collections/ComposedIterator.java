@@ -27,7 +27,7 @@ public abstract class ComposedIterator<O, I> implements Iterator<I> {
   private void advanceOuter() {
     while (outer.hasNext()) {
       inner = makeInner(outer.next());
-      if (inner.hasNext()) {
+      if (inner != null && inner.hasNext()) {
         break;
       }
     }
@@ -45,13 +45,17 @@ public abstract class ComposedIterator<O, I> implements Iterator<I> {
 
   @Override
   public boolean hasNext() {
-    return (inner != null);
+    return inner != null;
   }
 
   @Override
   public I next() {
-    I result = inner.next();
-    if (!inner.hasNext()) {
+    if (inner == null) {
+      throw new java.util.NoSuchElementException();
+    }
+    Iterator<? extends I> current = inner;
+    I result = current.next();
+    if (!current.hasNext()) {
       advanceOuter();
     }
     return result;
