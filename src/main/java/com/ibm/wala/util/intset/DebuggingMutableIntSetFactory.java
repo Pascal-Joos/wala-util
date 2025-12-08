@@ -12,7 +12,6 @@ package com.ibm.wala.util.intset;
 
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
-import javax.annotation.Nullable;
 
 /**
  * A debugging factory that creates debugging bitsets that are implemented as two bitsets that
@@ -53,7 +52,6 @@ public class DebuggingMutableIntSetFactory implements MutableIntSetFactory<Debug
     return make(backingStore);
   }
 
-  @Nullable
   @Override
   public DebuggingMutableIntSet makeCopy(IntSet x) throws UnimplementedError {
     if (x == null) {
@@ -71,7 +69,7 @@ public class DebuggingMutableIntSetFactory implements MutableIntSetFactory<Debug
       return new DebuggingMutableIntSet(pr, sr);
     } else {
       Assertions.UNREACHABLE();
-      return null;
+      throw new IllegalStateException("unreachable");
     }
   }
 
