@@ -105,7 +105,10 @@ public class ExtensionGraph<T> implements NumberedGraph<T> {
           assert hasEdge(src, dst);
           assert !original.hasEdge(src, dst);
           assert containsNode(src) && containsNode(dst);
-          inEdges.get(dst).remove(getNumber(src));
+          final com.ibm.wala.util.intset.IntSet inSet = inEdges.get(dst);
+          if (inSet instanceof com.ibm.wala.util.intset.MutableIntSet) {
+            ((com.ibm.wala.util.intset.MutableIntSet) inSet).remove(getNumber(src));
+          }
           outEdges.get(src).remove(getNumber(dst));
         }
 
