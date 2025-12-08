@@ -109,7 +109,10 @@ public class ExtensionGraph<T> implements NumberedGraph<T> {
           if (inSet instanceof com.ibm.wala.util.intset.MutableIntSet) {
             ((com.ibm.wala.util.intset.MutableIntSet) inSet).remove(getNumber(src));
           }
-          outEdges.get(src).remove(getNumber(dst));
+          com.ibm.wala.util.intset.IntSet outSet = outEdges.get(src);
+          if (outSet instanceof com.ibm.wala.util.intset.MutableIntSet) {
+            ((com.ibm.wala.util.intset.MutableIntSet) outSet).remove(getNumber(dst));
+          }
         }
 
         @Override
