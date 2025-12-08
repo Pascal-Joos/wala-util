@@ -138,7 +138,7 @@ public class BFSPathFinder<T> {
   }
 
   @Nullable private ArrayDeque<T> Q = null;
-  private HashMap<Object, T> history = null;
+  private HashMap<Object, T> history = HashMapFactory.make();
 
   /**
    * @return a List of nodes that specifies the first path found from a root to a node accepted by
