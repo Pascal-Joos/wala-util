@@ -132,10 +132,7 @@ public class DFS {
       Integer t1 = order.get(o1);
       Integer t2 = order.get(o2);
       // throws an exception if either node has not been ordered
-      if (t1 == null || t2 == null) {
-        throw new IllegalStateException("node has not been ordered");
-      }
-      return t1.intValue() - t2.intValue();
+      return (t1 - t2);
     }
   }
 
