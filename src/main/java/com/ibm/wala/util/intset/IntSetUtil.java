@@ -92,7 +92,7 @@ public class IntSetUtil {
       return IntSetUtil.make();
     } else {
       Assertions.UNREACHABLE(set.getClass().toString());
-      throw new RuntimeException("unreachable");
+      return null;
     }
   }
 
