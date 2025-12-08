@@ -77,6 +77,9 @@ public class SparseIntSet implements IntSet {
   }
 
   public SparseIntSet(IntSet S) throws IllegalArgumentException {
+    /* Ensure fields are initialized on all paths before any possible exception */
+    this.elements = new int[0];
+    this.size = 0;
     if (S == null) {
       throw new IllegalArgumentException("S == null");
     }
