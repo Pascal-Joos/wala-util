@@ -138,7 +138,7 @@ public class BFSPathFinder<T> {
   }
 
   @Nullable private ArrayDeque<T> Q = null;
-  private HashMap<Object, T> history = HashMapFactory.make();
+  private HashMap<Object, T> history = null;
 
   /**
    * @return a List of nodes that specifies the first path found from a root to a node accepted by
@@ -148,7 +148,7 @@ public class BFSPathFinder<T> {
   public List<T> find() {
     if (Q == null) {
       Q = new ArrayDeque<>();
-
+      history = HashMapFactory.make();
       while (roots.hasNext()) {
         T next = roots.next();
         Q.addLast(next);
