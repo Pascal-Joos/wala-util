@@ -35,7 +35,7 @@ public class SparseIntSet implements IntSet {
   // TODO: I'm not thrilled with exposing these to subclasses, but
   // it seems expedient for now.
   /** The backing store of int arrays */
-  protected int[] elements;
+  protected int[] elements = new int[0];
 
   /** The number of entries in the backing store that are valid. */
   protected int size = 0;
@@ -64,16 +64,16 @@ public class SparseIntSet implements IntSet {
   }
 
   protected SparseIntSet(SparseIntSet S) {
-    cloneState(S);
-  }
-
-  private void cloneState(SparseIntSet S) {
-    if (S.elements != null) {
-      elements = S.elements.clone();
-    } else {
-      elements = null;
+    if (S == null) {
+      throw new IllegalArgumentException("S == null");
     }
-    this.size = S.size;
+    if (S.elements != null) {
+      this.elements = S.elements.clone();
+      this.size = S.size;
+    } else {
+      this.elements = new int[0];
+      this.size = 0;
+    }
   }
 
   public SparseIntSet(IntSet S) throws IllegalArgumentException {
