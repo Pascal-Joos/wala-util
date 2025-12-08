@@ -63,7 +63,7 @@ public class SparseLongSet implements LongSet {
 
   /** Subclasses should use this with extreme care. */
   public SparseLongSet() {
-    elements = new long[0];
+    elements = null;
     this.size = 0;
   }
 
