@@ -44,7 +44,6 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
     if (set == null) {
       throw new IllegalArgumentException("set == null");
     }
-    this.sparsePart = MutableSparseIntSet.makeEmpty();
     copySet(set);
   }
 
@@ -338,16 +337,15 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
   public IntIterator intIterator() {
     class DensePartIterator implements IntIterator {
       private int i = -1;
-\n      @Override
-      public boolean hasNext() {
-        return densePart != null && densePart.nextSetBit(i + 1) != -1;
-      }
 
+      @Override
+      public boolean hasNext() {
+        return densePart.nextSetBit(i + 1) != -1;
       }
 
       @Override
       public int next() {
-        int next = densePart == null ? -1 : densePart.nextSetBit(i + 1);
+        int next = densePart.nextSetBit(i + 1);
         i = next;
         return next;
       }
@@ -489,11 +487,10 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
         add(bits.next());
       }
     }
-\n  private boolean inDenseRange(int i) {
-    return densePart != null && densePart.getOffset() <= i && densePart.length() > i;
   }
 
-    return densePart != null return densePart.getOffset() <= i && densePart.length() > i;return densePart.getOffset() <= i && densePart.length() > i; densePart.getOffset() <= i return densePart.getOffset() <= i && densePart.length() > i;return densePart.getOffset() <= i && densePart.length() > i; densePart.length() > i;
+  private boolean inDenseRange(int i) {
+    return densePart.getOffset() <= i && densePart.length() > i;
   }
 
   /**

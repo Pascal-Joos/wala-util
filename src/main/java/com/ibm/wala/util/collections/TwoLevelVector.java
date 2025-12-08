@@ -135,26 +135,12 @@ public class TwoLevelVector<T> implements IVector<T>, Serializable {
         return inner != null;
       }
 
-\n      @Override
+      @Override
       public T next() {
-        assert inner != null;
         T result = inner.next();
         if (!inner.hasNext()) {
           inner = null;
           while (outer.hasNext()) {
-            IVector<T> v = outer.next();
-            if (v != null) {
-              Iterator<T> it = v.iterator();
-              if (it.hasNext()) {
-                inner = it;
-                break;
-              }
-            }
-          }
-        }
-        return result;
-      }
-
             IVector<T> v = outer.next();
             if (v != null) {
               Iterator<T> it = v.iterator();
