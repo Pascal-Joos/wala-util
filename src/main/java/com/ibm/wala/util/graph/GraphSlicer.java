@@ -280,8 +280,7 @@ public class GraphSlicer {
             if (!succs.containsKey(N)) {
               setSuccNodes(N);
             }
-            java.util.Collection<E> succNodes = java.util.Objects.requireNonNull(succs.get(N));
-            return succNodes.size();
+            return succs.get(N).size();
           }
 
           @Override
