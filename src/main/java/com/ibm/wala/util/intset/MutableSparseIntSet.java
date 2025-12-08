@@ -217,7 +217,9 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
     if (this.isEmpty()) {
       return;
     } else if (that.isEmpty()) {
-      elements = null;
+      if (elements == null) {
+        elements = new int[getInitialNonEmptySize()];
+      }
       size = 0;
       return;
     } else if (this.equals(that)) {
@@ -229,7 +231,9 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
       if (that.contains(elements[0])) {
         return;
       } else {
-        elements = null;
+        if (elements == null) {
+          elements = new int[getInitialNonEmptySize()];
+        }
         size = 0;
         return;
       }
@@ -243,7 +247,9 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
         elements[0] = that.elements[0];
         return;
       } else {
-        elements = null;
+        if (elements == null) {
+          elements = new int[getInitialNonEmptySize()];
+        }
         size = 0;
         return;
       }
