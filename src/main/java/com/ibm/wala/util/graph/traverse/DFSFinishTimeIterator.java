@@ -31,7 +31,7 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
   private static final long serialVersionUID = 8440061593631309429L;
 
   /** the current next element in finishing time order */
-  private T theNextElement;
+  @Nullable private T theNextElement;
 
   /** an enumeration of all nodes to search from */
   private Iterator<? extends T> roots;
@@ -44,7 +44,11 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
   protected void init(Graph<T> G, Iterator<? extends T> nodes) {
     this.G = G;
     roots = nodes;
-    if (roots.hasNext()) theNextElement = roots.next();
+    if (roots.hasNext()) {
+      theNextElement = roots.next();
+    } else {
+      theNextElement = null;
+    }
   }
 
   private boolean empty() {
@@ -58,7 +62,17 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
    */
   @Override
   public boolean hasNext() {
-    return (!empty() || (theNextElement != null && getPendingChildren(theNextElement) == null));
+    if (!empty()) {
+      return true;
+    }
+    if (theNextElement == null) {
+      return false;
+    }
+    Iterator<T> pending = getPendingChildren(theNextElement);
+    if (pending == null) {
+      return true;
+    }
+    return roots.hasNext();
   }
 
   @Nullable
@@ -94,6 +108,9 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
     }
     if (empty()) {
       T v = theNextElement;
+      if (v == null) {
+        throw new NoSuchElementException();
+      }
       setPendingChildren(v, getConnected(v));
       push(v);
     }
@@ -115,7 +132,9 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
       setPendingChildren(v, (Iterator<T>) EmptyIterator.instance());
 
       // no more children to visit: finished this vertex
-      while (getPendingChildren(theNextElement) != null && roots.hasNext()) {
+      while (theNextElement != null
+          && getPendingChildren(theNextElement) != null
+          && roots.hasNext()) {
         theNextElement = roots.next();
       }
 
