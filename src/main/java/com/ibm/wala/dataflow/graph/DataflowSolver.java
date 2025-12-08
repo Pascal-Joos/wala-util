@@ -85,18 +85,12 @@ public abstract class DataflowSolver<T, V extends IVariable<V>> extends DefaultF
   public V getOut(Object node) {
     assert node != null;
     V v = node2Out.get(node);
-    if (v == null) {
-      throw new IllegalStateException("no out set for " + node);
-    }
+    assert v != null : "no out set for " + node;
     return v;
   }
 
   public V getIn(Object node) {
-    V v = node2In.get(node);
-    if (v == null) {
-      throw new IllegalStateException("no in set for " + node);
-    }
-    return v;
+    return node2In.get(node);
   }
 
   @Nullable
