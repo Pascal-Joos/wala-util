@@ -33,7 +33,7 @@ public class SparseLongSet implements LongSet {
   // TODO: I'm not thrilled with exposing these to subclasses, but
   // it seems expedient for now.
   /** The backing store of int arrays */
-  @Nullable protected long[] elements;
+  protected long[] elements;
 
   /** The number of entries in the backing store that are valid. */
   protected int size = 0;

@@ -283,49 +283,15 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
 
     // common-case optimization
     if (that.size == 1) {
-      long v = (that.elements != null) ? that.elements[0] : that.elementAt(0);
-      boolean result = add(v);
+      boolean result = add(that.elements[0]);
       return result;
     }
 
     long[] br = that.elements;
     int bl = that.size();
 
-    if (br == null) {
-      // fall back to generic addAll when backing array is absent
-  private boolean addAll(long[] that, int thatSize) {
-    long[] ar = this.elements;
-    if (ar == null) {
-      // if this set has no backing array yet, just add all elements individually
-      boolean changed = false;
-      for (int i = 0; i < thatSize; i++) {
-        changed |= add(that[i]);
-      }
-      return changed;
-    }
-    int ai = 0;
-    final int al = size();
-    int bi = 0;
-    }
-
     return addAll(br, bl);
-    if (br == null) {
-      // fall back to generic addAll when backing array is absent
-  private boolean addAll(long[] that, int thatSize) {
-    long[] ar = this.elements;
-    if (ar == null) {
-      // if this set has no backing array yet, just add all elements individually
-      boolean changed = false;
-      for (int i = 0; i < thatSize; i++) {
-        changed |= add(that[i]);
-      }
-      return changed;
-    }
-    int ai = 0;
-    final int al = size();
-    int bi = 0;
-
-    return addAll(br, bl);
+  }
 
   private boolean addAll(long[] that, int thatSize) {
     long[] ar = this.elements;
