@@ -14,6 +14,7 @@ import com.ibm.wala.util.collections.HashSetFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /** Misc SQL-like support for queries on tables */
@@ -32,7 +33,7 @@ public class Query {
     Collection<Map<String, T>> result = new ArrayList<>();
     for (int i = 0; i < t.getNumberOfRows(); i++) {
       Map<String, T> p = t.row2Map(i);
-      if (p.get(column).equals(value)) {
+      if (Objects.equals(p.get(column), value)) {
         result.add(p);
       }
     }
