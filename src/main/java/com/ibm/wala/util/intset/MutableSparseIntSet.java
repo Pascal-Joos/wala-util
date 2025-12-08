@@ -78,8 +78,10 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
       }
       if (elements[remove] == value) {
         if (size == 1) {
-          elements = null;
           size = 0;
+          if (elements.length > getInitialNonEmptySize()) {
+            elements = new int[getInitialNonEmptySize()];
+          }
         } else {
           if (remove < size) {
             System.arraycopy(elements, remove + 1, elements, remove, size - remove - 1);
@@ -91,6 +93,8 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
     }
     return false;
   }
+
+  /** */
 
   /** */
   public int getInitialNonEmptySize() {
