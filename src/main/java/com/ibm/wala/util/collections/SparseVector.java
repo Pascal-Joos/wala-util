@@ -50,13 +50,12 @@ public class SparseVector<T> implements IVector<T>, Serializable {
   /**
    * @see com.ibm.wala.util.intset.IntVector#get(int)
    */
-  @Nullable
   @Override
   @SuppressWarnings("unchecked")
   public T get(int x) {
     int index = indices.getIndex(x);
     if (index == -1) {
-      return null;
+      throw new NoSuchElementException("No element at index " + x);
     } else {
       return (T) data[index];
     }
