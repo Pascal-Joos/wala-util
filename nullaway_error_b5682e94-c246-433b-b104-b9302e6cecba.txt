@@ -1,4 +1,0 @@
-/home/nima/Developer/nullness-benchmarks/wala-util/src/main/java/com/ibm/wala/util/collections/Util.java:222: warning: [removal] SecurityManager in java.lang has been deprecated and marked for removal
-    SecurityManager oldsecurity = System.getSecurityManager();
-    ^
-/home/nima/Developer/nullness-benchmarks/wala-util/src/main/java/com/ibm/wala/util/collections/Util.java:222: warning: [removal] getSecurityManager() in System has been deprecated and marked for removal

@@ -32,6 +32,12 @@ def nullaway_path = projectDir.absolutePath + "/annotator-out/nullaway.xml"
 
 import net.ltgt.gradle.errorprone.CheckSeverity
 tasks.withType(JavaCompile) {
+    // Don't run NullAway when -Derrorprone.disable=true provided on the CLI
+    if (System.properties['errorprone.disable'] == 'true') {
+        options.errorprone.disableAllChecks = true
+        return
+    }
+
     options.errorprone.disableAllChecks = true
     options.errorprone {
         check("NullAway", CheckSeverity.ERROR)
