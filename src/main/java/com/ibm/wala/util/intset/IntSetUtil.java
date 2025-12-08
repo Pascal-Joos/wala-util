@@ -20,7 +20,8 @@ public class IntSetUtil {
   public static final String INT_SET_FACTORY_CONFIG_PROPERTY_NAME =
       "com.ibm.wala.mutableIntSetFactory";
 
-  private static MutableIntSetFactory<?> defaultIntSetFactory;
+  private static MutableIntSetFactory<?> defaultIntSetFactory =
+      new MutableSharedBitVectorIntSetFactory();
 
   static {
     MutableIntSetFactory<?> defaultFactory = new MutableSharedBitVectorIntSetFactory();
