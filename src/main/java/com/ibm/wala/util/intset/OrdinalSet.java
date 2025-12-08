@@ -24,6 +24,29 @@ public class OrdinalSet<T> implements Iterable<T> {
 
   private final OrdinalSetMapping<T> mapping;
 
+  private static final OrdinalSetMapping<Object> EMPTY_MAPPING =
+      new OrdinalSetMapping<Object>() {
+        @Override
+        public int getMappedIndex(Object o) {
+          throw new UnsupportedOperationException("EMPTY OrdinalSet has no mapping");
+        }
+
+        @Override
+        public Object getMappedObject(int i) {
+          throw new UnsupportedOperationException("EMPTY OrdinalSet has no mapping");
+        }
+
+        @Override
+        public java.util.stream.Stream<Object> stream() {
+          return java.util.stream.Stream.empty();
+        }
+
+        @Override
+        public void add(Object o) {
+          throw new UnsupportedOperationException("EMPTY OrdinalSet has no mapping");
+        }
+      };
+
   @SuppressWarnings("rawtypes")
   private static final OrdinalSet EMPTY = new OrdinalSet();
 
@@ -33,7 +56,11 @@ public class OrdinalSet<T> implements Iterable<T> {
 
   private OrdinalSet() {
     S = null;
-    mapping = null;
+    // Use a dummy mapping for the empty set; it should never be used because iterator() returns an
+    // EmptyIterator when S is null.
+    @SuppressWarnings("unchecked")
+    OrdinalSetMapping<T> dummy = (OrdinalSetMapping<T>) EMPTY_MAPPING;
+    mapping = dummy;
   }
 
   public OrdinalSet(@Nullable IntSet S, OrdinalSetMapping<T> mapping) {
@@ -110,7 +137,8 @@ public class OrdinalSet<T> implements Iterable<T> {
 
     assert a != null && b != null;
     if (a.size() == b.size()) {
-      if (a.mapping == b.mapping
+      if ((a.mapping == b.mapping)
+          || (a.mapping == null && b.mapping == null)
           || (a.mapping != null && b.mapping != null && a.mapping.equals(b.mapping))) {
         return a.S == b.S || (a.S != null && b.S != null && a.S.sameValue(b.S));
       }
