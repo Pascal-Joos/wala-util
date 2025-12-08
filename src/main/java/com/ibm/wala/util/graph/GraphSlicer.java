@@ -264,8 +264,7 @@ public class GraphSlicer {
             if (!preds.containsKey(N)) {
               setPredNodes(N);
             }
-            java.util.Collection<E> predSet = preds.get(N);
-            return predSet == null ? 0 : predSet.size();
+            return preds.get(N).size();
           }
 
           @Override
@@ -273,8 +272,7 @@ public class GraphSlicer {
             if (!preds.containsKey(N)) {
               setPredNodes(N);
             }
-            java.util.Collection<E> predSet = preds.get(N);
-            return predSet == null ? java.util.Collections.emptyIterator() : predSet.iterator();
+            return preds.get(N).iterator();
           }
 
           @Override
