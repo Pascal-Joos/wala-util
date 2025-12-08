@@ -35,7 +35,6 @@ public class TwoLevelVector<T> implements IVector<T>, Serializable {
   /**
    * @see com.ibm.wala.util.intset.IntVector#get(int)
    */
-  @Nullable
   @Override
   public T get(int x) {
     if (x < 0) {
@@ -43,11 +42,11 @@ public class TwoLevelVector<T> implements IVector<T>, Serializable {
     }
     int page = getPageNumber(x);
     if (page >= data.size()) {
-      return null;
+      throw new IndexOutOfBoundsException("index " + x + " out of bounds");
     }
     IVector<T> v = data.get(page);
     if (v == null) {
-      return null;
+      throw new IllegalStateException("page " + page + " not initialized");
     }
     int localX = x - getFirstIndexOnPage(page);
     return v.get(localX);
