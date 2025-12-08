@@ -208,7 +208,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
         elements[0] = that.elements[0];
         return;
       } else {
-        elements = new long[0];
+        elements = null;
         size = 0;
         return;
       }
