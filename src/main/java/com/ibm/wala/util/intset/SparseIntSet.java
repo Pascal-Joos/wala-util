@@ -80,8 +80,17 @@ public class SparseIntSet implements IntSet {
     if (S == null) {
       throw new IllegalArgumentException("S == null");
     }
+    // Ensure elements is always non-null in this constructor
+    elements = new int[0];
     if (S instanceof SparseIntSet) {
-      cloneState((SparseIntSet) S);
+      SparseIntSet other = (SparseIntSet) S;
+      if (other.elements != null) {
+        elements = other.elements.clone();
+        size = other.size;
+      } else {
+        // other.elements is null; keep elements as empty and size as 0
+        size = 0;
+      }
     } else {
       elements = new int[S.size()];
       size = S.size();
