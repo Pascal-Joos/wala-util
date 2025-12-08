@@ -20,7 +20,6 @@ import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.graph.Graph;
 import com.ibm.wala.util.intset.IntegerUnionFind;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Iterative solver for a Killdall dataflow framework */
@@ -83,13 +82,10 @@ public abstract class DataflowSolver<T, V extends IVariable<V>> extends DefaultF
     buildEquations(true, false);
   }
 
-  @Nonnull
   public V getOut(Object node) {
     assert node != null;
     V v = node2Out.get(node);
-    if (v == null) {
-      throw new IllegalStateException("no out set for " + node);
-    }
+    assert v != null : "no out set for " + node;
     return v;
   }
 
