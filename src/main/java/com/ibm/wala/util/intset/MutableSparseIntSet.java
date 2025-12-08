@@ -276,9 +276,18 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
       }
     }
 
-    // now compact cr to 'just enough'
+    // now compact cr to "just enough"
     size = ci;
-    elements = cr;
+    if (ci == 0) {
+      elements = new int[0];
+    } else if (cr != null && ci != cr.length) {
+      int[] result = new int[ci];
+      System.arraycopy(cr, 0, result, 0, ci);
+      elements = result;
+    } else {
+      // cr is non-null and fully utilized; if still null, use empty array
+      elements = (cr == null) ? new int[0] : cr;
+    }
     return;
   }
 
