@@ -63,7 +63,7 @@ public class SparseLongSet implements LongSet {
 
   /** Subclasses should use this with extreme care. */
   public SparseLongSet() {
-    elements = null;
+    elements = new long[0];
     this.size = 0;
   }
 
@@ -77,6 +77,7 @@ public class SparseLongSet implements LongSet {
   }
 
   public SparseLongSet(IntSet S) throws IllegalArgumentException {
+    elements = new long[0];
     if (S == null) {
       throw new IllegalArgumentException("S == null");
     }
