@@ -34,6 +34,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
   /** a debug flag, used to trap when a set gets large */
   private static final boolean DEBUG_LARGE = false;
 
+  private static final int[] EMPTY_ELEMENTS = new int[0];
   private static final int TRAP_SIZE = 1000;
 
   protected MutableSparseIntSet(@Nullable IntSet set) {
@@ -229,7 +230,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
       if (that.contains(elements[0])) {
         return;
       } else {
-        elements = null;
+        elements = EMPTY_ELEMENTS;
         size = 0;
         return;
       }
