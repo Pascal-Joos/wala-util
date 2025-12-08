@@ -379,6 +379,9 @@ public final class BitVectorIntSet implements MutableIntSet {
    */
   @Override
   public boolean isSubset(@Nullable IntSet that) {
+    if (that == null) {
+      return isEmpty();
+    }
     if (that instanceof BitVectorIntSet) {
       return bitVector.isSubset(((BitVectorIntSet) that).bitVector);
     } else if (that instanceof SparseIntSet) {
