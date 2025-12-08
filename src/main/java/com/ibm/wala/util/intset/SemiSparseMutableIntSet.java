@@ -338,12 +338,14 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
 
       @Override
       public boolean hasNext() {
-        return densePart.nextSetBit(i + 1) != -1;
+        OffsetBitVector dp = java.util.Objects.requireNonNull(densePart);
+        return dp.nextSetBit(i + 1) != -1;
       }
 
       @Override
       public int next() {
-        int next = densePart.nextSetBit(i + 1);
+        OffsetBitVector dp = java.util.Objects.requireNonNull(densePart);
+        int next = dp.nextSetBit(i + 1);
         i = next;
         return next;
       }
