@@ -264,7 +264,7 @@ public class GraphSlicer {
             if (!preds.containsKey(N)) {
               setPredNodes(N);
             }
-            return preds.get(N).size();
+            return java.util.Objects.requireNonNull(preds.get(N)).size();
           }
 
           @Override
@@ -272,7 +272,7 @@ public class GraphSlicer {
             if (!preds.containsKey(N)) {
               setPredNodes(N);
             }
-            return preds.get(N).iterator();
+            return java.util.Objects.requireNonNull(preds.get(N)).iterator();
           }
 
           @Override
@@ -280,7 +280,7 @@ public class GraphSlicer {
             if (!succs.containsKey(N)) {
               setSuccNodes(N);
             }
-            return succs.get(N).size();
+            return java.util.Objects.requireNonNull(succs.get(N)).size();
           }
 
           @Override
@@ -288,7 +288,7 @@ public class GraphSlicer {
             if (!succs.containsKey(N)) {
               setSuccNodes(N);
             }
-            return succs.get(N).iterator();
+            return java.util.Objects.requireNonNull(succs.get(N)).iterator();
           }
 
           @Override
@@ -296,7 +296,7 @@ public class GraphSlicer {
             if (!preds.containsKey(dst)) {
               setPredNodes(dst);
             }
-            return preds.get(dst).contains(src);
+            return java.util.Objects.requireNonNull(preds.get(dst)).contains(src);
           }
 
           @Override
