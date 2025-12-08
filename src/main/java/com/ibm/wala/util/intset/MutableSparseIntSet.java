@@ -217,7 +217,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
     if (this.isEmpty()) {
       return;
     } else if (that.isEmpty()) {
-      elements = null;
+      elements = new int[0];
       size = 0;
       return;
     } else if (this.equals(that)) {
