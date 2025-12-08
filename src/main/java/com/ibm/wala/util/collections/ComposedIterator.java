@@ -11,6 +11,7 @@
 package com.ibm.wala.util.collections;
 
 import java.util.Iterator;
+import java.util.Objects;
 import javax.annotation.Nullable;
 
 /** A 2-level iterator. has not been tested yet! */
@@ -50,8 +51,9 @@ public abstract class ComposedIterator<O, I> implements Iterator<I> {
 
   @Override
   public I next() {
-    I result = inner.next();
-    if (!inner.hasNext()) {
+    Iterator<? extends I> currentInner = Objects.requireNonNull(inner, "No more elements");
+    I result = currentInner.next();
+    if (!currentInner.hasNext()) {
       advanceOuter();
     }
     return result;
