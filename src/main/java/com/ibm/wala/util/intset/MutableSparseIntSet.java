@@ -275,12 +275,8 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
         bi++;
       }
     }
-    // now compact cr to "just enough"
-    if (cr == null) {
-      elements = null;
-      size = 0;
-      return;
-    }
+
+    // now compact cr to 'just enough'
     size = ci;
     elements = cr;
     return;
