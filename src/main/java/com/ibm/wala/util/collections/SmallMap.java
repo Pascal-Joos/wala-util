@@ -34,8 +34,7 @@ public class SmallMap<K, V> implements Map<K, V> {
   // this Map contains keysAndValues.length / 2 entries.
   // in the following array, entries 0 ... keysAndValues.length/2 - 1 are keys.
   // entries keysAndValues.length/2 .. keysAndValues.length are values.
-
-  private Object[] keysAndValues = new Object[0];
+  private Object[] keysAndValues;
 
   /*
    */
@@ -84,7 +83,7 @@ public class SmallMap<K, V> implements Map<K, V> {
 
   @Override
   public boolean isEmpty() {
-    return size() == 0;
+    return (keysAndValues == null);
   }
 
   @Override
@@ -187,7 +186,7 @@ public class SmallMap<K, V> implements Map<K, V> {
 
   @Override
   public void clear() {
-    keysAndValues = new Object[0];
+    keysAndValues = null;
   }
 
   @Override
