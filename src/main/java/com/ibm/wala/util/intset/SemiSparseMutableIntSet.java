@@ -488,7 +488,7 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
   }
 
   private boolean inDenseRange(int i) {
-    return densePart.getOffset() <= i && densePart.length() > i;
+    return densePart != null && densePart.getOffset() <= i && densePart.length() > i;
   }
 
   /**
