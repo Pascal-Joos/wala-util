@@ -20,7 +20,8 @@ public class LongSetUtil {
   public static final String INT_SET_FACTORY_CONFIG_PROPERTY_NAME =
       "com.ibm.wala.mutableLongSetFactory";
 
-  private static MutableLongSetFactory defaultLongSetFactory;
+  // Initialize eagerly to satisfy NullAway FIELD_NO_INIT
+  private static MutableLongSetFactory defaultLongSetFactory = new MutableSparseLongSetFactory();
 
   static {
     MutableLongSetFactory defaultFactory = new MutableSparseLongSetFactory();
@@ -158,7 +159,10 @@ public class LongSetUtil {
       return -1;
     }
     if (low <= high && (low < 0 || high < 0)) {
-      throw new IllegalArgumentException("can't search negative indices");
+      throw new IllegalArgumentException("low or high < 0");
+    }
+    if (low > high) {
+      return -1;
     }
     if (high > data.length - 1) {
       high = data.length - 1;
