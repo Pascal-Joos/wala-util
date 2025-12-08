@@ -171,7 +171,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
         System.arraycopy(set.elements, 0, elements, 0, set.size);
         size = set.size;
       } else {
-        elements = null;
+        elements = new int[0];
         size = 0;
       }
     } else {
