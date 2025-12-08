@@ -159,11 +159,7 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
           }
           s.add(y);
         } else {
-          if (v != null) {
-            v.set(x, y);
-          } else {
-            throw new IllegalStateException("IntVector v is unexpectedly null");
-          }
+          v.set(x, y);
         }
         return true;
       } else {
