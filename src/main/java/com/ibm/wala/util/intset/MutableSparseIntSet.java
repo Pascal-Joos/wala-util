@@ -35,7 +35,6 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
   private static final boolean DEBUG_LARGE = false;
 
   private static final int TRAP_SIZE = 1000;
-  private static final int[] EMPTY_ELEMENTS = new int[0];
 
   protected MutableSparseIntSet(@Nullable IntSet set) {
     super();
@@ -218,7 +217,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
     if (this.isEmpty()) {
       return;
     } else if (that.isEmpty()) {
-      elements = EMPTY_ELEMENTS;
+      elements = null;
       size = 0;
       return;
     } else if (this.equals(that)) {
@@ -230,7 +229,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
       if (that.contains(elements[0])) {
         return;
       } else {
-        elements = EMPTY_ELEMENTS;
+        elements = null;
         size = 0;
         return;
       }
@@ -244,7 +243,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
         elements[0] = that.elements[0];
         return;
       } else {
-        elements = EMPTY_ELEMENTS;
+        elements = null;
         size = 0;
         return;
       }
