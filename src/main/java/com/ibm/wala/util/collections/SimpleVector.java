@@ -33,7 +33,7 @@ public class SimpleVector<T> implements IVector<T> {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public T get(int x) {
+  public @Nullable T get(int x) {
     if (x < 0) {
       throw new IllegalArgumentException("illegal x: " + x);
     }

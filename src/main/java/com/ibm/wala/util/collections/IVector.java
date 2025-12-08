@@ -21,7 +21,7 @@ public interface IVector<T> extends Iterable<T> {
   /**
    * @see com.ibm.wala.util.intset.IntVector#get(int)
    */
-  public abstract T get(int x);
+  public abstract @Nullable T get(int x);
 
   /**
    * TODO: this can be optimized
