@@ -1,0 +1,83 @@
+     * @return Returns the totalInstances.
+     */
+    public int getTotalInstances() {
+      return totalInstances;
+    }
+  }
+
+  /**
+   * @author sfink
+   *     <p>Results of the heap trace
+   */
+  public class Result {
+
+    /** a mapping from Field (static field roots) -&gt; Demographics object */
+    private final HashMap<Field, Demographics> roots = HashMapFactory.make();
+
+    /**
+     * @return the Demographics object tracking objects traced from that root
+     */
+    private Demographics findOrCreateDemographics(Field root) {
+      Demographics d = roots.get(root);
+      if (d == null) {
+        d = new Demographics();
+        roots.put(root, d);
+      }
+      return d;
+    }
+
+    public void registerReachedFrom(Field root, Object predecessor, Object contents) {
+      Demographics d = findOrCreateDemographics(root);
+      d.registerObject(Pair.make(predecessor, contents.getClass()), contents);
+    }
+
+    public int getTotalSize() {
+      int totalSize = 0;
+      for (Demographics d : roots.values()) {
+        totalSize += d.getTotalSize();
+      }
+      return totalSize;
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder result = new StringBuilder();
+      result.append("Assuming " + BYTES_IN_HEADER + " header bytes per object\n");
+      int totalInstances = 0;
+      int totalSize = 0;
+      for (Demographics d : roots.values()) {
+        totalInstances += d.getTotalInstances();
+        totalSize += d.getTotalSize();
+      }
+      result.append("Total instances: ").append(totalInstances).append('\n');
+      result.append("Total size(bytes): ").append(totalSize).append('\n');
+
+      TreeSet<Field> sortedDemo = new TreeSet<>(new SizeComparator());
+      sortedDemo.addAll(roots.keySet());
+      for (Field field : sortedDemo) {
+        Object root = field;
+        Demographics d = roots.get(root);
+        if (d.getTotalSize() > 10000) {
+          result.append(" root: ").append(root).append('\n');
+          result.append(d);
+        }
+      }
+
+      return result.toString();
+    }
+
+    /** compares two keys based on the total size of the heap traced from that key */
+    private class SizeComparator implements Comparator<Field> {
+      /*
+       * @see java.util.Comparator#compare(java.lang.Object,
+       * java.lang.Object)
+       */
+      @Override
+      public int compare(Field o1, Field o2) {
+        Demographics d1 = roots.get(o1);
+        Demographics d2 = roots.get(o2);
+        return d2.getTotalSize() - d1.getTotalSize();
+      }
+    }
+  }
+}
