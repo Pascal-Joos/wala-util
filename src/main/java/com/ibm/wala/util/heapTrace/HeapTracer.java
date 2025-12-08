@@ -684,9 +684,7 @@ public class HeapTracer {
       public int compare(Field o1, Field o2) {
         Demographics d1 = roots.get(o1);
         Demographics d2 = roots.get(o2);
-        int s1 = (d1 == null) ? 0 : d1.getTotalSize();
-        int s2 = (d2 == null) ? 0 : d2.getTotalSize();
-        return s2 - s1;
+        return d2.getTotalSize() - d1.getTotalSize();
       }
     }
   }
