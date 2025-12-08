@@ -40,7 +40,7 @@ public class SimpleVector<T> implements IVector<T> {
     if (x < store.length) {
       return (T) store[x];
     } else {
-      return null;
+      throw new IllegalArgumentException("illegal x: " + x);
     }
   }
 
