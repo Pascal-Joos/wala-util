@@ -252,7 +252,7 @@ public abstract class Launcher {
       }
     }
 
-    public @Nullable ByteArrayOutputStream getCapture() {
+    public ByteArrayOutputStream getCapture() {
       return capture;
     }
 
