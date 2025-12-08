@@ -648,9 +648,6 @@ public class MutableSharedBitVectorIntSet implements MutableIntSet {
   }
 
   private boolean addAllInternal(@Nullable SparseIntSet set) {
-    if (set == null) {
-      return false;
-    }
     if (privatePart == null) {
       if (sharedPart == null) {
         if (!set.isEmpty()) {
