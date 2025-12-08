@@ -145,7 +145,12 @@ public final class SparseNumberedEdgeManager<T> implements NumberedEdgeManager<T
     if (nodeManager.getNumber(node) < 0) {
       throw new IllegalArgumentException("Node not in graph " + node);
     }
-    return predecessors.getRelated(nodeManager.getNumber(node));
+    IntSet x = predecessors.getRelated(nodeManager.getNumber(node));
+    if (x == null) {
+      return EmptyIntSet.instance;
+    } else {
+      return x;
+    }
   }
 
   /**
