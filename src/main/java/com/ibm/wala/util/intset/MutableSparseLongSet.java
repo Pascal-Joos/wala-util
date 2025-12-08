@@ -151,7 +151,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
         elements = set.elements.clone();
         size = set.size;
       } else {
-        elements = null;
+        elements = new long[0];
         size = 0;
       }
     } else {
