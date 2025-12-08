@@ -34,6 +34,7 @@ public class SmallMap<K, V> implements Map<K, V> {
   // this Map contains keysAndValues.length / 2 entries.
   // in the following array, entries 0 ... keysAndValues.length/2 - 1 are keys.
   // entries keysAndValues.length/2 .. keysAndValues.length are values.
+  @Nullable
   private Object[] keysAndValues;
 
   /*
@@ -88,6 +89,9 @@ public class SmallMap<K, V> implements Map<K, V> {
 
   @Override
   public boolean containsKey(Object key) {
+    if (keysAndValues == null) {
+      return false;
+    }
     for (int i = 0; i < size(); i++) {
       if (keysAndValues[i].equals(key)) {
         return true;
@@ -116,16 +120,21 @@ public class SmallMap<K, V> implements Map<K, V> {
     return false;
   }
 
-  @Nullable
-  @Override
-  @SuppressWarnings("unchecked")
   public V get(Object key) {
+
+    if (keysAndValues == null) {
+      return null;
+    }
 
     if (key != null)
       for (int i = 0; i < size(); i++) {
         if (keysAndValues[i] != null && keysAndValues[i].equals(key)) {
           return (V) keysAndValues[size() + i];
         }
+      }
+
+    return null;
+  }
       }
 
     return null;
@@ -146,25 +155,28 @@ public class SmallMap<K, V> implements Map<K, V> {
 
       keysAndValues = Arrays.copyOf(keysAndValues, newLength);
       System.arraycopy(
-          keysAndValues, oldFirstValueSlot, keysAndValues, newFirstValueSlot, oldEntryCount);
-      keysAndValues[newLastKeySlot] = null;
-    }
-  }
-
-  @Nullable
-  @Override
-  @SuppressWarnings({"unchecked", "unused"})
   public V put(Object key, Object value) {
     if (key == null) {
       throw new IllegalArgumentException("null key");
     }
-    for (int i = 0; i < size(); i++) {
-      if (keysAndValues[i] != null && keysAndValues[i].equals(key)) {
-        V result = (V) keysAndValues[size() + i];
-        keysAndValues[size() + i] = value;
-        return result;
+    if (keysAndValues != null) {
+      for (int i = 0; i < size(); i++) {
+        if (keysAndValues[i] != null && keysAndValues[i].equals(key)) {
+          V result = (V) keysAndValues[size() + i];
+          keysAndValues[size() + i] = value;
+          return result;
+        }
       }
     }
+    if (DEBUG_USAGE && size() >= DEBUG_MAX_SIZE) {
+      Assertions.UNREACHABLE("too many elements in a SmallMap");
+    }
+    growByOne();
+    // growByOne guarantees non-null keysAndValues
+    keysAndValues[size() - 1] = key;
+    keysAndValues[keysAndValues.length - 1] = value;
+    return null;
+  }
     if (DEBUG_USAGE && size() >= DEBUG_MAX_SIZE) {
       Assertions.UNREACHABLE("too many elements in a SmallMap");
     }
