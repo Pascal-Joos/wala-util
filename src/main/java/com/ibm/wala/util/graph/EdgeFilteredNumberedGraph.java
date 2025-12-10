@@ -16,6 +16,7 @@ import com.ibm.wala.util.intset.IntIterator;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Iterator;
 
 /** View of a {@link NumberedGraph} in which some edges have been filtered out */
@@ -95,7 +96,8 @@ public class EdgeFilteredNumberedGraph<T> extends AbstractNumberedGraph<T> {
 
     @Override
     public IntSet getPredNodeNumbers(T node) {
-      return getFilteredNodeNumbers(node, delegate.getPredNodeNumbers(node));
+      return getFilteredNodeNumbers(
+          node, Nullability.castToNonnull(delegate.getPredNodeNumbers(node)));
     }
 
     private IntSet getFilteredNodeNumbers(T node, IntSet s) {

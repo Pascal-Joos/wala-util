@@ -12,10 +12,12 @@ package com.ibm.wala.util.graph.labeled;
 
 import com.ibm.wala.util.graph.NumberedEdgeManager;
 import com.ibm.wala.util.intset.IntSet;
+import javax.annotation.Nullable;
 
 public interface NumberedLabeledEdgeManager<T, U>
     extends LabeledEdgeManager<T, U>, NumberedEdgeManager<T> {
 
+  @Nullable
   public IntSet getPredNodeNumbers(T node, U label) throws IllegalArgumentException;
 
   public IntSet getSuccNodeNumbers(T node, U label) throws IllegalArgumentException;
