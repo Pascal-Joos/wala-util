@@ -31,9 +31,6 @@ abstract class GraphDFSDiscoverTimeIterator<T> extends DFSDiscoverTimeIterator<T
 
   @Override
   protected Iterator<? extends T> getConnected(T n) {
-    if (G == null) {
-      throw new IllegalStateException("G is null");
-    }
     return G.getSuccNodes(n);
   }
 }
