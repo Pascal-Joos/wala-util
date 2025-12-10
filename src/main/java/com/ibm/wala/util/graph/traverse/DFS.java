@@ -17,7 +17,6 @@ import com.ibm.wala.util.collections.Iterator2Collection;
 import com.ibm.wala.util.collections.NonNullSingletonIterator;
 import com.ibm.wala.util.graph.Graph;
 import com.ibm.wala.util.graph.NumberedGraph;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -133,7 +132,7 @@ public class DFS {
       Integer t1 = order.get(o1);
       Integer t2 = order.get(o2);
       // throws an exception if either node has not been ordered
-      return (Nullability.castToNonnull(t1) - t2);
+      return (t1 - t2);
     }
   }
 
