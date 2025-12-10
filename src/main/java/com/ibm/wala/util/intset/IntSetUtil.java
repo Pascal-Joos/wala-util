@@ -12,7 +12,9 @@ package com.ibm.wala.util.intset;
 
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /** Utilities for dealing with {@link IntSet}s */
 public class IntSetUtil {
@@ -20,7 +22,7 @@ public class IntSetUtil {
   public static final String INT_SET_FACTORY_CONFIG_PROPERTY_NAME =
       "com.ibm.wala.mutableIntSetFactory";
 
-  private static MutableIntSetFactory<?> defaultIntSetFactory;
+  @Nullable private static MutableIntSetFactory<?> defaultIntSetFactory;
 
   static {
     MutableIntSetFactory<?> defaultFactory = new MutableSharedBitVectorIntSetFactory();
@@ -45,10 +47,16 @@ public class IntSetUtil {
   }
 
   public static MutableIntSet make() {
-    return defaultIntSetFactory.make();
+    if (defaultIntSetFactory == null) {
+      throw new IllegalStateException("null defaultIntSetFactory");
+    }
+    return Nullability.castToNonnull(defaultIntSetFactory).make();
   }
 
   public static MutableIntSet make(int[] initial) {
+    if (defaultIntSetFactory == null) {
+      throw new IllegalArgumentException("null defaultIntSetFactory");
+    }
     return defaultIntSetFactory.make(initial);
   }
 
@@ -215,6 +223,7 @@ public class IntSetUtil {
   /**
    * @return Returns the defaultIntSetFactory.
    */
+  @Nullable
   public static MutableIntSetFactory<?> getDefaultIntSetFactory() {
     return defaultIntSetFactory;
   }
