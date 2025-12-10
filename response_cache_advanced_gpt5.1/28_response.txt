@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void advanceX() {
+      delegateIterator = null;
+      for (int i = nextX + 1; i <= maxX; i++) {
+        if (anyRelated(i)) {
+          nextX = i;
+          nextIndex = getFirstIndex(i);
+          if (nextIndex == smallStore.length) {
+            IntSet s = delegateStore.get(i);
+            if (s != null) {
+              assert s.size() > 0;
+              delegateIterator = s.intIterator();
+            }
+          }
+          return;
+        }
+      }
+      nextX = -1;
+  }
+  ```
+    ]]>
+  </code>
+</response>

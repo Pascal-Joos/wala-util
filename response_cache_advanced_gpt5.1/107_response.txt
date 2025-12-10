@@ -1,0 +1,42 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public List<T> find() {
+    if (Q == null) {
+      Q = new ArrayDeque<>();
+      history = HashMapFactory.make();
+      while (roots.hasNext()) {
+        T next = roots.next();
+        Q.addLast(next);
+        history.put(next, null);
+      }
+    }
+    while (!Q.isEmpty()) {
+      T N = Q.removeFirst();
+      if (DEBUG) {
+        System.err.println(("visit " + N));
+      }
+      if (filter.test(N)) {
+        return makePath(N, history);
+      }
+      Iterator<? extends T> children = getConnected(N);
+      while (children.hasNext()) {
+        T c = children.next();
+        if (history == null) {
+          return null;
+        }
+        if (!history.containsKey(c)) {
+          Q.addLast(c);
+          history.put(c, N);
+        }
+      }
+    }
+
+    return null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

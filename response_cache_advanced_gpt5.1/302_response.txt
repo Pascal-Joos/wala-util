@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public <T extends BitVectorBase<T>> void removeAll(T v) {
+      if (v == null) {
+        throw new IllegalArgumentException("null v");
+      }
+      if (elements == null) {
+        return;
+      }
+      int ai = 0;
+      for (int i = 0; i < size; i++) {
+        if (!v.get(elements[i])) {
+          elements[ai++] = elements[i];
+        }
+      }
+      size = ai;
+  }
+  ```
+    ]]>
+  </code>
+</response>

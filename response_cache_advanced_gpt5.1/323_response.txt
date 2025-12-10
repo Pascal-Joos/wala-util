@@ -1,0 +1,42 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public static SparseIntSet add(SparseIntSet s, int j) {
+  
+          if (s == null) {
+            throw new IllegalArgumentException("s is null");
+          }
+          if (s.elements == null) {
+            return SparseIntSet.singleton(j);
+          }
+          SparseIntSet result = new SparseIntSet(s.size + 1);
+          if (result.elements == null && result.size > 0) {
+            result.elements = new int[result.size];
+          }
+          if (result.elements == null) {
+            return SparseIntSet.singleton(j);
+          }
+          int k = 0;
+          int m = 0;
+          while (k < s.elements.length && s.elements[k] < j) {
+            result.elements[k++] = s.elements[m++];
+          }
+          if (k == s.size) {
+            result.elements[k] = j;
+          } else {
+            if (s.elements[k] == j) {
+              result.size--;
+            } else {
+              result.elements[k++] = j;
+            }
+            while (k < result.size) {
+              result.elements[k++] = s.elements[m++];
+            }
+          }
+          return result;
+}
+  ```
+    ]]>
+  </code>
+</response>

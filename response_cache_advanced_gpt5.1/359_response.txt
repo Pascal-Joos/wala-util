@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void cloneState(SparseLongSet S) {
+    if (S.elements != null) {
+      elements = S.elements.clone();
+      this.size = S.size;
+    } else {
+      elements = null;
+      this.size = 0;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

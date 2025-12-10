@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  void growCapacity(float fraction) {
+      if (bits == null) {
+          bits = new int[1];
+      }
+      expand(offset, (int) (fraction * (bits.length << LOG_BITS_PER_UNIT)));
+  }
+  ```
+    ]]>
+  </code>
+</response>

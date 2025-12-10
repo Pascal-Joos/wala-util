@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean remove(int i) {
+    if (densePart != null && densePart.get(i)) {
+      densePart.clear(i);
+      if (densePart.nextSetBit(0) == -1) {
+        densePart = null;
+      }
+      return true;
+    } else if (sparsePart != null && sparsePart.contains(i)) {
+      sparsePart.remove(i);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,41 @@
+```xml
+<response>
+    <reason><![CDATA[
+The expression in question is the explicit literal `return null;` in the final `else` branch:
+
+    } else {
+      Assertions.UNREACHABLE(set.getClass().toString());
+      return null;
+    }
+
+Control-flow analysis:
+
+1. If `set == null`, the method throws `IllegalArgumentException` and does not reach `return null;`.
+
+2. For non-null `set`, each of the following `if`/`else if` branches returns a non-null value (assuming their factory/constructor methods honor their usual contracts and do not themselves return null):
+   - `SparseIntSet` → `MutableSparseIntSet.make(set)`
+   - `BitVectorIntSet` → `new BitVectorIntSet(set)`
+   - `BimodalMutableIntSet` → `BimodalMutableIntSet.makeCopy(set)`
+   - `MutableSharedBitVectorIntSet` → `new MutableSharedBitVectorIntSet(...)`
+   - `SemiSparseMutableIntSet` → `new SemiSparseMutableIntSet(...)`
+   - `DebuggingMutableIntSet` → `new DebuggingMutableIntSet(pCopy, sCopy)`
+   - `EmptyIntSet` → `IntSetUtil.make()`
+
+3. The final `else` branch is taken only if:
+   - `set` is non-null, and
+   - `set` is not an instance of any of the listed classes.
+
+In that case, the code executes:
+
+   - `Assertions.UNREACHABLE(set.getClass().toString());`
+   - then `return null;`.
+
+Unless `Assertions.UNREACHABLE(...)` is *guaranteed* to throw an exception or otherwise never return (e.g., `@Contract("-> fail")` / `@DoesNotReturn`-style behavior and an implementation that indeed always throws), normal Java semantics allow it to return and then execute `return null;`.
+
+Given only the provided snippet and no formal guarantee that `Assertions.UNREACHABLE(...)` always throws, this path is reachable in principle, and the method can return `null` there. Thus, the expression `return null;` can indeed produce a null result (on that else-branch path) at runtime.
+
+Therefore, under standard assumptions and without stronger guarantees about `Assertions.UNREACHABLE`, the method can return null at the `return null;` statement.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

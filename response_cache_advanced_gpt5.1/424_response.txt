@@ -1,0 +1,30 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean add(int i) {
+    if (densePart != null && inDenseRange(i)) {
+      if (!densePart.get(i)) {
+        densePart.set(i);
+        assert assertDisjoint() : this.toString();
+        return true;
+      }
+    } else {
+      if (sparsePart == null) {
+        sparsePart = MutableSparseIntSet.makeEmpty();
+      }
+      if (!sparsePart.contains(i)) {
+        sparsePart.add(i);
+        assert assertDisjoint() : this.toString();
+        fixAfterSparseInsert();
+        return true;
+      }
+    }
+
+    return false;
+  }
+  ```
+    ]]>
+  </code>
+</response>

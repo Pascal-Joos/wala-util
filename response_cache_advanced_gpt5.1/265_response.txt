@@ -1,0 +1,21 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the body of this method, the very first action is:
+
+    if (secondaryImpl == null) {
+        throw new IllegalArgumentException("secondaryImpl == null");
+    }
+
+This establishes a hard runtime guard: if `secondaryImpl` is null when the method is entered, the method will immediately throw an exception and no subsequent code (including the `for (IntIterator si = secondaryImpl.intIterator(); ...)` loop) will execute.
+
+There are no assignments to `secondaryImpl` within the method that could change it to null after this check. Thus, for all reachable executions that continue past the `if` statement, `secondaryImpl` is guaranteed to be non-null.
+
+Therefore, at the line:
+
+    for (IntIterator si = secondaryImpl.intIterator(); si.hasNext(); ) {
+
+the expression `secondaryImpl` cannot be null on any path where that line is actually executed.]]></reason>
+    <value>NO</value>
+</response>
+```

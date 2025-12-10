@@ -1,0 +1,39 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+        @Override
+        @SuppressWarnings({"unchecked", "unused"})
+        @javax.annotation.Nullable
+        public V put(Object key, Object value) {
+          if (key == null) {
+            throw new IllegalArgumentException("null key");
+          }
+          if (keysAndValues == null) {
+            growByOne();
+          }
+          if (keysAndValues == null) {
+            throw new IllegalStateException("put on empty map");
+          }
+          for (int i = 0; i < size(); i++) {
+            if (Nullability.castToNonnull(keysAndValues)[i] != null && Nullability.castToNonnull(keysAndValues)[i].equals(key)) {
+              V result = (V) keysAndValues[size() + i];
+              keysAndValues[size() + i] = value;
+              return result;
+            }
+          }
+          if (DEBUG_USAGE && size() >= DEBUG_MAX_SIZE) {
+            Assertions.UNREACHABLE("too many elements in a SmallMap");
+          }
+          growByOne();
+          if (keysAndValues == null) {
+            return null;
+          }
+          keysAndValues[size() - 1] = key;
+          keysAndValues[keysAndValues.length - 1] = value;
+          return null;
+        }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void ensureCapacity(int newOffset, int newCapacity) {
+      if (bits == null || newOffset < offset || newCapacity > (bits.length << LOG_BITS_PER_UNIT)) {
+        expand(newOffset, newCapacity);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

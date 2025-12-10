@@ -1,0 +1,46 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private boolean addAllInternal( SparseIntSet set) {
+      if (privatePart == null) {
+        if (sharedPart == null) {
+          if (!Nullability.castToNonnull(set).isEmpty()) {
+            privatePart = MutableSparseIntSet.make(set);
+            sharedPart = null;
+            checkOverflow();
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          privatePart = MutableSparseIntSet.make(set);
+          privatePart.removeAll(sharedPart);
+          if (privatePart.isEmpty()) {
+            privatePart = null;
+            return false;
+          } else {
+            checkOverflow();
+            return true;
+          }
+        }
+      } else {
+        /* privatePart != null */
+        if (sharedPart == null) {
+          boolean result = privatePart.addAll(set);
+          checkOverflow();
+          return result;
+        } else {
+          int oldSize = privatePart.size();
+          privatePart.addAll(set);
+          privatePart.removeAll(sharedPart);
+          boolean result = privatePart.size() > oldSize;
+          checkOverflow();
+          return result;
+        }
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

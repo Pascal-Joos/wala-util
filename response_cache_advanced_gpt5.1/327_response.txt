@@ -1,0 +1,68 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static int[] diffInternal(SparseIntSet A, SparseIntSet B) {
+        if (A == null) {
+          throw new IllegalArgumentException("A is null");
+        }
+        if (B == null) {
+          throw new IllegalArgumentException("B is null");
+        }
+        if (A.isEmpty()) {
+          return new int[0];
+        } else if (B.isEmpty()) {
+          int[] newElts = new int[A.size];
+          System.arraycopy(A.elements, 0, newElts, 0, A.size);
+          return newElts;
+        } else if (A.equals(B)) {
+          return new int[0];
+        } else if (A.sameValue(B)) {
+          return new int[0];
+        }
+    
+        if (A.elements == null || B.elements == null) {
+          return new int[0];
+        }
+    
+        int[] ar = A.elements;
+        int ai = 0;
+        int al = A.size;
+        int[] br = B.elements;
+        int bi = 0;
+        int bl = B.size;
+        int[] cr = new int[al];
+        // allocate enough (i.e. too much)
+        int ci = 0;
+    
+        while (ai < al && bi < bl) {
+          int cmp = (ar[ai] - Nullability.castToNonnull(br)[bi]);
+    
+          // (accept element when only found in 'a')
+          if (cmp > 0) { // a greater
+            bi++;
+          } else if (cmp < 0) { // b greater
+            cr[ci++] = ar[ai];
+            ai++;
+          } else {
+            ai++;
+            bi++;
+          }
+        }
+    
+        // append a's tail if any
+        if (ai < al) {
+          int tail = al - ai;
+          System.arraycopy(ar, ai, cr, ci, tail);
+          ci += tail;
+        }
+    
+        // now compact cr to 'just enough'
+        ar = new int[ci];
+        System.arraycopy(cr, 0, ar, 0, ci); // ar := cr
+        return ar;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public IntIterator intIterator() {
+    if (secondaryImpl == null) {
+      throw new IllegalArgumentException("secondaryImpl == null");
+    }
+    MutableSparseIntSet bits = MutableSparseIntSet.makeEmpty();
+    for (IntIterator pi = primaryImpl.intIterator(); pi.hasNext(); ) {
+      int x = pi.next();
+      assert !bits.contains(x);
+      bits.add(x);
+    }
+    for (IntIterator si = secondaryImpl.intIterator(); si.hasNext(); ) {
+      int x = si.next();
+      assert bits.contains(x);
+      bits.remove(x);
+    }
+    assert bits.isEmpty();
+
+    return primaryImpl.intIterator();
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private int makeHashCode() {
+        int result = operator.hashCode();
+        if (lhs != null) result += lhs.hashCode() * primes[0];
+        if (rhs != null) {
+          for (int i = 0; i < Math.min(Nullability.castToNonnull(rhs).length, 2); i++) {
+            if (rhs[i] != null) {
+              result += primes[i + 1] * rhs[i].hashCode();
+            }
+          }
+        }
+        return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

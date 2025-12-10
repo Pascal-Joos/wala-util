@@ -1,0 +1,45 @@
+```xml
+<response>
+    <reason><![CDATA[
+The line in question is executed only inside this block:
+
+    // common-case optimization
+    if (that.size == 1) {
+      if (that.elements == null) {
+        return false;
+      }
+      boolean result = add(that.elements[0]);
+      return result;
+    }
+
+To reach `boolean result = add(that.elements[0]);`, all of the following must be true:
+
+1. `that` itself is non-null, or the method would have thrown earlier:
+   
+       if (that == null) {
+         throw new IllegalArgumentException("null that");
+       }
+
+2. The early-return cases did not fire:
+   - `this.isEmpty()` was false, or the method would have returned after `copySet(that)`.
+   - `that.isEmpty()` was false, or the method would have returned `false`.
+   - `this.equals(that)` was false, or the method would have returned `false`.
+
+3. `that.size == 1` is true to enter the “common-case optimization” block.
+
+4. Inside that block, there is an explicit null-check on `that.elements`:
+
+       if (that.elements == null) {
+         return false;
+       }
+
+   So if `that.elements` is null, the method returns immediately and does **not** execute `add(that.elements[0]);`.
+
+Therefore, any control flow that reaches `boolean result = add(that.elements[0]);` must have already passed the `that.elements == null` check, implying `that.elements` is non-null at that point.
+
+Under the usual Java memory model and without hidden concurrent mutation of `that.elements` between the null check and the `add` call, `that.elements` cannot be null at this line.
+
+If `SparseIntSet` is not being mutated concurrently from other threads in a way that can set `elements` to null after the check, then `that.elements` is definitively non-null at `add(that.elements[0])`.]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public void xor(OffsetBitVector set) throws IllegalArgumentException {
+      if (set == null) {
+        throw new IllegalArgumentException("set == null");
+      }
+      if (this == set) {
+        clearAll();
+        return;
+      }
+  
+      int newOffset = Math.min(offset, set.offset);
+      int newCapacity = Math.max(length(), set.length()) - newOffset;
+      ensureCapacity(newOffset, newCapacity);
+  
+      int wordDiff = wordDiff(newOffset, set.offset);
+  
+      int[] localBits = bits;
+      int[] setBits = set.bits;
+      if (setBits == null) {
+        throw new IllegalArgumentException("set.bits == null");
+      }
+      for (int i = 0; i < setBits.length; i++) {
+        localBits[i - wordDiff] ^= setBits[i];
+      }
+    }
+  ```
+    ]]>
+  </code>
+</response>

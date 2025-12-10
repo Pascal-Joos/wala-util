@@ -1,0 +1,56 @@
+```xml
+<response>
+    <reason><![CDATA[
+We must decide whether the array reference `keysAndValues` itself can be null at the point of this condition:
+
+    if (keysAndValues[i] != null && keysAndValues[i].equals(key)) {
+
+Key observations:
+
+1. The method starts with:
+   
+   ```java
+   if (key == null) {
+     throw new IllegalArgumentException("null key");
+   }
+   if (keysAndValues == null) {
+     growByOne();
+   }
+   if (keysAndValues == null) {
+     throw new IllegalStateException("put on empty map");
+   }
+   ```
+   
+   This means, immediately before the `for` loop, one of two things must have happened:
+   - `growByOne()` initialized `keysAndValues` to a non-null array, or
+   - `growByOne()` failed to do so, in which case the second `if (keysAndValues == null)` throws an `IllegalStateException`.
+
+   Therefore, on any execution path that actually reaches the `for (int i = 0; i < size(); i++)` loop, `keysAndValues` is guaranteed to be non-null.
+
+2. The nullness in question in the condition is `keysAndValues[i]`, not `keysAndValues` itself:
+   
+   ```java
+   if (keysAndValues[i] != null && keysAndValues[i].equals(key)) {
+   ```
+   
+   - `keysAndValues` is a non-null array (per point 1).
+   - Individual elements `keysAndValues[i]` can be null; the first part of the condition (`keysAndValues[i] != null`) explicitly checks this.
+   - Because of short-circuit evaluation, `keysAndValues[i].equals(key)` is only evaluated when `keysAndValues[i] != null` is true, so you cannot get a `NullPointerException` from calling `.equals` there.
+
+3. Inside the same method, there is another check later:
+
+   ```java
+   growByOne();
+   if (keysAndValues == null) {
+     return null;
+   }
+   ```
+   
+   This indicates that in general `growByOne()` might leave `keysAndValues` null, but in the *earlier* block the code defensively throws if that happens. Thus, any path reaching the `for` loop still has `keysAndValues` non-null.
+
+Conclusion: At the line in question, the array reference `keysAndValues` cannot be null, although `keysAndValues[i]` can be null (and is correctly guarded against).
+
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,38 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean addAll(SparseLongSet that) {
+        if (that == null) {
+          throw new IllegalArgumentException("null that");
+        }
+        if (this.isEmpty()) {
+          copySet(that);
+          return !that.isEmpty();
+        } else if (that.isEmpty()) {
+          return false;
+        } else if (this.equals(that)) {
+          return false;
+        }
+  
+        // common-case optimization
+        if (that.size == 1) {
+          if (that.elements == null) {
+            return false;
+          }
+          boolean result = add(that.elements[0]);
+          return result;
+        }
+  
+        if (that.elements == null) {
+          return false;
+        }
+        long[] br = that.elements;
+        int bl = that.size();
+  
+        return addAll(br, bl);
+  }
+  ```
+    ]]>
+  </code>
+</response>

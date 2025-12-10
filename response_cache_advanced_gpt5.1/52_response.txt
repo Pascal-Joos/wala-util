@@ -1,0 +1,12 @@
+```xml
+<response>
+    <reason><![CDATA[
+The method `growByOne` is a private, internal helper that conditionally allocates or resizes the `keysAndValues` array. It can be called multiple times to expand capacity and is part of normal object mutation logic, not a one-time object setup step guaranteed to run before any other method.
+
+Per the definition, initializer methods are lifecycle/setup methods that a framework or the class’s own contract guarantees will be called once during initialization (e.g., `onCreate`, `init` in servlets/processors). This method does not match that pattern and behaves more like a capacity-management helper or mutator.
+
+Therefore, it should not be treated as an initializer method by NullAway.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

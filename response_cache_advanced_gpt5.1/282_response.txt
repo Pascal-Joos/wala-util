@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void clear() {
+    if (secondaryImpl == null) {
+      throw new IllegalArgumentException("secondaryImpl == null");
+    }
+    primaryImpl.clear();
+    Nullability.castToNonnull(secondaryImpl).clear();
+  }
+  ```
+    ]]>
+  </code>
+</response>

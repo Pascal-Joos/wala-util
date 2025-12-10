@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  @Override
+  public IntSet intersection(IntSet that) {
+    if (that instanceof DebuggingMutableIntSet) {
+      DebuggingMutableIntSet db = (DebuggingMutableIntSet) that;
+      IntSet ppr = primaryImpl.intersection(db.primaryImpl);
+      if (secondaryImpl == null) {
+        return null;
+      }
+      IntSet ssr = secondaryImpl.intersection(db.secondaryImpl);
+
+      assert ppr.sameValue(ssr);
+
+      return ppr;
+    } else {
+      Assertions.UNREACHABLE();
+      return null;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

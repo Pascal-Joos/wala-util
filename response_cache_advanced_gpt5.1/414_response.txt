@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean isEmpty() {
+    return (sparsePart == null || sparsePart.isEmpty()) && (densePart == null || densePart.isZero());
+  }
+  ```
+    ]]>
+  </code>
+</response>

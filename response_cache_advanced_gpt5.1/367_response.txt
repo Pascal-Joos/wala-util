@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void act(int i) {
+    if (elements == null) {
+      elements = new long[S.size()];
+      size = S.size();
+    }
+    elements[index++] = i;
+  }
+  ```
+    ]]>
+  </code>
+</response>

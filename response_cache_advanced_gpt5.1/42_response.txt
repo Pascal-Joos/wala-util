@@ -1,0 +1,65 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+MutableIntSet s = (MutableIntSet) delegateStore.get(x);
+```
+
+the `get` implementation used is `TwoLevelVector.get(int x)`:
+
+```java
+public T get(int x) {
+  if (x < 0) {
+    throw new IllegalArgumentException("invalid x: " + x);
+  }
+  int page = getPageNumber(x);
+  if (page >= data.size()) {
+    return null;
+  }
+  IVector<T> v = data.get(page);
+  if (v == null) {
+    return null;
+  }
+  int localX = x - getFirstIndexOnPage(page);
+  return v.get(localX);
+}
+```
+
+From this code, `delegateStore.get(x)` can be `null` via at least two explicit paths:
+
+1. `page >= data.size()` ⇒ method returns `null`.
+2. `v == null` (where `v = data.get(page)`) ⇒ method returns `null`.
+
+Thus the static type and behavior of `TwoLevelVector.get` allow a `null` return for some `x`.
+
+The surrounding logic in `BasicNaturalRelation.remove`:
+
+```java
+if (usingDelegate(x)) {
+  MutableIntSet s = (MutableIntSet) delegateStore.get(x);
+  s.remove(y);
+  ...
+}
+```
+
+does not check `s` for null before dereferencing it, but we are instructed to consider only the `get` implementation and the concrete call site, not higher-level invariants of `usingDelegate(x)`. With only the provided code, `usingDelegate(x)` does not guarantee that `delegateStore.get(x)` is non-null.
+
+Moreover, there is another use:
+
+```java
+MutableIntSet delegated = (MutableIntSet) delegateStore.get(x);
+if (delegated != null) {
+  return delegated.add(y);
+} else {
+  ...
+}
+```
+
+Here, the explicit null check on the result of `delegateStore.get(x)` confirms that the implementer expects `get(x)` to possibly return null.
+
+Since `TwoLevelVector.get` has explicit `return null;` statements and there is no shown precondition at this specific call site that excludes those branches, the value assigned to `s` can be null at runtime.
+
+Therefore, the invocation `MutableIntSet s = (MutableIntSet) delegateStore.get(x)` can yield a null value for `s`.]]></reason>
+  <value>YES</value>
+</response>

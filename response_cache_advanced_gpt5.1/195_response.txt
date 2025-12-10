@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void foreachExcluding(IntSet X, IntSetAction action) {
+    if (X == null) {
+      throw new IllegalArgumentException("X == null");
+    }
+    if (action == null) {
+      throw new IllegalArgumentException("action == null");
+    }
+    final Set<Integer> bits = HashSetFactory.make();
+    primaryImpl.foreachExcluding(
+        X,
+        x -> {
+          assert !bits.contains(x);
+          bits.add(x);
+        });
+    secondaryImpl.foreachExcluding(
+        X,
+        x -> {
+          assert bits.contains(x);
+          bits.remove(x);
+        });
+    assert bits.isEmpty();
+
+    primaryImpl.foreachExcluding(X, action);
+  }
+  ```
+    ]]>
+  </code>
+</response>

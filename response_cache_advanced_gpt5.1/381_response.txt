@@ -1,0 +1,47 @@
+```xml
+<response>
+    <reason><![CDATA[
+Analyze all paths that reach the line:
+
+    boolean result = add(that.elements[0]);
+
+1. Entry and initial checks:
+
+- If `that == null`, the method throws `IllegalArgumentException` and does not proceed.
+- Next conditions:
+  - If `this.isEmpty()` → `copySet(that)` is called and method returns. The line in question is not reached.
+  - Else if `that.isEmpty()` → returns false. Not reached.
+  - Else if `this.equals(that)` → returns false. Not reached.
+
+So to reach the `// common-case optimization` block, all of the following must hold:
+- `that != null`
+- `!this.isEmpty()`
+- `!that.isEmpty()`
+- `!this.equals(that)`
+
+2. The relevant branch:
+
+The line in question is inside this block:
+
+    if (that.size == 1) {
+        if (that.elements == null) {
+            return false;
+        }
+        boolean result = add(that.elements[0]);
+        return result;
+    }
+
+Here, before accessing `that.elements[0]`, there is an explicit null check:
+
+    if (that.elements == null) {
+        return false;
+    }
+
+This guarantees that the line `boolean result = add(that.elements[0]);` is executed only when `that.elements != null`.
+
+Therefore, along all possible execution paths that reach this line, `that.elements` is known to be non-null.
+
+Note: The analysis assumes ordinary Java semantics (no reflection, no concurrent mutation of `that.elements` between the null check and the array access, no use of `sun.misc.Unsafe`, etc.). Under standard single-threaded or properly synchronized usage, the null check is sufficient to rule out null.]]></reason>
+    <value>NO</value>
+</response>
+```

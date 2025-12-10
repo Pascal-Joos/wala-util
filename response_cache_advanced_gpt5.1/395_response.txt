@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public T next() {
+    OrdinalSetMapping<T> m = mapping;
+    return m == null ? null : m.getMappedObject(it.next());
+  }
+  ```
+    ]]>
+  </code>
+</response>

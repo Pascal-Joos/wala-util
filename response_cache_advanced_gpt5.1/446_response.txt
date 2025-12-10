@@ -1,0 +1,99 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public SemiSparseMutableIntSet removeAll(SemiSparseMutableIntSet B) {
+                          if (B == null) {
+                            throw new IllegalArgumentException("B null");
+                          }
+                          if (densePart == null) {
+                            if (B.densePart == null) {
+                              if (sparsePart == null) {
+                                if (B.sparsePart == null) {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                } else {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                }
+                              } else {
+                                if (B.sparsePart == null) {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                } else {
+                                  sparsePart = MutableSparseIntSet.diff(MutableSparseIntSet.make(sparsePart), MutableSparseIntSet.make(B.sparsePart));
+                                }
+                              }
+                            } else {
+                              if (sparsePart == null) {
+                                if (B.sparsePart == null) {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                } else {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                }
+                              } else {
+                                MutableSparseIntSet C = B.sparsePart == null ? MutableSparseIntSet.make(sparsePart) : MutableSparseIntSet.diff(MutableSparseIntSet.make(sparsePart), MutableSparseIntSet.make(B.sparsePart));
+                                MutableSparseIntSet tmpSparsePart = MutableSparseIntSet.make(sparsePart);
+                                for (IntIterator bits = tmpSparsePart.intIterator(); bits.hasNext(); ) {
+                                  int bit = bits.next();
+                                  if (B.densePart.get(bit)) {
+                                    C.remove(bit);
+                                  }
+                                }
+                                sparsePart = C;
+                              }
+                            }
+                          } else {
+                            if (B.densePart == null) {
+                              if (B.sparsePart != null) {
+                                MutableSparseIntSet tmpSparsePartB = MutableSparseIntSet.make(B.sparsePart);
+                                for (IntIterator bits = tmpSparsePartB.intIterator(); bits.hasNext(); ) {
+                                  densePart.clear(bits.next());
+                                }
+                              }
+                              if (sparsePart == null) {
+                                if (B.sparsePart == null) {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                } else {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                }
+                              } else {
+                                if (B.sparsePart == null) {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                } else {
+                                  sparsePart = MutableSparseIntSet.diff(MutableSparseIntSet.make(sparsePart), MutableSparseIntSet.make(B.sparsePart));
+                                }
+                              }
+                            } else {
+                              densePart.andNot(B.densePart);
+                              if (B.sparsePart != null) {
+                                MutableSparseIntSet tmpSparsePartB = MutableSparseIntSet.make(B.sparsePart);
+                                for (IntIterator bits = tmpSparsePartB.intIterator(); bits.hasNext(); ) {
+                                  densePart.clear(bits.next());
+                                }
+                              }
+                    
+                              if (sparsePart == null) {
+                                if (B.sparsePart == null) {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                } else {
+                                  sparsePart = MutableSparseIntSet.makeEmpty();
+                                }
+                              } else {
+                                MutableSparseIntSet C = B.sparsePart == null ? MutableSparseIntSet.make(sparsePart) : MutableSparseIntSet.diff(MutableSparseIntSet.make(sparsePart), MutableSparseIntSet.make(B.sparsePart));
+                                MutableSparseIntSet tmpSparsePart = MutableSparseIntSet.make(sparsePart);
+                                for (IntIterator bits = tmpSparsePart.intIterator(); bits.hasNext(); ) {
+                                  int bit = bits.next();
+                                  if (B.densePart != null && B.densePart.get(bit)) {
+                                    C.remove(bit);
+                                  }
+                                }
+                    
+                                sparsePart = C;
+                              }
+                            }
+                          }
+                    
+                          return this;
+}
+  ```
+    ]]>
+  </code>
+</response>

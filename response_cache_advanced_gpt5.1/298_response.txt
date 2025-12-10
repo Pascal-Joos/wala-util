@@ -1,0 +1,89 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void intersectWith(SparseIntSet set) {
+    if (set == null) {
+      throw new IllegalArgumentException("null set");
+    }
+    SparseIntSet that = set;
+    if (this.isEmpty()) {
+      return;
+    } else if (that.isEmpty()) {
+      elements = null;
+      size = 0;
+      return;
+    } else if (this.equals(that)) {
+      return;
+    }
+
+    // some simple optimizations
+    if (size == 1) {
+      if (that.contains(elements[0])) {
+        return;
+      } else {
+        elements = null;
+        size = 0;
+        return;
+      }
+    }
+    if (that.size == 1) {
+      if (contains(that.elements[0])) {
+        if (size > getInitialNonEmptySize()) {
+          elements = new int[getInitialNonEmptySize()];
+        }
+        size = 1;
+        elements[0] = that.elements[0];
+        return;
+      } else {
+        elements = null;
+        size = 0;
+        return;
+      }
+    }
+
+    if (elements == null) {
+      return;
+    }
+    if (that.elements == null) {
+      elements = null;
+      size = 0;
+      return;
+    }
+
+    int[] ar = this.elements;
+    int ai = 0;
+    int al = size;
+    int[] br = that.elements;
+    int bi = 0;
+    int bl = that.size;
+    int[] cr = null; // allocate on demand
+    int ci = 0;
+
+    while (ai < al && bi < bl) {
+      int cmp = (ar[ai] - br[bi]);
+
+      // (accept element only on a match)
+      if (cmp > 0) { // a greater
+        bi++;
+      } else if (cmp < 0) { // b greater
+        ai++;
+      } else {
+        if (cr == null) {
+          cr = new int[al]; // allocate enough (i.e. too much)
+        }
+        cr[ci++] = ar[ai];
+        ai++;
+        bi++;
+      }
+    }
+
+    // now compact cr to 'just enough'
+    size = ci;
+    elements = cr;
+    return;
+}
+  ```
+    ]]>
+  </code>
+</response>

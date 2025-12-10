@@ -1,0 +1,87 @@
+```xml
+<response>
+    <reason><![CDATA[
+We analyze all possible paths to the line:
+
+    if (that.size == 1) {
+        if (that.elements != null && contains(that.elements[0])) {
+
+The potentially problematic expression is `that.elements` inside `contains(that.elements[0])`.
+
+1. Variable setup:
+   - `SparseLongSet that = set;`
+   - If `set` is null, the method immediately throws `IllegalArgumentException`, so `that` is never null afterward.
+
+2. Control flow to the `that.size == 1` branch:
+   - If `this.isEmpty()` is true, method returns earlier.
+   - Else if `that.isEmpty()` is true:
+       elements = null;
+       size = 0;
+       return;
+     So in this branch we never reach `that.size == 1`.
+
+   - Else if `this.equals(that)` is true, method returns.
+
+   - Then for singleton optimizations, execution reaches:
+
+       if (size == 1) {
+           if (elements != null && that.contains(elements[0])) { … }
+           …
+       }
+       if (that.size == 1) {
+           if (that.elements != null && contains(that.elements[0])) { … }
+
+3. Meaning of `isEmpty()`:
+   Although its implementation isn't shown, in this method it is used to gate operations that depend on `elements` and `size`. In particular, `that.isEmpty()` is checked before we ever branch on `that.size == 1`. Therefore, at the point we reach `if (that.size == 1)`, we know `that.isEmpty()` was false.
+
+   In a typical set implementation, `isEmpty()` being false implies `that.size > 0`. Combined with the check `that.size == 1`, we have a coherent non-empty singleton set. Given how the rest of this class behaves, it is reasonable (and necessary for correctness) to assume the class invariant: a non-empty set (size > 0) must have a non-null `elements` array with at least `size` elements.
+
+   Supporting evidence within this method:
+   - When the set is made empty:
+       elements = null;
+       size = 0;
+     This is done in multiple branches, keeping the invariant “empty ⇒ elements == null or not used; non-empty ⇒ elements != null” plausible.
+   - When creating a singleton result in the `that.size == 1` block:
+       if (size > INITIAL_NONEMPTY_SIZE) {
+         elements = new long[INITIAL_NONEMPTY_SIZE];
+       } else if (elements == null) {
+         elements = new long[INITIAL_NONEMPTY_SIZE];
+       }
+       size = 1;
+       Nullability.castToNonnull(elements)[0] = that.elements[0];
+     Before writing index 0, it ensures `elements` is non-null. This is consistent with the invariant that any set with `size == 1` should have `elements != null`.
+
+4. Null-guard before indexing:
+   In the line in question:
+
+       if (that.size == 1) {
+           if (that.elements != null && contains(that.elements[0])) {
+
+   the expression `that.elements` appears twice:
+   - First: `that.elements != null`
+   - Second: `that.elements[0]`
+
+   The logical AND (`&&`) in Java is short-circuiting:
+   - If `that.elements == null`, the left operand `that.elements != null` evaluates to false, and the right operand `contains(that.elements[0])` is not evaluated.
+   - Therefore, if `that.elements` is null, `that.elements[0]` is never accessed, and neither is it passed to `contains`.
+
+   The question is: “Can the expression `that.elements` at line `if (contains(that.elements[0])) {` possibly be null?” In other words, in any execution where the `contains(that.elements[0])` call is actually evaluated, can `that.elements` be null?
+
+   The answer is no:
+   - For `contains(that.elements[0])` to be evaluated, the left side of `&&` must be true.
+   - That left side is exactly `that.elements != null`.
+   - Thus, whenever `contains(that.elements[0])` runs, `that.elements` is guaranteed non-null.
+
+5. Other paths:
+   - Later in the method, the code explicitly checks:
+       if (that.elements == null) {
+         elements = null;
+         size = 0;
+         return;
+       }
+     showing that `that.elements` can be null in general, but that path is separate and guarded before any array access.
+
+Conclusion: While `that.elements` can be null as a general state of the object, at the precise point where `that.elements[0]` is used in `contains(that.elements[0])`, it cannot be null because of the preceding `that.elements != null` check and Java’s short-circuit semantics. Therefore the expression `that.elements` as used in the `contains(that.elements[0])` call cannot be null at evaluation time.]]></reason>
+    <value>NO</value>
+</response>
+```

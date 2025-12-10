@@ -1,0 +1,47 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public static SparseLongSet add(SparseLongSet s, int j) {
+        if (s == null || s.elements == null) {
+          return SparseLongSet.singleton(j);
+        }
+        SparseLongSet result = new SparseLongSet(s.size + 1);
+        if (result.elements == null) {
+          return SparseLongSet.singleton(j);
+        }
+        int k = 0;
+        int m = 0;
+        while (k < s.elements.length && s.elements[k] < j) {
+          if (result.elements == null) {
+            return SparseLongSet.singleton(j);
+          }
+          result.elements[k++] = s.elements[m++];
+        }
+        if (k == s.size) {
+          if (result.elements == null) {
+            return SparseLongSet.singleton(j);
+          }
+          result.elements[k] = j;
+        } else {
+          if (s.elements[k] == j) {
+            result.size--;
+          } else {
+            if (result.elements == null) {
+              return SparseLongSet.singleton(j);
+            }
+            result.elements[k++] = j;
+          }
+          while (k < result.size) {
+            if (result.elements == null) {
+              return SparseLongSet.singleton(j);
+            }
+            result.elements[k++] = s.elements[m++];
+          }
+        }
+        return result;
+}
+  ```
+    ]]>
+  </code>
+</response>

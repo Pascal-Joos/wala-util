@@ -1,0 +1,20 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the shown method body, the first statement is an explicit null check:
+
+    if (secondaryImpl == null) {
+        throw new IllegalArgumentException("secondaryImpl == null");
+    }
+
+This guarantees that, for all subsequent statements in this method (on all normal, non-exceptional execution paths), `secondaryImpl` is not null. The line in question:
+
+    if (primaryImpl.isEmpty() != secondaryImpl.isEmpty()) {
+
+is executed only if the prior null check has passed, meaning `secondaryImpl` is definitively non-null at that point. No reassignments to `secondaryImpl` occur between the null check and the use of `secondaryImpl.isEmpty()`, and there is no control flow that could bypass the null check and still reach this line.
+
+Therefore, within the confines of this method, `secondaryImpl` cannot be null when evaluated at the expression `secondaryImpl.isEmpty()`.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

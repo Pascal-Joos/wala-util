@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void fastForeachExcluding(BitVectorIntSet X, IntSetAction action) {
+      if (X == null || X.bitVector == null || X.bitVector.bits == null) {
+        return;
+      }
+      int[] bits = bitVector.bits;
+      int[] xbits = X.bitVector.bits;
+
+      int w = 0;
+      while (w < xbits.length && w < bits.length) {
+        int b = bits[w] & ~xbits[w];
+        actOnWord(action, w << 5, b);
+        w++;
+      }
+      while (w < bits.length) {
+        actOnWord(action, w << 5, bits[w]);
+        w++;
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("[");
+    if (densePart != null) {
+      sb.append("densePart: ").append(densePart).append(' ');
+    }
+    if (sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    }
+    sb.append("sparsePart: ").append(sparsePart.toString()).append(']');
+    return sb.toString();
+  }
+  ```
+    ]]>
+  </code>
+</response>

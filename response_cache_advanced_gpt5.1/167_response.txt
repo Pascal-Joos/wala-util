@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public final void set(int bit) {
+    int shiftBits = bit & LOW_MASK;
+    int subscript = subscript(bit);
+    if (bits == null || subscript >= bits.length) {
+      expand(bit);
+    }
+
+    try {
+      bits[subscript] |= (1 << shiftBits);
+    } catch (RuntimeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

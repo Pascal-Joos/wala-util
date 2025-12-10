@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean contains(int i) {
+    if (densePart != null && inDenseRange(i)) {
+      return densePart.contains(i);
+    } else {
+      if (sparsePart == null) {
+        sparsePart = MutableSparseIntSet.makeEmpty();
+      }
+      return sparsePart.contains(i);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

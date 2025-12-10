@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public final void or(BitVector set) {
+    if (set == null || set.bits == null) {
+      throw new IllegalArgumentException("null set");
+    }
+    if (this == set) { // should help alias analysis
+      return;
+    }
+    ensureCapacity(set);
+    int[] localBits = bits;
+    int[] setBits = set.bits;
+    int n = Math.min(localBits.length, setBits.length);
+    for (int i = n - 1; i >= 0; ) {
+      localBits[i] |= setBits[i];
+      i--;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void transferBackingStore() {
+    if (backingStore == null) {
+      return;
+    }
+    assert backingStore instanceof SmallMap;
+    SmallMap<K, V> S = (SmallMap<K, V>) backingStore;
+    backingStore = HashMapFactory.make(2 * S.size());
+    backingStore.putAll(S);
+  }
+  ```
+    ]]>
+  </code>
+</response>

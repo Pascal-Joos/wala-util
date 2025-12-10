@@ -1,0 +1,37 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void set(int bit) {
+    if (bit < 0) {
+      throw new IllegalArgumentException("illegal bit: " + bit);
+    }
+    int shiftBits;
+    int subscript;
+    if (bit < offset) {
+      int newOffset = bit & ~LOW_MASK;
+      expand(newOffset, length() - 1 - newOffset);
+      shiftBits = bit & LOW_MASK;
+      subscript = 0;
+    } else {
+      bit -= offset;
+      shiftBits = bit & LOW_MASK;
+      subscript = subscript(bit);
+      if (bits == null || subscript >= bits.length) {
+        expand(offset, bit);
+        subscript = subscript(bit);
+      }
+    }
+
+    try {
+      bits[subscript] |= (1 << shiftBits);
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

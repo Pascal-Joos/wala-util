@@ -1,0 +1,28 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method body, immediately before the call `secondaryImpl.foreach(...)`, there is an explicit assertion:
+
+    assert secondaryImpl != null;
+
+This assertion establishes a non-null constraint on `secondaryImpl` at that program point, assuming:
+- Assertions are enabled at runtime (i.e., the JVM is started with `-ea` or equivalent), and
+- The Java semantics of `assert` are respected (if `secondaryImpl` were null, an `AssertionError` would be thrown before reaching `secondaryImpl.foreach(...)`).
+
+Under standard Java semantics, data-flow analysis after a successful `assert secondaryImpl != null;` treats `secondaryImpl` as non-null for all subsequent statements in the same method, unless it is explicitly reassigned to null afterward. There is no such reassignment shown in the provided code; after the assert, the only use is:
+
+    secondaryImpl.foreach(
+        x -> {
+          assert bits.contains(x);
+          bits.remove(x);
+        });
+
+No intermediate writes to `secondaryImpl` occur between the `assert` and the `foreach` call.
+
+Therefore, along all code paths in this method that reach `secondaryImpl.foreach(...)`, `secondaryImpl` must be non-null, or the method would have already thrown an `AssertionError` and not continued to the `foreach` invocation.
+
+Note: If assertions are disabled at runtime, the `assert` statement is not executed, and this method alone does not provide a hard runtime guarantee against null; such a guarantee would then depend on class invariants, constructor logic, or other external constraints not shown here. However, based solely on the control flow and the explicit non-null assertion in this method, the expression `secondaryImpl` at the `secondaryImpl.foreach(` call site cannot be null along any path that reaches that call.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

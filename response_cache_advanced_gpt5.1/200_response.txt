@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean isEmpty() {
+    assert primaryImpl.isEmpty() == secondaryImpl.isEmpty();
+
+    return primaryImpl.isEmpty();
+  }
+  ```
+    ]]>
+  </code>
+</response>

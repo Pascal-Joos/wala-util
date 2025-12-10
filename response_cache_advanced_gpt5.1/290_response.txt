@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static MutableLongSet make() {
+      if (defaultLongSetFactory == null) {
+          throw new IllegalArgumentException("null defaultLongSetFactory");
+      }
+      return defaultLongSetFactory.make();
+  }
+  ```
+    ]]>
+  </code>
+</response>

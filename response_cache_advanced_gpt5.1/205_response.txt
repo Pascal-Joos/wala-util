@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int size() {
+    if (secondaryImpl == null) {
+      throw new IllegalArgumentException("secondaryImpl == null");
+    }
+    if (primaryImpl.size() != Nullability.castToNonnull(secondaryImpl).size()) {
+      assert primaryImpl.size() == secondaryImpl.size()
+          : "size "
+              + primaryImpl.size()
+              + " of "
+              + primaryImpl
+              + " differs from "
+              + "size "
+              + secondaryImpl.size()
+              + " of "
+              + secondaryImpl;
+    }
+
+    return primaryImpl.size();
+  }
+  ```
+    ]]>
+  </code>
+</response>

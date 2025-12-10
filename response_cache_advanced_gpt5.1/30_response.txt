@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public T getChildValue(int i) {
+    if (children.get(i) == null) {
+      return null;
+    } else {
+      return Nullability.castToNonnull(children.get(i)).getRootValue();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

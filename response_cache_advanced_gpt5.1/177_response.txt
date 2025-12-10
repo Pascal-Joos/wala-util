@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean isZero() {
+      int[] localBits = bits;
+      int setLength = localBits.length;
+      for (int i = setLength - 1; i >= 0; ) {
+        if (localBits[i] != 0) return false;
+        i--;
+      }
+      return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

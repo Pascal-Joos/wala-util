@@ -1,0 +1,40 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone:
+
+@Override
+public I next() {
+    I result = inner.next();
+    if (!inner.hasNext()) {
+      advanceOuter();
+    }
+    return result;
+}
+
+we know only that:
+- `result` receives the return value of `inner.next()`.
+- There are no null checks on `result`.
+- The later call to `inner.hasNext()` and `advanceOuter()` does not affect the already obtained `result`.
+
+Whether `result` can be null depends entirely on the contract and implementation of:
+- the type of `inner` (likely an Iterator-like object), and
+- the method `inner.next()`.
+
+In Java’s standard `Iterator.next()` contract, returning `null` is allowed unless explicitly prohibited by documentation, annotations (@NotNull, @NonNull), or by the domain logic of `I`. Without seeing:
+- how `inner` is declared and initialized,
+- the actual implementation or documented contract of `inner.next()`,
+- any nullness annotations or invariants on `I`,
+
+we cannot soundly conclude that `inner.next()` will never return null. There is also no defensive null handling in this method to enforce non-nullness.
+
+Thus, based solely on this snippet, whether `inner.next()` (and therefore `result`) can be null is not determinable.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration and type of `inner` (including any implemented interfaces and generic parameters).]]></request>
+        <request><![CDATA[Provide the implementation or documented contract (including any nullability annotations) of `inner.next()`.]]></request>
+        <request><![CDATA[Indicate whether the element type `I` is allowed to be null according to your design (e.g., domain constraints or annotations).]]></request>
+    </requests>
+</response>
+```

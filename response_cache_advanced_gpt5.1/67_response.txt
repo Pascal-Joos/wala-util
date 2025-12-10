@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int getPredNodeCount(E N) {
+    if (!preds.containsKey(N)) {
+      setPredNodes(N);
+    }
+    return Nullability.castToNonnull(preds.get(N)).size();
+  }
+  ```
+    ]]>
+  </code>
+</response>

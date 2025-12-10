@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void foreach(IntSetAction action) {
+    if (action == null) {
+      throw new IllegalArgumentException("null action");
+    }
+    if (sparsePart == null) {
+      return;
+    }
+    sparsePart.foreach(action);
+    if (densePart != null) {
+      for (int b = densePart.nextSetBit(0); b != -1; b = densePart.nextSetBit(b + 1)) {
+        action.act(b);
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

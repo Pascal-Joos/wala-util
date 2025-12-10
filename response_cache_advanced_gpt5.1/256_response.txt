@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void foreach(IntSetAction action) {
+    if (secondaryImpl == null) {
+      throw new IllegalArgumentException("secondaryImpl == null");
+    }
+    final Set<Integer> bits = HashSetFactory.make();
+    primaryImpl.foreach(
+        x -> {
+          assert !bits.contains(x);
+          bits.add(x);
+        });
+    secondaryImpl.foreach(
+        x -> {
+          assert bits.contains(x);
+          bits.remove(x);
+        });
+    assert bits.isEmpty();
+
+    primaryImpl.foreach(action);
+  }
+  ```
+    ]]>
+  </code>
+</response>

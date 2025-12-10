@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public IntSet intersection(IntSet that) {
+    if (that instanceof DebuggingMutableIntSet) {
+      DebuggingMutableIntSet db = (DebuggingMutableIntSet) that;
+      if (secondaryImpl == null) {
+        throw new IllegalArgumentException("secondaryImpl == null");
+      }
+      IntSet ppr = primaryImpl.intersection(db.primaryImpl);
+      IntSet ssr = secondaryImpl.intersection(db.secondaryImpl);
+
+      assert ppr.sameValue(ssr);
+
+      return ppr;
+    } else {
+      Assertions.UNREACHABLE();
+      return null;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

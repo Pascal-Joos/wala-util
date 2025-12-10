@@ -1,0 +1,40 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+ public static MutableIntSet makeMutableCopy( IntSet set)
+      throws IllegalArgumentException, UnimplementedError {
+    if (set == null) {
+      throw new IllegalArgumentException("set == null");
+    }
+    if (set instanceof SparseIntSet) {
+      return MutableSparseIntSet.make(set);
+    } else if (set instanceof BitVectorIntSet) {
+      return new BitVectorIntSet(set);
+    } else if (set instanceof BimodalMutableIntSet) {
+      return BimodalMutableIntSet.makeCopy(set);
+    } else if (set instanceof MutableSharedBitVectorIntSet) {
+      return new MutableSharedBitVectorIntSet((MutableSharedBitVectorIntSet) set);
+    } else if (set instanceof SemiSparseMutableIntSet) {
+      return new SemiSparseMutableIntSet((SemiSparseMutableIntSet) set);
+    } else if (set instanceof DebuggingMutableIntSet) {
+      DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
+      MutableIntSet pCopy = makeMutableCopy(db.primaryImpl);
+      MutableIntSet sCopy = makeMutableCopy(db.secondaryImpl);
+
+      assert pCopy.sameValue(db.primaryImpl);
+      assert sCopy.sameValue(db.secondaryImpl);
+      assert pCopy.sameValue(sCopy);
+
+      return new DebuggingMutableIntSet(pCopy, sCopy);
+    } else if (set instanceof EmptyIntSet) {
+      return IntSetUtil.make();
+    } else {
+      Assertions.UNREACHABLE(set.getClass().toString());
+      return null;
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

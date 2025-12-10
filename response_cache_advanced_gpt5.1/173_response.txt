@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+      public final boolean sameBits(BitVector B) {
+        if (B == null || B.bits == null || bits == null) {
+          throw new IllegalArgumentException("null B");
+        }
+        if (this == B) { // should help alias analysis
+          return true;
+        }
+        int n = Math.min(bits.length, B.bits.length);
+        if (bits.length > B.bits.length) {
+          for (int i = n; i < bits.length; i++) {
+            if (bits[i] != 0) return false;
+          }
+        } else if (B.bits.length > bits.length) {
+          for (int i = n; i < B.bits.length; i++) {
+            if (B.bits[i] != 0) return false;
+          }
+        }
+        for (int i = n - 1; i >= 0; ) {
+          if (bits[i] != B.bits[i]) {
+            return false;
+          }
+          i--;
+        }
+        return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

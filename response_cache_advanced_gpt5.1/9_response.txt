@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public OrdinalSet<S> getReachableSet(Object n) throws IllegalStateException {
+      if (solver == null) {
+        throw new IllegalStateException("must call solve() before calling getReachableSet()");
+      }
+      BitVectorVariable v = solver.getOut(n);
+      assert v != null : "null variable for node " + n;
+      BitVector value = v.getValue();
+      if (value == null) {
+        return OrdinalSet.empty();
+      } else {
+        return new OrdinalSet<>(value, domain);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,32 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean containsAny(SparseLongSet set) throws IllegalArgumentException {
+            if (set == null) {
+              throw new IllegalArgumentException("set == null");
+            }
+            if (elements == null || set.elements == null) {
+              return false;
+            }
+            long[] ar = this.elements;
+            long[] thatElements = set.elements;
+            int thatSize = set.size;
+            int i = 0;
+            for (int j = 0; j < thatSize; j++) {
+              long x = Nullability.castToNonnull(set.elements)[j];
+              while (i < size && Nullability.castToNonnull(elements)[i] < x) {
+                i++;
+              }
+              if (i == size) {
+                return false;
+              } else if (ar[i] == x) {
+                return true;
+              }
+            }
+            return false;
+  }
+  ```
+    ]]>
+  </code>
+</response>

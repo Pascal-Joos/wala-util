@@ -1,0 +1,32 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean sameValue(IntSet that) {
+    if (that == null) {
+      throw new IllegalArgumentException("that is null");
+    }
+    if (size() != that.size()) {
+      return false;
+    }
+    if (densePart != null) {
+      for (int bit = densePart.nextSetBit(0); bit != -1; bit = densePart.nextSetBit(bit + 1)) {
+        if (!that.contains(bit)) {
+          return false;
+        }
+      }
+    }
+    if (sparsePart != null) {
+      for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+        if (!that.contains(bits.next())) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

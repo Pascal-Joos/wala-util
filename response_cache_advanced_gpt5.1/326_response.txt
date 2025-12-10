@@ -1,0 +1,28 @@
+```xml
+<response>
+    <reason><![CDATA[
+The expression in question is `br[bi]` on the line:
+
+    int cmp = (ar[ai] - br[bi]);
+
+Here, `br` is assigned exactly once in this method:
+
+    int[] br = B.elements;
+
+Just before that assignment, the method executes:
+
+    if (A.elements == null || B.elements == null) {
+      return new int[0];
+    }
+
+So if `B.elements` were null, the method would have already returned and the line `int[] br = B.elements;` would never execute. Therefore, on all code paths that reach the `cmp` line, `B.elements` is guaranteed to be non-null, and thus `br` is non-null.
+
+Other checks (`B == null`, `B.isEmpty()`, `A.equals(B)`, `A.sameValue(B)`) may affect whether this part of the method is reached, but they do not change the fact that the explicit `B.elements == null` check guards all paths to the `cmp` statement. No reassignment of `br` occurs afterwards.
+
+The index `bi` may or may not be in range at runtime (which could cause `ArrayIndexOutOfBoundsException`), but that does not affect nullability: `br` itself cannot be null when evaluated at `br[bi]`.
+
+Therefore, `br` cannot be null at that line.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

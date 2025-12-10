@@ -1,0 +1,46 @@
+```xml
+<response>
+    <reason><![CDATA[
+The expression in question is `elements[i]` inside:
+
+for (int i = 0; i < size; i++) action.act(elements[i]);
+
+There are two distinct nullability questions here:
+
+1) Can the *array reference* `elements` be null at this call site?
+2) Can an *individual array element* `elements[i]` be null?
+
+From the provided method:
+
+@Override
+public void foreach(IntSetAction action) {
+  if (action == null) {
+    throw new IllegalArgumentException("null action");
+  }
+  if (elements != null) {
+    for (int i = 0; i < size; i++) action.act(elements[i]);
+  }
+}
+
+- The array reference `elements` is explicitly checked: `if (elements != null) { ... }`.
+- The `for` loop that calls `action.act(elements[i])` is executed only when `elements` is known to be non-null.
+- Therefore, at the point of the expression in question, the array reference `elements` itself cannot be null along this control path.
+
+However, nothing in the provided code guarantees that individual entries `elements[i]` are non-null:
+- We do not see how `elements` is created or populated.
+- We do not see any invariant or contract (e.g., documentation or annotations) stating that `elements` is a primitive array (like `int[]`) or that all entries are guaranteed non-null if it is an object array (e.g., `Integer[]`).
+- If `elements` were a primitive `int[]`, its entries cannot be null by Java's type system.
+- If `elements` were a reference-typed array (e.g., `Integer[]`, `SomeClass[]`), then some `elements[i]` could be null unless there is additional code elsewhere that prevents this.
+
+Because the type and population logic of `elements` are not shown, we cannot conclusively state that `elements[i]` is non-null. We can only say that the *array reference* is non-null at that point, but the *expression value* `elements[i]` might still be null.
+
+Therefore, with the information given, the nullability of the expression value `elements[i]` cannot be determined with certainty.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[
+Provide the declaration of the field/variable `elements` (its type and initialization) and any class invariants or documentation stating whether it may contain null entries.
+        ]]></request>
+    </requests>
+</response>
+```

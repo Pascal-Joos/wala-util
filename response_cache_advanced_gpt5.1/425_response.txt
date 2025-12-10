@@ -1,0 +1,90 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean addAll(IntSet set) throws IllegalArgumentException {
+      if (set == null) {
+        throw new IllegalArgumentException("set == null");
+      }
+      boolean change = false;
+      if (set instanceof SemiSparseMutableIntSet) {
+        SemiSparseMutableIntSet that = (SemiSparseMutableIntSet) set;
+  
+        if (densePart == null) {
+  
+          // that dense part only
+          if (that.densePart != null) {
+            int oldSize = size();
+            densePart = new OffsetBitVector(that.densePart);
+  
+            if (sparsePart != null) {
+              for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+                int bit = bits.next();
+                if (inDenseRange(bit)) {
+                  densePart.set(bit);
+                }
+              }
+  
+              sparsePart.removeAll(densePart);
+            }
+            if (sparsePart == null) {
+              sparsePart = MutableSparseIntSet.makeEmpty();
+            }
+            sparsePart.addAll(that.sparsePart);
+  
+            change = size() != oldSize;
+  
+            // no dense part
+          } else {
+            if (sparsePart == null) {
+              sparsePart = MutableSparseIntSet.makeEmpty();
+            }
+            change = sparsePart.addAll(that.sparsePart);
+            fixAfterSparseInsert();
+          }
+  
+        } else {
+          // both dense parts
+          if (that.densePart != null) {
+            int oldSize = size();
+  
+            densePart.or(that.densePart);
+  
+            if (sparsePart == null) {
+              sparsePart = MutableSparseIntSet.makeEmpty();
+            }
+            sparsePart.addAll(that.sparsePart);
+  
+            for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+              int bit = bits.next();
+              if (inDenseRange(bit)) {
+                densePart.set(bit);
+              }
+            }
+  
+            sparsePart.removeAll(densePart);
+  
+            change = size() != oldSize;
+  
+            // this dense part only
+          } else {
+            for (IntIterator bs = that.sparsePart.intIterator(); bs.hasNext(); ) {
+              change |= add(bs.next());
+            }
+          }
+        }
+      } else {
+        for (IntIterator bs = set.intIterator(); bs.hasNext(); ) {
+          change |= add(bs.next());
+        }
+      }
+  
+      assert assertDisjoint() : this.toString();
+  
+      return change;
+  }
+  ```
+    ]]>
+  </code>
+</response>

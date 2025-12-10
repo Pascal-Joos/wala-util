@@ -1,0 +1,12 @@
+```xml
+<response>
+    <reason><![CDATA[
+This method, `copyBits(BitVectorBase set)`, behaves like a mutating/utility method that copies state from another instance into this one. There is no indication it is part of a framework-defined lifecycle, a constructor replacement, or a dependency injection / annotation-processor callback that is guaranteed to run exactly once during object setup.
+
+By its name and behavior, it can reasonably be called multiple times to overwrite the `bits` array from different sources, which aligns it more closely with a setter or state-update method. NullAway’s definition explicitly excludes such methods from being considered initializer methods, even if they assign to fields.
+
+Therefore, under NullAway’s definition, `copyBits` should not be treated as an initializer method.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

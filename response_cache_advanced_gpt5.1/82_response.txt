@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+          public boolean hasEdge(E src, E dst) {
+            if (!preds.containsKey(dst)) {
+              setPredNodes(dst);
+            }
+            return Nullability.castToNonnull(preds.get(dst)).contains(src);
+}
+  ```
+    ]]>
+  </code>
+</response>

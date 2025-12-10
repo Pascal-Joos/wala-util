@@ -1,0 +1,128 @@
+```xml
+<response>
+    <reason><![CDATA[
+There are two occurrences of the pattern
+
+    for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+
+in the method, one in each of the last `else` branches of the two top-level cases (`densePart == null` and `densePart != null`). I’ll analyze both; they are structurally identical.
+
+You asked about:
+
+    for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+
+Below is the control flow that must be true to reach *either* of these loops.
+
+---
+
+1. Top-level structure:
+
+The whole method is:
+
+    if (densePart == null) {
+        ... // branch A
+    } else {
+        ... // branch B
+    }
+
+The loop in branch A appears only inside:
+
+    if (densePart == null) {                    // A
+        if (B.densePart == null) {              // A1
+            ...
+        } else {                                // A2: B.densePart != null
+            if (sparsePart == null) {
+                ...
+            } else {                            // A2b: sparsePart != null
+                MutableSparseIntSet C = ...;    // uses sparsePart
+                MutableSparseIntSet tmpSparsePart = MutableSparseIntSet.make(sparsePart);
+                for (IntIterator bits = tmpSparsePart.intIterator(); bits.hasNext(); ) {
+                    ...
+                }
+                sparsePart = C;
+            }
+        }
+    }
+
+Note: in this branch the `for` loop is over `tmpSparsePart.intIterator()`, not `sparsePart.intIterator()`. That `tmpSparsePart` is created via `MutableSparseIntSet.make(sparsePart)` only in the `else` of `if (sparsePart == null)`; i.e., in this branch we *know* `sparsePart != null` before passing it to `make(...)`.
+
+The second instance (branch B) is:
+
+    } else {                                    // B: densePart != null
+        if (B.densePart == null) {
+            ...
+        } else {                                // B2: B.densePart != null
+            densePart.andNot(B.densePart);
+            ...
+            if (sparsePart == null) {
+                ...
+            } else {                            // B2b: sparsePart != null
+                MutableSparseIntSet C = B.sparsePart == null
+                    ? MutableSparseIntSet.make(sparsePart)
+                    : MutableSparseIntSet.diff(
+                          MutableSparseIntSet.make(sparsePart),
+                          MutableSparseIntSet.make(B.sparsePart));
+                MutableSparseIntSet tmpSparsePart = MutableSparseIntSet.make(sparsePart);
+                for (IntIterator bits = tmpSparsePart.intIterator(); bits.hasNext(); ) {
+                    ...
+                }
+                sparsePart = C;
+            }
+        }
+    }
+
+Again, in branch B, the loop is over `tmpSparsePart.intIterator()`, not `sparsePart.intIterator()`, and `tmpSparsePart` is only created in the `else` branch where `sparsePart != null`.
+
+---
+
+2. What must be true to reach the loop?
+
+In both A2b and B2b:
+
+- The code explicitly checks `if (sparsePart == null) { ... } else { ... }`
+- The `for` loop is inside the `else`, so to reach the loop we must be in the `else` branch, i.e., we have `sparsePart != null` on entry to that block.
+- No assignments to `sparsePart` occur between the `if (sparsePart == null)` and the creation of `tmpSparsePart`; instead we immediately call `MutableSparseIntSet.make(sparsePart)` using the current `sparsePart`.
+
+Therefore, at the point where `MutableSparseIntSet.make(sparsePart)` is called, `sparsePart` is guaranteed non-null by control flow.
+
+---
+
+3. Could `MutableSparseIntSet.make(...)` return null?
+
+Your question is about `sparsePart` in the loop header, but the loop in the pasted code actually uses `tmpSparsePart`:
+
+    MutableSparseIntSet tmpSparsePart = MutableSparseIntSet.make(sparsePart);
+    for (IntIterator bits = tmpSparsePart.intIterator(); bits.hasNext(); ) {
+
+So the potentially-null expression at the loop site is `tmpSparsePart`, not `sparsePart`. For `tmpSparsePart.intIterator()` to throw a `NullPointerException`, `MutableSparseIntSet.make(sparsePart)` would have to return `null`.
+
+From the semantics typically implied by a factory method `MutableSparseIntSet.make(...)` (and from normal collection/set API design), it is expected to return a valid set object given a non-null argument; returning `null` would be very unusual and would violate typical contracts.
+
+Because:
+
+- The code does not check `tmpSparsePart` for null.
+- The code consistently assumes `MutableSparseIntSet.make(...)` returns a non-null `MutableSparseIntSet` throughout the method (it’s used many times this way).
+- There is no indication from this method that `make(...)` can return null.
+
+it is reasonable to treat `MutableSparseIntSet.make(...)` as non-null-returning when its argument is non-null.
+
+Under that assumption:
+
+- `sparsePart` is guaranteed non-null before calling `make(sparsePart)`.
+- `tmpSparsePart` is therefore treated as non-null.
+- Thus `tmpSparsePart.intIterator()` is called on a non-null receiver.
+
+---
+
+4. Directly answering your question:
+
+If you mean “can the *field* `sparsePart` itself be null at the point that leads to the loop?”, the answer is: all control-flow paths that reach the `for` loop first pass through `if (sparsePart == null) { ... } else { ... }`, and the loop is inside the `else` block. Hence, on any path that reaches that loop, `sparsePart` is *known* to be non-null.
+
+If you literally mean “can the expression in the loop header `sparsePart.intIterator()` be null?”, the actual loop in this code is over `tmpSparsePart.intIterator()`, not `sparsePart.intIterator()`. Given the above reasoning and assuming the usual non-null contract of factory methods like `MutableSparseIntSet.make(...)`, the receiver of `.intIterator()` is not null.
+
+Therefore, under normal, reasonable assumptions about `MutableSparseIntSet.make(...)`, the expression at the loop site cannot be null.
+
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

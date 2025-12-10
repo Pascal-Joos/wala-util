@@ -1,0 +1,64 @@
+```xml
+<response>
+    <reason><![CDATA[
+We need to determine whether `ar` might be null at the point of:
+
+    long cmp = (ar[ai] - that[bi]);
+
+Relevant code sections:
+
+1. Initial null check and early initialization:
+
+    if (elements == null) {
+      if (thatSize == 0) {
+        return false;
+      }
+      elements = new long[thatSize];
+      System.arraycopy(that, 0, elements, 0, thatSize);
+      size = thatSize;
+      return true;
+    }
+
+If `elements` is null when the method is entered, either:
+- `thatSize == 0`: method returns immediately (no further code executes), or
+- `thatSize != 0`: `elements` is initialized to a new non-null `long[]` and the method returns immediately.
+
+In *both* cases where `elements` starts as null, execution never reaches the line containing `long cmp = (ar[ai] - that[bi]);`.
+
+2. Code that runs when `elements` is not null:
+
+    long[] ar = this.elements;
+
+This line is executed only if the initial `if (elements == null)` block is not taken. That implies `elements != null` at this point. Since `this.elements` is a `long[]`, and has not been reassigned within this method before this point, the assignment:
+
+    long[] ar = this.elements;
+
+copies a *non-null* reference into `ar`.
+
+From this point until the `cmp` line:
+
+- There is no reassignment to `ar`.
+- The only array-variable that may be null is `cr`, which is initialized as `null` and later conditionally assigned, but `cr` is unrelated to `ar` at the `cmp` line.
+- No code path sets `this.elements` or `ar` to null before the `cmp` line.
+
+3. Control flow to the `cmp` line:
+
+The `cmp` expression appears in the `while` loop:
+
+    while (ai < al && bi < thatSize) {
+      long cmp = (ar[ai] - that[bi]);
+      ...
+
+For this loop to start, we've already passed the initial `if (elements == null)` with elements non-null, so `ar` is guaranteed to be a non-null reference created from `this.elements`.
+
+Therefore, under all possible control-flow paths that reach:
+
+    long cmp = (ar[ai] - that[bi]);
+
+`ar` is guaranteed to be non-null.
+
+(Out-of-bounds issues are outside the question; the question is only about nullness of `ar`.)
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

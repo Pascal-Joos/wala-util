@@ -1,0 +1,82 @@
+<response>
+  <reason><![CDATA[
+At the specific call site `succs.get(N)` inside `getSuccNodeCount(E N)`:
+
+```java
+public int getSuccNodeCount(E N) {
+  if (!succs.containsKey(N)) {
+    setSuccNodes(N);
+  }
+  return succs.get(N).size();
+}
+```
+
+the relevant behavior is:
+
+1. If `succs` already contains `N`, then `succs.get(N)` returns whatever was previously put there. That value was (at some earlier time) produced by:
+   ```java
+   succs.put(N, getConnected(N, G::getSuccNodes));
+   ```
+   i.e., the result of `getConnected(...)`.
+
+2. If `succs` does not contain `N`, then `setSuccNodes(N)` is invoked:
+   ```java
+   private void setSuccNodes(E N) {
+     succs.put(N, getConnected(N, G::getSuccNodes));
+   }
+   ```
+   Immediately afterward, `succs.get(N)` returns exactly the value just stored: again, the result of `getConnected(...)`.
+
+3. Therefore, at this call site, `succs.get(N)` is always the return value of `getConnected(...)` for some argument.
+
+We must therefore determine whether `getConnected(...)` can return `null`:
+
+```java
+private Set<E> getConnected(E inst, Function<E, Iterator<? extends E>> fconnected) {
+  Set<E> result = new LinkedHashSet<>();
+  Set<E> seenInsts = new HashSet<>();
+  Set<E> newInsts = Iterator2Collection.toSet(fconnected.apply(inst));
+  while (!newInsts.isEmpty()) {
+    Set<E> nextInsts = new HashSet<>();
+    for (E s : newInsts) {
+      if (seenInsts.add(s)) {
+        if (nodeManager.containsNode(s)) {
+          result.add(s);
+        } else {
+          Iterator<? extends E> ss = fconnected.apply(s);
+          while (ss.hasNext()) {
+            E n = ss.next();
+            if (!seenInsts.contains(n)) {
+              nextInsts.add(n);
+            }
+          }
+        }
+      }
+    }
+    newInsts = nextInsts;
+  }
+  return result;
+}
+```
+
+Key observations:
+
+- `result` is created as a new `LinkedHashSet<>()` and is never assigned to any other reference or set to `null`.
+- The method always ends with `return result;` and has no other `return` statements.
+- No conditional branches assign `result` to `null` or replace it with another variable whose value might be `null`.
+- Even if:
+  - `fconnected.apply(inst)` returns `null`, or
+  - `Iterator2Collection.toSet(...)` or `fconnected.apply(s)` throws an exception,  
+  the behavior would be an exception, not a `null` return.
+- The only possible return value along all normal (non-exceptional) paths is the non-null `LinkedHashSet` instance created at the beginning.
+
+Thus, for any `inst` and any `fconnected`, whenever `getConnected(...)` returns normally, it returns a non-null `Set<E>`.
+
+Since `succs.put(N, getConnected(...))` always stores this non-null `Set` when it executes successfully, and `getSuccNodeCount` only calls `.size()` after ensuring `succs` has a mapping for `N`, the value retrieved by `succs.get(N)` at this call site cannot be `null` under normal execution.
+
+Any scenario where `getConnected(...)` misbehaves (e.g., `Iterator2Collection.toSet` or `fconnected.apply(...)` returns/uses `null` internally) would manifest as an exception, not as a `null` result being put into `succs`.
+
+Therefore, the specific invocation `succs.get(N)` in `getSuccNodeCount` cannot evaluate to `null` on any normal return path.
+]]></reason>
+  <value>NO</value>
+</response>

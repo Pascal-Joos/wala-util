@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean addAll(IntSet B) {
+      MutableIntSetFactory<?> factory = IntSetUtil.getDefaultIntSetFactory();
+      if (factory == null) {
+        return (B.size() > 0);
+      }
+      if (V == null) {
+        V = factory.makeCopy(B);
+        return (B.size() > 0);
+      } else {
+        boolean result = V.addAll(B);
+        return result;
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

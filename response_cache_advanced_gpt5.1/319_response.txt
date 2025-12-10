@@ -1,0 +1,44 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void copySet(IntSet set) throws IllegalArgumentException {
+    if (set == null) {
+      throw new IllegalArgumentException("set == null");
+    }
+    if (set instanceof BitVectorIntSet) {
+      BitVectorIntSet S = (BitVectorIntSet) set;
+      bitVector = new BitVector(S.bitVector);
+      populationCount = S.populationCount;
+    } else if (set instanceof MutableSharedBitVectorIntSet) {
+      BitVectorIntSet S = ((MutableSharedBitVectorIntSet) set).makeDenseCopy();
+      bitVector = new BitVector(S.bitVector);
+      populationCount = S.populationCount;
+    } else if (set instanceof SparseIntSet) {
+      SparseIntSet s = (SparseIntSet) set;
+      if (s.size == 0 || s.elements == null) {
+        populationCount = 0;
+        bitVector = new BitVector(0);
+      } else {
+        bitVector = new BitVector(s.max());
+        populationCount = s.size;
+        for (int i = 0; i < s.size; i++) {
+          bitVector.set(s.elements[i]);
+        }
+      }
+    } else if (set instanceof BimodalMutableIntSet) {
+      IntSet backing = ((BimodalMutableIntSet) set).getBackingStore();
+      copySet(backing);
+    } else {
+      bitVector.clearAll();
+      populationCount = set.size();
+      for (IntIterator it = set.intIterator(); it.hasNext(); ) {
+        bitVector.set(it.next());
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

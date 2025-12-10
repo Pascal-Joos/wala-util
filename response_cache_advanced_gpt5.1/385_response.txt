@@ -1,0 +1,43 @@
+```xml
+<response>
+    <reason><![CDATA[
+We are checking whether `result.elements` can be null at the assignment:
+
+    result.elements[k] = j;
+
+All code paths to that line go through this sequence:
+
+1. At the top, there is a guard clause:
+       if (s == null || s.elements == null) {
+         return SparseLongSet.singleton(j);
+       }
+   So if we reach any `result.elements[...] = ...` line, we already know `s != null` and `s.elements != null`.
+
+2. `result` is created as:
+       SparseLongSet result = new SparseLongSet(s.size + 1);
+
+   For `result.elements` to be null, the constructor `SparseLongSet(int capacity)` would have to either:
+   - not initialize `elements`, or
+   - explicitly set `elements` to null.
+
+   In typical sparse-set implementations (and matching the subsequent use), this constructor is expected to allocate an internal array of length `capacity`, e.g.:
+       this.elements = new int[capacity];
+
+   The later code assumes that `result.elements.length` is valid and that writes into indices `< result.size` are safe:
+       while (k < s.elements.length && s.elements[k] < j) {
+         result.elements[k++] = s.elements[m++];
+       }
+       ...
+       while (k < result.size) {
+         result.elements[k++] = s.elements[m++];
+       }
+
+   If `result.elements` could be null, *every* access to `result.elements[...]` and `result.elements.length` would risk immediate `NullPointerException`. The method has no internal null check for `result.elements`, so its correctness requires the class invariant that the constructor always initializes `elements` to a non-null array.
+
+3. There are no assignments that modify `result.elements` after construction; thus its nullability is determined solely by the constructor. Since this method’s logic relies on `result.elements` being a valid array and there is no alternative path reassigning it or setting it to null, under the standard and necessary contract of `SparseLongSet(int)` the field is non-null once `result` is created.
+
+Given a normal, consistent implementation of `SparseLongSet` where the constructor allocates the backing array (which is required for this code to function at all), `result.elements` cannot be null at the line `result.elements[k] = j;`.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

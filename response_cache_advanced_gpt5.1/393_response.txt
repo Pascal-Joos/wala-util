@@ -1,0 +1,32 @@
+```xml
+<response>
+    <reason><![CDATA[
+The potentially null expression in the line
+
+    long cmp = (ar[ai] - that[bi]);
+
+is the variable `ar`, which is assigned as:
+
+    long[] ar = this.elements;
+
+The method begins with:
+
+    if (elements == null) {
+        return false;
+    }
+
+This is a null-check on `elements` before `ar` is initialized. Control can reach the line `long cmp = (ar[ai] - that[bi]);` only if `elements != null`; otherwise, the method has already returned.
+
+From that point onward, there are no assignments that could change `ar`:
+
+- `ar` is a local variable, assigned exactly once: `long[] ar = this.elements;`
+- It is never reassigned.
+- `this.elements` may be changed later in the method, but that does not affect the already-initialized local reference `ar`.
+- Local array variable `ar` thus continues to refer to a non-null array for the entire duration of the method.
+
+Therefore, on all code paths where the expression `ar[ai]` is evaluated, `ar` is guaranteed non-null, so the expression cannot be null (though `ai` index correctness is a separate concern, but that affects bounds, not nullity).
+
+Hence, the expression `ar` at that line cannot be null.]]></reason>
+    <value>NO</value>
+</response>
+```

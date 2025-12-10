@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public final void xor(BitVector set) {
+    if (set == null) {
+      throw new IllegalArgumentException("set is null");
+    }
+    ensureCapacity(set);
+    if (bits == null) {
+      bits = new int[0];
+    }
+    int[] otherBits = set.bits;
+    int n = Math.min(bits.length, otherBits.length);
+    for (int i = n - 1; i >= 0; ) {
+      bits[i] ^= otherBits[i];
+      i--;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

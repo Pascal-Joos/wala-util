@@ -1,0 +1,30 @@
+```xml
+<response>
+    <reason><![CDATA[
+Inside this method, the only relevant check on `secondaryImpl` is:
+
+    if (secondaryImpl == null) {
+        throw new IllegalArgumentException("secondaryImpl == null");
+    }
+
+This check ensures that if `secondaryImpl` is null at method entry, the method throws an exception and exits immediately. The `secondaryImpl.foreach(...)` call is *after* this null check, and there are no assignments to `secondaryImpl` between the check and the call.
+
+Therefore, along any code path that actually reaches:
+
+    secondaryImpl.foreach(
+        x -> {
+            assert bits.contains(x);
+            bits.remove(x);
+        });
+
+`secondaryImpl` cannot be null. If it were null, control flow would have been terminated earlier by the `IllegalArgumentException`.
+
+This conclusion assumes:
+- `secondaryImpl` is not being modified concurrently by other threads between the null check and the `foreach` call.
+- There is no unusual behavior such as overriding of field access or bytecode manipulation that could change `secondaryImpl` between these points.
+
+Under normal Java semantics and single-threaded or properly synchronized usage, `secondaryImpl` is guaranteed to be non-null at the call site.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,77 @@
+```xml
+<response>
+    <reason><![CDATA[
+We are asked about the left‑hand side expression `elements` in the assignment:
+
+    elements[0] = that.elements[0];
+
+Specifically: can `elements` be null at that point?
+
+We must analyze all control paths that reach this line.
+
+Relevant excerpt (simplified around the line):
+
+    if (that.size == 1) {
+      if (that.elements != null && contains(that.elements[0])) {
+        if (size > INITIAL_NONEMPTY_SIZE) {
+          elements = new long[INITIAL_NONEMPTY_SIZE];
+        } else if (elements == null) {
+          elements = new long[INITIAL_NONEMPTY_SIZE];
+        }
+        size = 1;
+        elements[0] = that.elements[0];
+        return;
+      } else {
+        elements = null;
+        size = 0;
+        return;
+      }
+    }
+
+We only reach `elements[0] = that.elements[0];` if:
+
+1. `that.size == 1`  
+2. The condition `that.elements != null && contains(that.elements[0])` is true.
+
+Given the `&&`, both sides must evaluate to true:
+
+- `that.elements != null` is true, so `that.elements` is non‑null at the line.
+- `contains(that.elements[0])` must return true. Regardless of the internal implementation of `contains`, for this analysis we only need to note that execution proceeds into the `if` body only when this entire condition is true.
+
+Inside that `if` body, before the assignment, we execute:
+
+    if (size > INITIAL_NONEMPTY_SIZE) {
+      elements = new long[INITIAL_NONEMPTY_SIZE];
+    } else if (elements == null) {
+      elements = new long[INITIAL_NONEMPTY_SIZE];
+    }
+    size = 1;
+    elements[0] = that.elements[0];
+
+There is no control flow that skips both the `if` and the `else if` and still allows `elements` to be null:
+
+- Case A: `size > INITIAL_NONEMPTY_SIZE` is true  
+  → `elements = new long[INITIAL_NONEMPTY_SIZE];`  
+  → `elements` is non‑null.
+
+- Case B: `size > INITIAL_NONEMPTY_SIZE` is false, but `elements == null` is true  
+  → `elements = new long[INITIAL_NONEMPTY_SIZE];`  
+  → `elements` is non‑null.
+
+- Case C: `size > INITIAL_NONEMPTY_SIZE` is false, and `elements == null` is false  
+  → both conditions fail, so the body of the `if/else if` does nothing to `elements`.  
+  → But in this case `elements == null` is false, so `elements` was already non‑null when we entered this block and remains non‑null.
+
+Thus, after the `if/else if` block, in all three cases, `elements` is guaranteed non‑null.
+
+There are no intervening statements that can assign `elements` to null between the `if/else if` and the line in question, so at the line
+
+    elements[0] = that.elements[0];
+
+the field `elements` cannot be null along any path that reaches it.
+
+Note: other branches of the method may set `elements = null`, but those branches all `return` before this line and thus do not affect its safety.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

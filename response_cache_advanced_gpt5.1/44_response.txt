@@ -1,0 +1,35 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int getRelatedCount(int x) throws IllegalArgumentException {
+    if (x < 0) {
+      throw new IllegalArgumentException("x must be greater than zero");
+    }
+    if (!anyRelated(x)) {
+      return 0;
+    } else {
+      if (usingDelegate(x)) {
+        IntSet delegate = getDelegate(x);
+        if (delegate == null) {
+          return 0;
+        } else {
+          return delegate.size();
+        }
+      } else {
+        int result = 0;
+        for (IntVector element : smallStore) {
+          if (element.get(x) == EMPTY_CODE) {
+            break;
+          }
+          result++;
+        }
+        return result;
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

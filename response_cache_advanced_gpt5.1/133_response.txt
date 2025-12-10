@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public OffsetBitVector(OffsetBitVector s) {
+      if (s == null) {
+        throw new IllegalArgumentException("s is null");
+      }
+      offset = s.offset;
+      if (s.bits == null) {
+        bits = new int[0];
+      } else {
+        bits = s.bits.clone();
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

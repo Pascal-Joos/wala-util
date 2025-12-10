@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean containsAny(LongSet set) {
+    if (set == null) {
+      throw new IllegalArgumentException("set == null");
+    }
+    if (set instanceof SparseLongSet) {
+      return containsAny((SparseLongSet) set);
+    } else {
+      if (elements == null) {
+        return false;
+      }
+      for (int i = 0; i < size; i++) {
+        if (set.contains(elements[i])) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>
