@@ -14,6 +14,7 @@ import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.debug.Assertions;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -594,7 +595,7 @@ public class HeapTracer {
       public int compare(Object o1, Object o2) {
         Integer i1 = sizeCount.get(o1);
         Integer i2 = sizeCount.get(o2);
-        return i2 - i1;
+        return Nullability.castToNonnull(i2) - i1;
       }
     }
 
