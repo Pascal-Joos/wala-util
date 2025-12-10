@@ -11,6 +11,7 @@
 package com.ibm.wala.util.intset;
 
 import java.io.Serializable;
+import javax.annotation.Nullable;
 
 /** Set of integers; not necessary mutable TODO: extract a smaller interface? */
 public interface IntSet extends Serializable {
@@ -23,14 +24,14 @@ public interface IntSet extends Serializable {
   /**
    * @return true iff this set contains integer i
    */
-  public boolean containsAny(IntSet set);
+  public boolean containsAny(@Nullable IntSet set);
 
   /**
    * This implementation must not despoil the original value of "this"
    *
    * @return a new IntSet which is the intersection of this and that
    */
-  public IntSet intersection(IntSet that);
+  public IntSet intersection(@Nullable IntSet that);
 
   /**
    * This implementation must not despoil the original value of "this"
@@ -68,10 +69,10 @@ public interface IntSet extends Serializable {
   /**
    * @return true iff {@code this} has the same value as {@code that}.
    */
-  public boolean sameValue(IntSet that);
+  public boolean sameValue(@Nullable IntSet that);
 
   /**
    * @return true iff {@code this} is a subset of {@code that}.
    */
-  public boolean isSubset(IntSet that);
+  public boolean isSubset(@Nullable IntSet that);
 }

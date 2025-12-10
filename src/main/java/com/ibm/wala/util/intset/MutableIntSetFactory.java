@@ -10,13 +10,16 @@
  */
 package com.ibm.wala.util.intset;
 
+import javax.annotation.Nullable;
+
 /** An object that creates some flavor of mutable int set. */
 public interface MutableIntSetFactory<T extends MutableIntSet> {
   public T make(int[] set);
 
   public T parse(String string);
 
-  public T makeCopy(IntSet x);
+  @Nullable
+  public T makeCopy(@Nullable IntSet x);
 
   public T make();
 }
