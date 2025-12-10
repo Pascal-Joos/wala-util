@@ -50,6 +50,9 @@ public abstract class ComposedIterator<O, I> implements Iterator<I> {
 
   @Override
   public I next() {
+    if (inner == null) {
+      advanceOuter();
+    }
     I result = inner.next();
     if (!inner.hasNext()) {
       advanceOuter();
