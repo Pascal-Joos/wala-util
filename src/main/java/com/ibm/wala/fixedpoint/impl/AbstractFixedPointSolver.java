@@ -24,6 +24,7 @@ import com.ibm.wala.util.MonitorUtil.IProgressMonitor;
 import com.ibm.wala.util.collections.Iterator2Iterable;
 import com.ibm.wala.util.debug.VerboseAction;
 import com.ibm.wala.util.graph.INodeWithNumber;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -317,7 +318,7 @@ public abstract class AbstractFixedPointSolver<T extends IVariable<T>>
       throw new IllegalArgumentException("operator is null");
     }
     // add to the list of graph
-    UnaryStatement<T> s = operator.makeEquation(lhs, rhs);
+    UnaryStatement<T> s = operator.makeEquation(lhs, Nullability.castToNonnull(rhs));
     if (getFixedPointSystem().containsStatement(s)) {
       return false;
     }
