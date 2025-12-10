@@ -15,6 +15,7 @@ import com.ibm.wala.util.collections.Iterator2Iterable;
 import com.ibm.wala.util.debug.UnimplementedError;
 import com.ibm.wala.util.graph.Graph;
 import com.uber.nullaway.annotations.Initializer;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -31,7 +32,7 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
   private static final long serialVersionUID = 8440061593631309429L;
 
   /** the current next element in finishing time order */
-  private T theNextElement;
+  @Nullable private T theNextElement;
 
   /** an enumeration of all nodes to search from */
   private Iterator<? extends T> roots;
@@ -94,8 +95,8 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
     }
     if (empty()) {
       T v = theNextElement;
-      setPendingChildren(v, getConnected(v));
-      push(v);
+      setPendingChildren(Nullability.castToNonnull(v), getConnected(Nullability.castToNonnull(v)));
+      push(Nullability.castToNonnull(v));
     }
     recurse:
     while (!empty()) {
@@ -115,7 +116,8 @@ public abstract class DFSFinishTimeIterator<T> extends ArrayList<T> implements I
       setPendingChildren(v, (Iterator<T>) EmptyIterator.instance());
 
       // no more children to visit: finished this vertex
-      while (getPendingChildren(theNextElement) != null && roots.hasNext()) {
+      while (getPendingChildren(Nullability.castToNonnull(theNextElement)) != null
+          && roots.hasNext()) {
         theNextElement = roots.next();
       }
 
