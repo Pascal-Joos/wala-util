@@ -148,7 +148,6 @@ public class BasicOrderedMultiGraph<T> implements OrderedMultiGraph<T> {
     delegate.removeOutgoingEdges(node);
   }
 
-  @Nullable
   @Override
   public T getSuccessor(T node, int i) throws IllegalArgumentException {
     SimpleVector<T> s = successorEdges.get(node);
