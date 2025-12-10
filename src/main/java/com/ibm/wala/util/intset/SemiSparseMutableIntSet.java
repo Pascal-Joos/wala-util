@@ -340,12 +340,12 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
 
       @Override
       public boolean hasNext() {
-        return densePart.nextSetBit(i + 1) != -1;
+        return densePart != null && densePart.nextSetBit(i + 1) != -1;
       }
 
       @Override
       public int next() {
-        int next = densePart.nextSetBit(i + 1);
+        int next = densePart != null ? densePart.nextSetBit(i + 1) : -1;
         i = next;
         return next;
       }
@@ -490,7 +490,7 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
   }
 
   private boolean inDenseRange(int i) {
-    return densePart.getOffset() <= i && densePart.length() > i;
+    return densePart != null && densePart.getOffset() <= i && densePart.length() > i;
   }
 
   /**
