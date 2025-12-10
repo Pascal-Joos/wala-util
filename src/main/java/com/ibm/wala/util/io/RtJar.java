@@ -50,8 +50,6 @@ public class RtJar {
                   }
                 }));
 
-    if (rt != null) {
-      System.err.println(rt.getName());
-    }
+    System.err.println(rt.getName());
   }
 }
