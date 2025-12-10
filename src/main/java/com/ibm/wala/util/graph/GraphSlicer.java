@@ -17,6 +17,7 @@ import com.ibm.wala.util.collections.IteratorUtil;
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.graph.impl.GraphInverter;
 import com.ibm.wala.util.graph.traverse.DFS;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -272,7 +273,7 @@ public class GraphSlicer {
             if (!preds.containsKey(N)) {
               setPredNodes(N);
             }
-            return preds.get(N).iterator();
+            return Nullability.castToNonnull(preds.get(N)).iterator();
           }
 
           @Override
