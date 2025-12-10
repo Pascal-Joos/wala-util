@@ -13,7 +13,6 @@ package com.ibm.wala.util.intset;
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 /** Utilities for dealing with {@link IntSet}s */
 public class IntSetUtil {
@@ -70,7 +69,7 @@ public class IntSetUtil {
    * @throws UnimplementedError if we haven't supported the set type yet.
    * @throws IllegalArgumentException if set == null
    */
-  public static MutableIntSet makeMutableCopy(@Nullable IntSet set)
+  public static MutableIntSet makeMutableCopy(IntSet set)
       throws IllegalArgumentException, UnimplementedError {
     if (set == null) {
       throw new IllegalArgumentException("set == null");

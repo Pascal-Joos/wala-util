@@ -11,20 +11,18 @@
 
 package com.ibm.wala.util.intset;
 
-import javax.annotation.Nullable;
-
 /** An {@link IntSet} that can be changed. */
 public interface MutableIntSet extends IntSet {
 
   /** Set the value of this to be the same as the value of set */
-  void copySet(@Nullable IntSet set);
+  void copySet(IntSet set);
 
   /**
    * Add all members of set to this.
    *
    * @return true iff the value of this changes.
    */
-  boolean addAll(@Nullable IntSet set);
+  boolean addAll(IntSet set);
 
   /**
    * Add an integer value to this set.
@@ -46,8 +44,8 @@ public interface MutableIntSet extends IntSet {
   void clear();
 
   /** Intersect this with another set. */
-  void intersectWith(@Nullable IntSet set);
+  void intersectWith(IntSet set);
 
   /** */
-  boolean addAllInIntersection(@Nullable IntSet other, @Nullable IntSet filter);
+  boolean addAllInIntersection(IntSet other, IntSet filter);
 }

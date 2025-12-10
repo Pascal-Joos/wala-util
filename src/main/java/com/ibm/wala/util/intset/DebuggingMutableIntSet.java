@@ -12,7 +12,6 @@ package com.ibm.wala.util.intset;
 
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.debug.Assertions;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -27,9 +26,9 @@ class DebuggingMutableIntSet implements MutableIntSet {
 
   final MutableIntSet primaryImpl;
 
-  @Nullable final MutableIntSet secondaryImpl;
+  final MutableIntSet secondaryImpl;
 
-  DebuggingMutableIntSet(@Nullable MutableIntSet p, MutableIntSet s) {
+  DebuggingMutableIntSet(MutableIntSet p, MutableIntSet s) {
     primaryImpl = p;
     secondaryImpl = s;
   }
@@ -41,7 +40,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
   @Override
   public void clear() {
     primaryImpl.clear();
-    assert primaryImpl.sameValue(secondaryImpl);
     secondaryImpl.clear();
   }
 
@@ -57,7 +55,17 @@ class DebuggingMutableIntSet implements MutableIntSet {
   /** */
   @Override
   public boolean isEmpty() {
-    assert primaryImpl.isEmpty() == secondaryImpl.isEmpty();
+    if (primaryImpl.isEmpty() != secondaryImpl.isEmpty()) {
+      System.err.println(
+          primaryImpl
+              + ".isEmpty() = "
+              + primaryImpl.isEmpty()
+              + " and "
+              + secondaryImpl
+              + ".isEmpty() = "
+              + secondaryImpl.isEmpty());
+      Assertions.UNREACHABLE();
+    }
 
     return primaryImpl.isEmpty();
   }
@@ -65,10 +73,7 @@ class DebuggingMutableIntSet implements MutableIntSet {
   /** */
   @Override
   public int size() {
-    if (secondaryImpl == null) {
-      throw new IllegalArgumentException("secondaryImpl == null");
-    }
-    if (primaryImpl.size() != Nullability.castToNonnull(secondaryImpl).size()) {
+    if (primaryImpl.size() != secondaryImpl.size()) {
       assert primaryImpl.size() == secondaryImpl.size()
           : "size "
               + primaryImpl.size()
@@ -97,9 +102,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
    */
   @Override
   public boolean add(int i) {
-    assert primaryImpl != null;
-    assert secondaryImpl != null;
-
     boolean pr = primaryImpl.add(i);
     boolean sr = secondaryImpl.add(i);
 
@@ -125,11 +127,8 @@ class DebuggingMutableIntSet implements MutableIntSet {
   /** Remove an integer from this set. */
   @Override
   public boolean remove(int i) {
-    if (secondaryImpl == null) {
-      throw new IllegalArgumentException("secondaryImpl == null");
-    }
     boolean result = primaryImpl.remove(i);
-    Nullability.castToNonnull(secondaryImpl).remove(i);
+    secondaryImpl.remove(i);
     assertEquiv();
     return result;
   }
@@ -142,7 +141,7 @@ class DebuggingMutableIntSet implements MutableIntSet {
     if (set instanceof DebuggingMutableIntSet) {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
       boolean ppr = primaryImpl.containsAny(db.primaryImpl);
-      boolean ssr = Nullability.castToNonnull(secondaryImpl).containsAny(db.secondaryImpl);
+      boolean ssr = secondaryImpl.containsAny(db.secondaryImpl);
 
       if (ppr != ssr) {
         assert ppr == ssr : "containsAny " + this + ' ' + set + ' ' + ppr + ' ' + ssr;
@@ -165,9 +164,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
     if (that instanceof DebuggingMutableIntSet) {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) that;
       IntSet ppr = primaryImpl.intersection(db.primaryImpl);
-      if (secondaryImpl == null) {
-        return null;
-      }
       IntSet ssr = secondaryImpl.intersection(db.secondaryImpl);
 
       assert ppr.sameValue(ssr);
@@ -196,9 +192,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
    */
   @Override
   public boolean sameValue(IntSet that) {
-    if (that == null) {
-      throw new IllegalArgumentException("that == null");
-    }
     if (that instanceof DebuggingMutableIntSet) {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) that;
       boolean ppr = primaryImpl.sameValue(db.primaryImpl);
@@ -220,9 +213,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
   public boolean isSubset(IntSet that) {
     if (that instanceof DebuggingMutableIntSet) {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) that;
-      if (db == null) {
-        throw new IllegalArgumentException("that == null");
-      }
       boolean ppr = primaryImpl.isSubset(db.primaryImpl);
       boolean ssr = secondaryImpl.isSubset(db.secondaryImpl);
 
@@ -238,9 +228,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
   /** Set the value of this to be the same as the value of set */
   @Override
   public void copySet(IntSet set) {
-    if (set == null) {
-      throw new IllegalArgumentException("set == null");
-    }
     if (set instanceof DebuggingMutableIntSet) {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
       primaryImpl.copySet(db.primaryImpl);
@@ -259,9 +246,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
    */
   @Override
   public boolean addAll(IntSet set) {
-    if (set == null) {
-      throw new IllegalArgumentException("set == null");
-    }
     if (set instanceof DebuggingMutableIntSet) {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
       int ps = primaryImpl.size();
@@ -294,9 +278,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
   /** Intersect this with another set. */
   @Override
   public void intersectWith(IntSet set) {
-    if (set == null) {
-      throw new IllegalArgumentException("set == null");
-    }
     if (set instanceof DebuggingMutableIntSet) {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
       primaryImpl.intersectWith(db.primaryImpl);
@@ -323,7 +304,7 @@ class DebuggingMutableIntSet implements MutableIntSet {
       DebuggingMutableIntSet db = (DebuggingMutableIntSet) other;
       DebuggingMutableIntSet df = (DebuggingMutableIntSet) filter;
       boolean pr = primaryImpl.addAllInIntersection(db.primaryImpl, df.primaryImpl);
-      boolean sr = secondary.addAllInIntersection(db.secondaryImpl, df.secondaryImpl);
+      boolean sr = secondaryImpl.addAllInIntersection(db.secondaryImpl, df.secondaryImpl);
 
       assert pr == sr;
 
@@ -345,9 +326,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
       assert !bits.contains(x);
       bits.add(x);
     }
-    if (secondaryImpl == null) {
-      throw new IllegalArgumentException("secondaryImpl == null");
-    }
     for (IntIterator si = secondaryImpl.intIterator(); si.hasNext(); ) {
       int x = si.next();
       assert bits.contains(x);
@@ -361,20 +339,17 @@ class DebuggingMutableIntSet implements MutableIntSet {
   /** Invoke an action on each element of the Set */
   @Override
   public void foreach(IntSetAction action) {
-    assert primaryImpl != null;
-    assert secondaryImpl != null;
     final Set<Integer> bits = HashSetFactory.make();
     primaryImpl.foreach(
         x -> {
           assert !bits.contains(x);
           bits.add(x);
         });
-    Nullability.castToNonnull(secondaryImpl)
-        .foreach(
-            x -> {
-              assert bits.contains(x);
-              bits.remove(x);
-            });
+    secondaryImpl.foreach(
+        x -> {
+          assert bits.contains(x);
+          bits.remove(x);
+        });
     assert bits.isEmpty();
 
     primaryImpl.foreach(action);
@@ -383,12 +358,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
   /** Invoke an action on each element of the Set, excluding elements of Set X */
   @Override
   public void foreachExcluding(IntSet X, IntSetAction action) {
-    if (X == null) {
-      throw new IllegalArgumentException("X == null");
-    }
-    if (action == null) {
-      throw new IllegalArgumentException("action == null");
-    }
     final Set<Integer> bits = HashSetFactory.make();
     primaryImpl.foreachExcluding(
         X,
@@ -409,12 +378,6 @@ class DebuggingMutableIntSet implements MutableIntSet {
 
   @Override
   public String toString() {
-    assert primaryImpl != null;
-    assert secondaryImpl != null;
-    return "[[P "
-        + (primaryImpl == null ? "null" : primaryImpl.toString())
-        + ", S "
-        + (secondaryImpl == null ? "null" : secondaryImpl.toString())
-        + " ]]";
+    return "[[P " + primaryImpl.toString() + ", S " + secondaryImpl.toString() + " ]]";
   }
 }
