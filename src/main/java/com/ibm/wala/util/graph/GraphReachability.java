@@ -110,7 +110,6 @@ public class GraphReachability<T, S> {
           /*
            * @see com.ibm.wala.dataflow.graph.ITransferFunctionProvider#getEdgeTransferFunction(java.lang.Object, java.lang.Object)
            */
-
           @Nullable
           @Override
           public UnaryOperator<BitVectorVariable> getEdgeTransferFunction(Object from, Object to) {
