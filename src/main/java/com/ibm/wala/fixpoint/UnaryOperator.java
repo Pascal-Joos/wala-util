@@ -22,7 +22,7 @@ public abstract class UnaryOperator<T extends IVariable<T>> extends AbstractOper
    *
    * @return true if the lhs value changes. false otherwise.
    */
-  public abstract byte evaluate(T lhs, T rhs);
+  public abstract byte evaluate(@Nullable T lhs, T rhs);
 
   /** Create an equation which uses this operator Override in subclasses for efficiency. */
   public UnaryStatement<T> makeEquation(@Nullable T lhs, T rhs) {
