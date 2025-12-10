@@ -98,7 +98,8 @@ public class Table<T> {
   public int[] computeColumnWidths() {
     int[] result = new int[getNumberOfColumns()];
     for (int i = 0; i < getNumberOfColumns(); i++) {
-      result[i] = columnHeadings.get(i).length() + 1;
+      String heading = columnHeadings.get(i);
+      result[i] = heading == null ? 1 : heading.length() + 1;
     }
     for (int j = 0; j < getNumberOfRows(); j++) {
       for (int i = 0; i < getNumberOfColumns(); i++) {
