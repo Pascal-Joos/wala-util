@@ -14,6 +14,7 @@ import com.ibm.wala.util.collections.IVector;
 import com.ibm.wala.util.collections.SimpleVector;
 import com.ibm.wala.util.collections.TwoLevelVector;
 import com.ibm.wala.util.debug.Assertions;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.Serializable;
 import java.util.Iterator;
 import javax.annotation.Nullable;
@@ -159,7 +160,7 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
           }
           s.add(y);
         } else {
-          v.set(x, y);
+          Nullability.castToNonnull(v).set(x, y);
         }
         return true;
       } else {
