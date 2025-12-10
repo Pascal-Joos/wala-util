@@ -12,6 +12,7 @@ package com.ibm.wala.dataflow.graph;
 
 import com.ibm.wala.fixpoint.IVariable;
 import com.ibm.wala.fixpoint.UnaryOperator;
+import javax.annotation.Nullable;
 
 /**
  * The {@link DataflowSolver} builds system over graphs, with dataflow transfer functions on the
@@ -36,6 +37,7 @@ public interface ITransferFunctionProvider<T, V extends IVariable<V>> {
   /**
    * @return the transfer function from OUT_src -&gt; EDGE_&lt;src,dst&gt;
    */
+  @Nullable
   public UnaryOperator<V> getEdgeTransferFunction(T src, T dst);
 
   /**
