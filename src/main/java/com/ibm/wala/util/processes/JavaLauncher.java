@@ -239,17 +239,11 @@ public class JavaLauncher extends Launcher {
     }
     if (isCaptureErr()) {
       Drainer d = (Drainer) stdErrDrain;
-      ByteArrayOutputStream captureErr = d.getCapture();
-      if (captureErr != null) {
-        setStdErr(captureErr.toByteArray());
-      }
+      setStdErr(d.getCapture().toByteArray());
     }
     if (isCaptureOutput()) {
       Drainer d = (Drainer) stdOutDrain;
-      ByteArrayOutputStream captureOut = d.getCapture();
-      if (captureOut != null) {
-        setStdOut(captureOut.toByteArray());
-      }
+      setStdOut(d.getCapture().toByteArray());
     }
   }
 

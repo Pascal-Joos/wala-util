@@ -60,16 +60,11 @@ public class BasicLauncher extends Launcher {
     }
     if (isCaptureErr()) {
       Drainer d = (Drainer) d1;
-      if (d.getCapture() != null) {
-        setStdErr(d.getCapture().toByteArray());
-      }
+      setStdErr(d.getCapture().toByteArray());
     }
     if (isCaptureOutput()) {
       Drainer d = (Drainer) d2;
-      ByteArrayOutputStream capture = d.getCapture();
-      if (capture != null) {
-        setStdOut(capture.toByteArray());
-      }
+      setStdOut(d.getCapture().toByteArray());
     }
     return p.exitValue();
   }
