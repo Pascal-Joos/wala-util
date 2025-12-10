@@ -71,7 +71,6 @@ public abstract class AbstractNumberedGraph<T> extends AbstractGraph<T>
   /**
    * @see com.ibm.wala.util.graph.NumberedEdgeManager#getPredNodeNumbers(java.lang.Object)
    */
-  @Nullable
   @Override
   public IntSet getPredNodeNumbers(T node) throws IllegalArgumentException {
     assert getEdgeManager() != null;

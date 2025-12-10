@@ -22,7 +22,6 @@ import com.ibm.wala.util.intset.IntIterator;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.IntSetUtil;
 import com.ibm.wala.util.intset.MutableIntSet;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -153,15 +152,11 @@ public class ExtensionGraph<T> implements NumberedGraph<T> {
           }
         }
 
-        @Nullable
-        @SuppressWarnings("NullAway")
         @Override
         public IntSet getPredNodeNumbers(T node) {
           if (original.containsNode(node)) {
             if (inEdges.containsKey(node)) {
-              MutableIntSet x =
-                  IntSetUtil.makeMutableCopy(
-                      Nullability.castToNonnull(original.getPredNodeNumbers(node)));
+              MutableIntSet x = IntSetUtil.makeMutableCopy(original.getPredNodeNumbers(node));
               x.addAll(inEdges.get(node));
               return x;
             } else {
@@ -265,7 +260,6 @@ public class ExtensionGraph<T> implements NumberedGraph<T> {
     return edgeManager.getPredNodeCount(n);
   }
 
-  @Nullable
   @Override
   public IntSet getPredNodeNumbers(T node) {
     return edgeManager.getPredNodeNumbers(node);
