@@ -14,7 +14,6 @@ import com.ibm.wala.util.collections.CompoundIntIterator;
 import com.ibm.wala.util.collections.EmptyIntIterator;
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import javax.annotation.Nullable;
 
 /**
@@ -651,7 +650,7 @@ public class MutableSharedBitVectorIntSet implements MutableIntSet {
   private boolean addAllInternal(@Nullable SparseIntSet set) {
     if (privatePart == null) {
       if (sharedPart == null) {
-        if (!Nullability.castToNonnull(set).isEmpty()) {
+        if (!set.isEmpty()) {
           privatePart = MutableSparseIntSet.make(set);
           sharedPart = null;
           checkOverflow();
