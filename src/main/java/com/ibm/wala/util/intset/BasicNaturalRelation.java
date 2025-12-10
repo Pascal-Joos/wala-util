@@ -232,6 +232,7 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
     public IntPair next() {
       IntPair result = null;
       if (nextIndex == smallStore.length) {
+        assert delegateIterator != null;
         int y = delegateIterator.next();
         result = new IntPair(nextX, y);
         if (!delegateIterator.hasNext()) {
