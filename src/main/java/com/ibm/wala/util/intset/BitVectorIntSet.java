@@ -12,6 +12,7 @@ package com.ibm.wala.util.intset;
 
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import javax.annotation.Nullable;
 
 /**
@@ -387,7 +388,7 @@ public final class BitVectorIntSet implements MutableIntSet {
       // really slow. optimize as needed.
       for (IntIterator it = intIterator(); it.hasNext(); ) {
         int x = it.next();
-        if (!that.contains(x)) {
+        if (!Nullability.castToNonnull(that).contains(x)) {
           return false;
         }
       }
