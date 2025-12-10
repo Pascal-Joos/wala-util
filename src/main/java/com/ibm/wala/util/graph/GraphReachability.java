@@ -71,11 +71,10 @@ public class GraphReachability<T, S> {
     }
     BitVectorVariable v = solver.getOut(n);
     assert v != null : "null variable for node " + n;
-    BitVector value = v.getValue();
-    if (value == null) {
+    if (v.getValue() == null) {
       return OrdinalSet.empty();
     } else {
-      return new OrdinalSet<>(value, domain);
+      return new OrdinalSet<>(v.getValue(), domain);
     }
   }
 
