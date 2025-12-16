@@ -10,6 +10,7 @@
  */
 package com.ibm.wala.util.intset;
 
+import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
 import javax.annotation.Nullable;
 
@@ -69,7 +70,8 @@ public class DebuggingMutableIntSetFactory implements MutableIntSetFactory<Debug
 
       return new DebuggingMutableIntSet(pr, sr);
     } else {
-      throw new IllegalArgumentException("x must be an instance of DebuggingMutableIntSet");
+      Assertions.UNREACHABLE();
+      return null;
     }
   }
 
