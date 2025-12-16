@@ -63,10 +63,9 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
   }
 
   /** */
-  /** */
   @Override
   public void remove(long value) {
-    if (size > 0) {
+    if (elements != null) {
       int remove;
       for (remove = 0; remove < size; remove++) {
         if (elements[remove] >= value) {
@@ -78,6 +77,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
       }
       if (elements[remove] == value) {
         if (size == 1) {
+          elements = null;
           size = 0;
         } else {
           if (remove < size) {
