@@ -296,7 +296,11 @@ public class GraphSlicer {
             if (!preds.containsKey(dst)) {
               setPredNodes(dst);
             }
-            return preds.get(dst).contains(src);
+            Set<E> predSet = preds.get(dst);
+            if (predSet == null) {
+              return false;
+            }
+            return predSet.contains(src);
           }
 
           @Override
