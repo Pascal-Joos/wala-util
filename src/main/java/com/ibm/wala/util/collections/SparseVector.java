@@ -53,10 +53,10 @@ public class SparseVector<T> implements IVector<T>, Serializable {
   @Nullable
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull T get(int x) {
+  public T get(int x) {
     int index = indices.getIndex(x);
     if (index == -1) {
-      throw new IllegalArgumentException("No value present at index: " + x);
+      return null;
     } else {
       return (T) data[index];
     }
