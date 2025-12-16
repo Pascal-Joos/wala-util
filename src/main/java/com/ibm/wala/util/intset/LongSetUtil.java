@@ -20,7 +20,7 @@ public class LongSetUtil {
   public static final String INT_SET_FACTORY_CONFIG_PROPERTY_NAME =
       "com.ibm.wala.mutableLongSetFactory";
 
-  private static MutableLongSetFactory defaultLongSetFactory = new MutableSparseLongSetFactory();
+  private static MutableLongSetFactory defaultLongSetFactory;
 
   static {
     MutableLongSetFactory defaultFactory = new MutableSparseLongSetFactory();
