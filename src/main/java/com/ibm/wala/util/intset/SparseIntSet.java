@@ -71,7 +71,7 @@ public class SparseIntSet implements IntSet {
     if (S.elements != null) {
       elements = S.elements.clone();
     } else {
-      elements = new int[0];
+      elements = null;
     }
     this.size = S.size;
   }
