@@ -44,7 +44,6 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
     if (set == null) {
       throw new IllegalArgumentException("set == null");
     }
-    this.sparsePart = MutableSparseIntSet.makeEmpty();
     copySet(set);
   }
 
