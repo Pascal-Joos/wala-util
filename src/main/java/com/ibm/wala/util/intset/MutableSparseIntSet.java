@@ -64,7 +64,6 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
   }
 
   /** */
-  /** */
   @Override
   public boolean remove(int value) {
     if (elements != null) {
@@ -79,7 +78,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
       }
       if (elements[remove] == value) {
         if (size == 1) {
-          elements[0] = 0;
+          elements = null;
           size = 0;
         } else {
           if (remove < size) {
