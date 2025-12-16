@@ -156,9 +156,6 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
   /**
    * @throws IllegalArgumentException if that == null
    */
-  /**
-   * @throws IllegalArgumentException if that == null
-   */
   @Override
   @SuppressWarnings("unused")
   public void copySet(@Nullable IntSet that) throws IllegalArgumentException {
@@ -174,7 +171,7 @@ public class MutableSparseIntSet extends SparseIntSet implements MutableIntSet {
         System.arraycopy(set.elements, 0, elements, 0, set.size);
         size = set.size;
       } else {
-        elements = new int[0];
+        elements = null;
         size = 0;
       }
     } else {
