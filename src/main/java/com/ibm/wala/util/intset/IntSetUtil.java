@@ -10,6 +10,7 @@
  */
 package com.ibm.wala.util.intset;
 
+import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
 import java.util.Set;
 
@@ -90,7 +91,8 @@ public class IntSetUtil {
     } else if (set instanceof EmptyIntSet) {
       return IntSetUtil.make();
     } else {
-      throw new UnimplementedError(set.getClass().toString());
+      Assertions.UNREACHABLE(set.getClass().toString());
+      return null;
     }
   }
 
