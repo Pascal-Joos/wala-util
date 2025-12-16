@@ -46,7 +46,7 @@ public class RtJar {
                     return new JarFile(object);
                   } catch (IOException e) {
                     assert false : e.toString();
-                    throw new RuntimeException(e);
+                    return null;
                   }
                 }));
 
