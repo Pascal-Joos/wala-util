@@ -78,7 +78,6 @@ public class SparseIntSet implements IntSet {
 
   public SparseIntSet(IntSet S) throws IllegalArgumentException {
     if (S == null) {
-      elements = null;
       throw new IllegalArgumentException("S == null");
     }
     if (S instanceof SparseIntSet) {
