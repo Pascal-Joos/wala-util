@@ -345,6 +345,9 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
 
       @Override
       public int next() {
+        if (densePart == null) {
+          throw new IllegalStateException("densePart is null");
+        }
         int next = densePart.nextSetBit(i + 1);
         i = next;
         return next;
