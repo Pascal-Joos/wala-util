@@ -230,12 +230,9 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
 
     @Override
     public IntPair next() {
-      if (nextIndex == smallStore.length && delegateIterator == null) {
-        throw new IllegalStateException("delegateIterator is not initialized");
-      }
       IntPair result = null;
       if (nextIndex == smallStore.length) {
-        Integer y = delegateIterator.next();
+        int y = delegateIterator.next();
         result = new IntPair(nextX, y);
         if (!delegateIterator.hasNext()) {
           advanceX();
