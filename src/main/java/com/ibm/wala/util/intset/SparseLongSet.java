@@ -94,6 +94,9 @@ public class SparseLongSet implements LongSet {
               elements[index++] = i;
             }
           });
+      if (elements == null) {
+        throw new IllegalStateException("elements not initialized");
+      }
     }
   }
 
