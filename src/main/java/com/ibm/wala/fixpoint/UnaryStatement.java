@@ -94,8 +94,17 @@ public abstract class UnaryStatement<T extends IVariable<T>>
    * @param lhs the lattice cell set by this equation
    * @param rhs the first operand on the rhs
    */
+  /**
+   * Constructor for case of one operand on the right-hand side.
+   *
+   * @param lhs the lattice cell set by this equation
+   * @param rhs the first operand on the rhs
+   */
   protected UnaryStatement(@Nullable T lhs, T rhs) {
     super();
+    if (lhs == null) {
+      throw new IllegalArgumentException("lhs must not be null");
+    }
     this.lhs = lhs;
     this.rhs = rhs;
   }
