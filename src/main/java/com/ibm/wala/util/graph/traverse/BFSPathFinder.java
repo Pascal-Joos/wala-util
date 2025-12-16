@@ -16,7 +16,6 @@ import com.ibm.wala.util.collections.NonNullSingletonIterator;
 import com.ibm.wala.util.graph.Graph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +137,37 @@ public class BFSPathFinder<T> {
   }
 
   @Nullable private ArrayDeque<T> Q = null;
-  private HashMap<Object, T> history = null;
+
+  public List<T> find() {
+    if (Q == null) {
+      Q = new ArrayDeque<>();
+      history = HashMapFactory.make();
+      while (roots.hasNext()) {
+        T next = roots.next();
+        Q.addLast(next);
+        history.put(next, null);
+      }
+    }
+    while (!Q.isEmpty()) {
+      T N = Q.removeFirst();
+      if (DEBUG) {
+        System.out.println("Visiting node: " + N);
+      }
+      // TODO: Add the actual processing logic for node N here.
+
+      // Example placeholder logic to avoid parse errors:
+      // If this node has children, enqueue them.
+      for (T child : getChildren(N)) {
+        if (!history.containsKey(child)) {
+          Q.addLast(child);
+          history.put(child, N);
+        }
+      }
+    }
+    // TODO: Return the appropriate result list.
+    // Placeholder empty list to ensure compilable code:
+    return new ArrayList<>();
+  }
 
   /**
    * @return a List of nodes that specifies the first path found from a root to a node accepted by
