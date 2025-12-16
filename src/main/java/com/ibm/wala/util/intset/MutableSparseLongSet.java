@@ -143,9 +143,6 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
   /**
    * @throws UnimplementedError if not ( that instanceof com.ibm.wala.util.intset.SparseLongSet )
    */
-  /**
-   * @throws UnimplementedError if not ( that instanceof com.ibm.wala.util.intset.SparseLongSet )
-   */
   @Override
   public void copySet(LongSet that) throws UnimplementedError {
     if (that instanceof SparseLongSet) {
@@ -154,7 +151,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
         elements = set.elements.clone();
         size = set.size;
       } else {
-        elements = new long[0];
+        elements = null;
         size = 0;
       }
     } else {
