@@ -648,16 +648,15 @@ public class MutableSharedBitVectorIntSet implements MutableIntSet {
   }
 
   private boolean addAllInternal(@Nullable SparseIntSet set) {
+    if (set == null || set.isEmpty()) {
+      return false;
+    }
     if (privatePart == null) {
       if (sharedPart == null) {
-        if (!set.isEmpty()) {
-          privatePart = MutableSparseIntSet.make(set);
-          sharedPart = null;
-          checkOverflow();
-          return true;
-        } else {
-          return false;
-        }
+        privatePart = MutableSparseIntSet.make(set);
+        sharedPart = null;
+        checkOverflow();
+        return true;
       } else {
         privatePart = MutableSparseIntSet.make(set);
         privatePart.removeAll(sharedPart);
