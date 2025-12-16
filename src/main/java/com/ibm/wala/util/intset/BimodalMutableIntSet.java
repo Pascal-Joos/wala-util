@@ -154,6 +154,9 @@ public class BimodalMutableIntSet implements MutableIntSet {
   /**
    * @see com.ibm.wala.util.intset.IntSet#intersection(com.ibm.wala.util.intset.IntSet)
    */
+  /**
+   * @see com.ibm.wala.util.intset.IntSet#intersection(com.ibm.wala.util.intset.IntSet)
+   */
   @Nullable
   @Override
   public IntSet intersection(IntSet that) throws UnimplementedError {
@@ -164,7 +167,7 @@ public class BimodalMutableIntSet implements MutableIntSet {
       return impl.intersection(that);
     } else {
       Assertions.UNREACHABLE("Unexpected: " + that);
-      return null;
+      throw new IllegalStateException("Unreachable code executed in intersection");
     }
   }
 
