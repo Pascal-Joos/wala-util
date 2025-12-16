@@ -33,18 +33,7 @@ public class OrdinalSet<T> implements Iterable<T> {
 
   private OrdinalSet() {
     S = null;
-    mapping =
-        new OrdinalSetMapping<T>() {
-          @Override
-          public int getSize() {
-            return 0;
-          }
-
-          @Override
-          public T get(int i) {
-            throw new IndexOutOfBoundsException();
-          }
-        };
+    mapping = null;
   }
 
   public OrdinalSet(@Nullable IntSet S, OrdinalSetMapping<T> mapping) {
