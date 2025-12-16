@@ -340,7 +340,7 @@ public class SemiSparseMutableIntSet implements MutableIntSet {
 
       @Override
       public boolean hasNext() {
-        return densePart.nextSetBit(i + 1) != -1;
+        return densePart != null && densePart.nextSetBit(i + 1) != -1;
       }
 
       @Override
