@@ -665,7 +665,7 @@ public class HeapTracer {
       for (Field field : sortedDemo) {
         Object root = field;
         Demographics d = roots.get(root);
-        if (d != null && d.getTotalSize() > 10000) {
+        if (d.getTotalSize() > 10000) {
           result.append(" root: ").append(root).append('\n');
           result.append(d);
         }
