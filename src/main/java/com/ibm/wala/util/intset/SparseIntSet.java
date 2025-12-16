@@ -58,9 +58,8 @@ public class SparseIntSet implements IntSet {
   }
 
   /** Subclasses should use this with extreme care. */
-  /** Subclasses should use this with extreme care. */
   public SparseIntSet() {
-    elements = new int[0];
+    elements = null;
     this.size = 0;
   }
 
