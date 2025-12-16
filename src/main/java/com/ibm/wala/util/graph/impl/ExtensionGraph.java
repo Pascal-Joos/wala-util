@@ -105,14 +105,8 @@ public class ExtensionGraph<T> implements NumberedGraph<T> {
           assert hasEdge(src, dst);
           assert !original.hasEdge(src, dst);
           assert containsNode(src) && containsNode(dst);
-          IntSet inSet = inEdges.get(dst);
-          if (inSet != null) {
-            inSet.remove(getNumber(src));
-          }
-          IntSet outSet = outEdges.get(src);
-          if (outSet != null) {
-            outSet.remove(getNumber(dst));
-          }
+          inEdges.get(dst).remove(getNumber(src));
+          outEdges.get(src).remove(getNumber(dst));
         }
 
         @Override
