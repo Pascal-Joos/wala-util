@@ -90,10 +90,7 @@ public abstract class DataflowSolver<T, V extends IVariable<V>> extends DefaultF
   }
 
   public V getIn(Object node) {
-    assert node != null;
-    V v = node2In.get(node);
-    assert v != null : "no in set for " + node;
-    return v;
+    return node2In.get(node);
   }
 
   @Nullable
