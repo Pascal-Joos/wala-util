@@ -171,7 +171,7 @@ class DebuggingMutableIntSet implements MutableIntSet {
       return ppr;
     } else {
       Assertions.UNREACHABLE();
-      throw new IllegalStateException("Unreachable code in DebuggingMutableIntSet.intersection");
+      return null;
     }
   }
 
