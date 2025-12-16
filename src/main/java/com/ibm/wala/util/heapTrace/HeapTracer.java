@@ -576,8 +576,15 @@ public class HeapTracer {
       for (Object key : sorted) {
         Integer I = instanceCount.get(key);
         Integer bytes = sizeCount.get(key);
-        result.append("  ").append(I).append("   ").append(bytes).append("   ");
-        result.append(bytes / I).append("   ");
+        int iVal = (I == null) ? 0 : I;
+        int bytesVal = (bytes == null) ? 0 : bytes;
+        result.append("  ").append(iVal).append("   ").append(bytesVal).append("   ");
+        if (iVal != 0) {
+          result.append(bytesVal / iVal);
+        } else {
+          result.append(0);
+        }
+        result.append("   ");
         result.append(key);
         result.append('\n');
       }
