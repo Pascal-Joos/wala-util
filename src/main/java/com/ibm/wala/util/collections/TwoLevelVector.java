@@ -43,14 +43,18 @@ public class TwoLevelVector<T> implements IVector<T>, Serializable {
     }
     int page = getPageNumber(x);
     if (page >= data.size()) {
-      return null;
+      throw new IllegalStateException("No page for index: " + x);
     }
     IVector<T> v = data.get(page);
     if (v == null) {
-      return null;
+      throw new IllegalStateException("Null vector for page: " + page);
     }
     int localX = x - getFirstIndexOnPage(page);
-    return v.get(localX);
+    T result = v.get(localX);
+    if (result == null) {
+      throw new IllegalStateException("Null value at index: " + x);
+    }
+    return result;
   }
 
   private static int getFirstIndexOnPage(int page) {
