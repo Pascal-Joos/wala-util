@@ -264,7 +264,11 @@ public class GraphSlicer {
             if (!preds.containsKey(N)) {
               setPredNodes(N);
             }
-            return preds.get(N).size();
+            Collection<E> predNodes = preds.get(N);
+            if (predNodes == null) {
+              return 0;
+            }
+            return predNodes.size();
           }
 
           @Override
