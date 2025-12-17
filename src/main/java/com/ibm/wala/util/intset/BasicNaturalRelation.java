@@ -139,10 +139,9 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
       IntVector smallStore0 = smallStore[0];
       if (smallStore0.get(x) != EMPTY_CODE) {
         int i = 0;
-        IntVector v = null;
         int ssLength = smallStore.length;
         for (; i < ssLength; i++) {
-          v = smallStore[i];
+          IntVector v = smallStore[i];
           int val = v.get(x);
           if (val == y) {
             return false;
@@ -159,7 +158,7 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
           }
           s.add(y);
         } else {
-          v.set(x, y);
+          smallStore[i].set(x, y);
         }
         return true;
       } else {
