@@ -79,10 +79,15 @@ public class SparseIntSet implements IntSet {
 
   public SparseIntSet(IntSet S) throws IllegalArgumentException {
     if (S == null) {
+      elements = new int[0];
+      this.size = 0;
       throw new IllegalArgumentException("S == null");
     }
     if (S instanceof SparseIntSet) {
       cloneState((SparseIntSet) S);
+      if (elements == null) {
+        elements = new int[0];
+      }
     } else {
       elements = new int[S.size()];
       size = S.size();
