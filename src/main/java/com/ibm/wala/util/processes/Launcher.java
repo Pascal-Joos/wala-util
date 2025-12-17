@@ -253,6 +253,9 @@ public abstract class Launcher {
     }
 
     public ByteArrayOutputStream getCapture() {
+      if (capture == null) {
+        capture = new ByteArrayOutputStream();
+      }
       return capture;
     }
 
