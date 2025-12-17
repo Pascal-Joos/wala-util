@@ -72,6 +72,12 @@ public abstract class GeneralStatement<T extends IVariable<T>>
    * @param lhs the lattice cell set by this equation
    * @param operator the equation operator
    */
+  /**
+   * Constructor for case of zero operands on the right-hand side.
+   *
+   * @param lhs the lattice cell set by this equation
+   * @param operator the equation operator
+   */
   public GeneralStatement(T lhs, AbstractOperator<T> operator) {
     super();
     if (operator == null) {
@@ -79,7 +85,7 @@ public abstract class GeneralStatement<T extends IVariable<T>>
     }
     this.operator = operator;
     this.lhs = lhs;
-    this.rhs = null;
+    this.rhs = makeRHS(0);
     this.hashCode = makeHashCode();
   }
 
