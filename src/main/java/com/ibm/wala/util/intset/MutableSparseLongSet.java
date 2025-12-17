@@ -185,7 +185,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
     if (this.isEmpty()) {
       return;
     } else if (that.isEmpty()) {
-      elements = null;
+      elements = new long[0];
       size = 0;
       return;
     } else if (this.equals(that)) {
@@ -197,7 +197,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
       if (that.contains(elements[0])) {
         return;
       } else {
-        elements = null;
+        elements = new long[0];
         size = 0;
         return;
       }
@@ -211,7 +211,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
         elements[0] = that.elements[0];
         return;
       } else {
-        elements = null;
+        elements = new long[0];
         size = 0;
         return;
       }
@@ -246,7 +246,7 @@ public final class MutableSparseLongSet extends SparseLongSet implements Mutable
 
     // now compact cr to 'just enough'
     size = ci;
-    elements = cr;
+    elements = (cr == null) ? new long[0] : cr;
     return;
   }
 
