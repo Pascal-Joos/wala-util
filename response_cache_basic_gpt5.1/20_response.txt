@@ -1,0 +1,22 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+        @Override
+        public void removeEdge(T src, T dst) throws UnsupportedOperationException {
+          assert hasEdge(src, dst);
+          assert !original.hasEdge(src, dst);
+          assert containsNode(src) && containsNode(dst);
+          IntSet inSet = inEdges.get(dst);
+          if (inSet != null) {
+            inSet.remove(getNumber(src));
+          }
+          IntSet outSet = outEdges.get(src);
+          if (outSet != null) {
+            outSet.remove(getNumber(dst));
+          }
+        }
+  ```
+    ]]>
+  </code>
+</response>

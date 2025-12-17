@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /**
+   * @throws UnimplementedError if not ( that instanceof com.ibm.wala.util.intset.SparseLongSet )
+   */
+  @Override
+  public void copySet(LongSet that) throws UnimplementedError {
+    if (that instanceof SparseLongSet) {
+      SparseLongSet set = (SparseLongSet) that;
+      if (set.elements != null) {
+        elements = set.elements.clone();
+        size = set.size;
+      } else {
+        elements = new long[0];
+        size = 0;
+      }
+    } else {
+      Assertions.UNREACHABLE();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  @SuppressWarnings("unchecked")
+  public @NonNull T get(int x) {
+    int index = indices.getIndex(x);
+    if (index == -1) {
+      throw new IllegalArgumentException("No value present at index: " + x);
+    } else {
+      return (T) data[index];
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

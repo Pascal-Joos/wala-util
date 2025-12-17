@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public List<T> find() {
+    if (Q == null) {
+      Q = new ArrayDeque<>();
+      history = HashMapFactory.make();
+      while (roots.hasNext()) {
+        T next = roots.next();
+        Q.addLast(next);
+        history.put(next, null);
+      }
+    }
+    while (!Q.isEmpty()) {
+      T N = Q.removeFirst();
+      if (DEBUG) {
+  ```
+    ]]>
+  </code>
+</response>

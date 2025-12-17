@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /** Subclasses should use this with extreme care. */
+  public SparseLongSet() {
+    elements = new long[0];
+    this.size = 0;
+  }
+  ```
+    ]]>
+  </code>
+</response>

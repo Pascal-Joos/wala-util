@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static <T> Collection<Map<String, T>> selectStarWhereEquals(
+      Table<T> t, String column, T value) throws IllegalArgumentException {
+    if (t == null) {
+      throw new IllegalArgumentException("t == null");
+    }
+    Collection<Map<String, T>> result = new ArrayList<>();
+    for (int i = 0; i < t.getNumberOfRows(); i++) {
+      Map<String, T> p = t.row2Map(i);
+      T v = p.get(column);
+      if (v != null && v.equals(value)) {
+        result.add(p);
+      }
+    }
+    return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

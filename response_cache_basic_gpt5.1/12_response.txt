@@ -1,0 +1,29 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+      @Override
+      public T next() {
+        if (inner == null) {
+          throw new java.util.NoSuchElementException();
+        }
+        T result = inner.next();
+        if (!inner.hasNext()) {
+          inner = null;
+          while (outer.hasNext()) {
+            IVector<T> v = outer.next();
+            if (v != null) {
+              Iterator<T> it = v.iterator();
+              if (it.hasNext()) {
+                inner = it;
+                break;
+              }
+            }
+          }
+        }
+        return result;
+      }
+  ```
+    ]]>
+  </code>
+</response>

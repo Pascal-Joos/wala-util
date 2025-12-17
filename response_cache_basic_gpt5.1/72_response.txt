@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+    public ByteArrayOutputStream getCapture() {
+      if (capture == null) {
+        capture = new ByteArrayOutputStream();
+      }
+      return capture;
+    }
+  ```
+    ]]>
+  </code>
+</response>

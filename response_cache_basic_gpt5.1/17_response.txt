@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+          @Override
+          public Iterator<E> getSuccNodes(E N) {
+            if (!succs.containsKey(N)) {
+              setSuccNodes(N);
+            }
+            Collection<E> succCollection = succs.get(N);
+            if (succCollection == null) {
+              return java.util.Collections.<E>emptyIterator();
+            }
+            return succCollection.iterator();
+          }
+  ```
+    ]]>
+  </code>
+</response>

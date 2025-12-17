@@ -1,0 +1,9 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected int bits[] = new int[0];
+  ```
+    ]]>
+  </code>
+</response>

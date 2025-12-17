@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /** Switch backing implementation from a SmallMap to a HashMap */
+  private void transferBackingStore() {
+    if (!(backingStore instanceof SmallMap)) {
+      return;
+    }
+    SmallMap<K, V> S = (SmallMap<K, V>) backingStore;
+    backingStore = HashMapFactory.make(2 * S.size());
+    backingStore.putAll(S);
+  }
+  ```
+    ]]>
+  </code>
+</response>

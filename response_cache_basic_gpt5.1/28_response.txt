@@ -1,0 +1,31 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+    @Override
+    public String toString() {
+      StringBuilder result = new StringBuilder();
+      result.append("Totals: ").append(totalInstances).append(' ').append(totalSize).append('\n');
+      TreeSet<Object> sorted = new TreeSet<>(new SizeComparator());
+      sorted.addAll(instanceCount.keySet());
+      for (Object key : sorted) {
+        Integer I = instanceCount.get(key);
+        Integer bytes = sizeCount.get(key);
+        int iVal = (I == null) ? 0 : I;
+        int bytesVal = (bytes == null) ? 0 : bytes;
+        result.append("  ").append(iVal).append("   ").append(bytesVal).append("   ");
+        if (iVal != 0) {
+          result.append(bytesVal / iVal);
+        } else {
+          result.append(0);
+        }
+        result.append("   ");
+        result.append(key);
+        result.append('\n');
+      }
+      return result.toString();
+    }
+  ```
+    ]]>
+  </code>
+</response>

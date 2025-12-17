@@ -1,0 +1,9 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static MutableIntSetFactory<?> defaultIntSetFactory = new MutableSharedBitVectorIntSetFactory();
+  ```
+    ]]>
+  </code>
+</response>

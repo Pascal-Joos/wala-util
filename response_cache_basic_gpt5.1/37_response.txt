@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /**
+   * @see com.ibm.wala.util.intset.IntSet#intersection(com.ibm.wala.util.intset.IntSet)
+   */
+  
+  @Override
+  public IntSet intersection(IntSet that) throws UnimplementedError {
+    if (that instanceof BimodalMutableIntSet) {
+      BimodalMutableIntSet b = (BimodalMutableIntSet) that;
+      return impl.intersection(b.impl);
+    } else if (that instanceof BitVectorIntSet) {
+      return impl.intersection(that);
+    } else {
+      Assertions.UNREACHABLE("Unexpected: " + that);
+      throw new IllegalStateException("Unreachable code executed in intersection");
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

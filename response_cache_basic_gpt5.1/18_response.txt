@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+          @Override
+          public boolean hasEdge(E src, E dst) {
+            if (!preds.containsKey(dst)) {
+              setPredNodes(dst);
+            }
+            Set<E> predSet = preds.get(dst);
+            if (predSet == null) {
+              return false;
+            }
+            return predSet.contains(src);
+          }
+  ```
+    ]]>
+  </code>
+</response>

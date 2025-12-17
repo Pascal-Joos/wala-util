@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Initializer
+  protected void init(Graph<T> G, Iterator<? extends T> nodes) {
+    this.G = G;
+    roots = nodes;
+    theNextElement = roots.hasNext() ? roots.next() : null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

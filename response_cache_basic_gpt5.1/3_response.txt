@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /**
+   * Constructor for case of zero operands on the right-hand side.
+   *
+   * @param lhs the lattice cell set by this equation
+   * @param operator the equation operator
+   */
+  public GeneralStatement(T lhs, AbstractOperator<T> operator) {
+    super();
+    if (operator == null) {
+      throw new IllegalArgumentException("null operator");
+    }
+    this.operator = operator;
+    this.lhs = lhs;
+    this.rhs = makeRHS(0);
+    this.hashCode = makeHashCode();
+  }
+  ```
+    ]]>
+  </code>
+</response>

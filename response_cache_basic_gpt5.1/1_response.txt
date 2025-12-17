@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public V getIn(Object node) {
+    assert node != null;
+    V v = node2In.get(node);
+    assert v != null : "no in set for " + node;
+    return v;
+  }
+  ```
+    ]]>
+  </code>
+</response>

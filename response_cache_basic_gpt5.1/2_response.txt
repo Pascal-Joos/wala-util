@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public V getOut(Object node) {
+    assert node != null;
+    V v = node2Out.get(node);
+    if (v == null) {
+      throw new IllegalStateException("no out set for " + node);
+    }
+    return v;
+  }
+  ```
+    ]]>
+  </code>
+</response>

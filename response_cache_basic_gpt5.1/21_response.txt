@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public IntSet getPredNodeNumbers(T node) throws IllegalArgumentException {
+    if (nodeManager.getNumber(node) < 0) {
+      throw new IllegalArgumentException("Node not in graph " + node);
+    }
+    IntSet x = predecessors.getRelated(nodeManager.getNumber(node));
+    if (x == null) {
+      return EmptyIntSet.instance;
+    } else {
+      return x;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public DebuggingMutableIntSet makeCopy(IntSet x) throws UnimplementedError {
+    if (x == null) {
+      throw new IllegalArgumentException("null x");
+    }
+    if (x instanceof DebuggingMutableIntSet) {
+      DebuggingMutableIntSet db = (DebuggingMutableIntSet) x;
+      MutableIntSet pr = primary.makeCopy(db.primaryImpl);
+      MutableIntSet sr = secondary.makeCopy(db.secondaryImpl);
+
+      assert pr.sameValue(db.primaryImpl);
+      assert sr.sameValue(db.secondaryImpl);
+      assert pr.sameValue(sr);
+
+      return new DebuggingMutableIntSet(pr, sr);
+    } else {
+      throw new IllegalArgumentException("x must be an instance of DebuggingMutableIntSet");
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

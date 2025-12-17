@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+          @Override
+          public int getPredNodeCount(E N) {
+            if (!preds.containsKey(N)) {
+              setPredNodes(N);
+            }
+            Collection<E> predNodes = preds.get(N);
+            if (predNodes == null) {
+              return 0;
+            }
+            return predNodes.size();
+          }
+  ```
+    ]]>
+  </code>
+</response>

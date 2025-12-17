@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  // this Map contains keysAndValues.length / 2 entries.
+  // in the following array, entries 0 ... keysAndValues.length/2 - 1 are keys.
+  // entries keysAndValues.length/2 .. keysAndValues.length are values.
+  private Object[] keysAndValues = new Object[0];
+  ```
+    ]]>
+  </code>
+</response>

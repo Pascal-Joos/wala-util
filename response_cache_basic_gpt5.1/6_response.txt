@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public I next() {
+    if (inner == null) {
+      throw new java.util.NoSuchElementException();
+    }
+    I result = inner.next();
+    if (!inner.hasNext()) {
+      advanceOuter();
+    }
+    return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

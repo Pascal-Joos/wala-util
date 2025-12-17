@@ -1,0 +1,36 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /** */
+  @Override
+  public boolean remove(int value) {
+    if (elements != null) {
+      int remove;
+      for (remove = 0; remove < size; remove++) {
+        if (elements[remove] >= value) {
+          break;
+        }
+      }
+      if (remove == size) {
+        return false;
+      }
+      if (elements[remove] == value) {
+        if (size == 1) {
+          elements[0] = 0;
+          size = 0;
+        } else {
+          if (remove < size) {
+            System.arraycopy(elements, remove + 1, elements, remove, size - remove - 1);
+          }
+          size--;
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+  ```
+    ]]>
+  </code>
+</response>

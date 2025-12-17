@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected SparseIntSet(SparseIntSet S) {
+    elements = null;
+    this.size = 0;
+    cloneState(S);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+          @Override
+          public int getSuccNodeCount(E N) {
+            if (!succs.containsKey(N)) {
+              setSuccNodes(N);
+            }
+            if (succs.get(N) == null) {
+              return 0;
+            }
+            return succs.get(N).size();
+          }
+  ```
+    ]]>
+  </code>
+</response>

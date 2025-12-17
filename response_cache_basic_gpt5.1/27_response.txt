@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  protected Iterator<? extends T> getConnected(T n) {
+    Graph<T> localG = G;
+    if (localG == null) {
+      throw new IllegalStateException("Graph not initialized");
+    }
+    return localG.getSuccNodes(n);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public SemiSparseMutableIntSet(SemiSparseMutableIntSet set) throws IllegalArgumentException {
+    if (set == null) {
+      throw new IllegalArgumentException("set == null");
+    }
+    this.sparsePart = MutableSparseIntSet.makeEmpty();
+    copySet(set);
+  }
+  ```
+    ]]>
+  </code>
+</response>

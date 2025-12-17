@@ -1,0 +1,29 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public SparseIntSet(IntSet S) throws IllegalArgumentException {
+    if (S == null) {
+      elements = null;
+      throw new IllegalArgumentException("S == null");
+    }
+    if (S instanceof SparseIntSet) {
+      cloneState((SparseIntSet) S);
+    } else {
+      elements = new int[S.size()];
+      size = S.size();
+      S.foreach(
+          new IntSetAction() {
+            private int index = 0;
+
+            @Override
+            public void act(int i) {
+              elements[index++] = i;
+            }
+          });
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>
