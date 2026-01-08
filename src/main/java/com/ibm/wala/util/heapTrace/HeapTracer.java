@@ -14,6 +14,7 @@ import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.debug.Assertions;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -684,7 +685,7 @@ public class HeapTracer {
       public int compare(Field o1, Field o2) {
         Demographics d1 = roots.get(o1);
         Demographics d2 = roots.get(o2);
-        return d2.getTotalSize() - d1.getTotalSize();
+        return Nullability.castToNonnull(d2).getTotalSize() - d1.getTotalSize();
       }
     }
   }
