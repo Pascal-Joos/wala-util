@@ -14,6 +14,7 @@ import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.collections.NonNullSingletonIterator;
 import com.ibm.wala.util.graph.Graph;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,7 +139,7 @@ public class BFSPathFinder<T> {
   }
 
   @Nullable private ArrayDeque<T> Q = null;
-  private HashMap<Object, T> history = null;
+  @Nullable private HashMap<Object, T> history = null;
 
   /**
    * @return a List of nodes that specifies the first path found from a root to a node accepted by
@@ -166,7 +167,7 @@ public class BFSPathFinder<T> {
       Iterator<? extends T> children = getConnected(N);
       while (children.hasNext()) {
         T c = children.next();
-        if (!history.containsKey(c)) {
+        if (!Nullability.castToNonnull(history).containsKey(c)) {
           Q.addLast(c);
           history.put(c, N);
         }
@@ -180,7 +181,7 @@ public class BFSPathFinder<T> {
    * @return a List which represents a path in the breadth-first search to Q[i]. Q holds the nodes
    *     visited during the BFS, in order.
    */
-  private List<T> makePath(T node, Map<Object, T> history) {
+  private List<T> makePath(T node, @Nullable Map<Object, T> history) {
     ArrayList<T> result = new ArrayList<>();
     T n = node;
     result.add(n);
