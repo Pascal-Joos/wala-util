@@ -10,8 +10,6 @@
  */
 package com.ibm.wala.fixpoint;
 
-import javax.annotation.Nullable;
-
 /**
  * operator for a step in an iterative solver
  *
@@ -27,7 +25,7 @@ public abstract class AbstractOperator<T extends IVariable<T>> implements FixedP
    *     fixed-point, in that we never have to evaluate the equation again, even if rhs operands
    *     change?
    */
-  public abstract byte evaluate(T lhs, @Nullable T[] rhs);
+  public abstract byte evaluate(T lhs, T[] rhs);
 
   @Override
   public abstract int hashCode();
