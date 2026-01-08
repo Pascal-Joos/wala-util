@@ -11,6 +11,7 @@
 package com.ibm.wala.util.collections;
 
 import com.ibm.wala.util.debug.Assertions;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Arrays;
@@ -34,7 +35,7 @@ public class SmallMap<K, V> implements Map<K, V> {
   // this Map contains keysAndValues.length / 2 entries.
   // in the following array, entries 0 ... keysAndValues.length/2 - 1 are keys.
   // entries keysAndValues.length/2 .. keysAndValues.length are values.
-  private Object[] keysAndValues;
+  @Nullable private Object[] keysAndValues;
 
   /*
    */
@@ -88,6 +89,9 @@ public class SmallMap<K, V> implements Map<K, V> {
 
   @Override
   public boolean containsKey(Object key) {
+    if (keysAndValues == null) {
+      return false;
+    }
     for (int i = 0; i < size(); i++) {
       if (keysAndValues[i].equals(key)) {
         return true;
@@ -121,10 +125,15 @@ public class SmallMap<K, V> implements Map<K, V> {
   @SuppressWarnings("unchecked")
   public V get(Object key) {
 
+    if (keysAndValues == null) {
+      return null;
+    }
+
     if (key != null)
       for (int i = 0; i < size(); i++) {
-        if (keysAndValues[i] != null && keysAndValues[i].equals(key)) {
-          return (V) keysAndValues[size() + i];
+        if (Nullability.castToNonnull(keysAndValues)[i] != null
+            && Nullability.castToNonnull(keysAndValues)[i].equals(key)) {
+          return (V) Nullability.castToNonnull(keysAndValues)[size() + i];
         }
       }
 
@@ -158,10 +167,23 @@ public class SmallMap<K, V> implements Map<K, V> {
     if (key == null) {
       throw new IllegalArgumentException("null key");
     }
+    Object[] localKeysAndValues = keysAndValues;
+    if (localKeysAndValues == null) {
+      growByOne();
+      if (keysAndValues == null) {
+        return null;
+      }
+      Nullability.castToNonnull(keysAndValues)[size() - 1] = key;
+      Nullability.castToNonnull(keysAndValues)[
+              Nullability.castToNonnull(keysAndValues).length - 1] =
+          value;
+      return null;
+    }
     for (int i = 0; i < size(); i++) {
-      if (keysAndValues[i] != null && keysAndValues[i].equals(key)) {
-        V result = (V) keysAndValues[size() + i];
-        keysAndValues[size() + i] = value;
+      if (Nullability.castToNonnull(localKeysAndValues)[i] != null
+          && Nullability.castToNonnull(localKeysAndValues)[i].equals(key)) {
+        V result = (V) Nullability.castToNonnull(localKeysAndValues)[size() + i];
+        Nullability.castToNonnull(localKeysAndValues)[size() + i] = value;
         return result;
       }
     }
@@ -169,8 +191,12 @@ public class SmallMap<K, V> implements Map<K, V> {
       Assertions.UNREACHABLE("too many elements in a SmallMap");
     }
     growByOne();
-    keysAndValues[size() - 1] = key;
-    keysAndValues[keysAndValues.length - 1] = value;
+    if (keysAndValues == null) {
+      return null;
+    }
+    Nullability.castToNonnull(keysAndValues)[size() - 1] = key;
+    Nullability.castToNonnull(keysAndValues)[Nullability.castToNonnull(keysAndValues).length - 1] =
+        value;
     return null;
   }
 
