@@ -11,7 +11,6 @@
 package com.ibm.wala.util.collections;
 
 import com.ibm.wala.util.debug.UnimplementedError;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -91,7 +90,7 @@ public class BimodalMap<K, V> implements Map<K, V> {
   private void transferBackingStore() {
     assert backingStore instanceof SmallMap;
     SmallMap<K, V> S = (SmallMap<K, V>) backingStore;
-    backingStore = HashMapFactory.make(2 * Nullability.castToNonnull(S).size());
+    backingStore = HashMapFactory.make(2 * S.size());
     backingStore.putAll(S);
   }
 
