@@ -289,7 +289,6 @@ public class SparseNumberedLabeledEdgeManager<T, U>
     return defaultLabel;
   }
 
-  @Nullable
   @Override
   public IntSet getPredNodeNumbers(T node, U label) throws IllegalArgumentException {
     return getManagerForLabel(label).getPredNodeNumbers(node);

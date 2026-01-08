@@ -166,12 +166,9 @@ public class Acyclic {
       if (first == G.getNumber(src)) {
         result.add(p);
       } else {
-        T firstNode = acyclic.getNode(first);
-        if (firstNode != null) {
-          for (IntIterator it = acyclic.getPredNodeNumbers(firstNode).intIterator();
-              it.hasNext(); ) {
-            worklist.add(Path.prepend(it.next(), p));
-          }
+        for (IntIterator it = acyclic.getPredNodeNumbers(acyclic.getNode(first)).intIterator();
+            it.hasNext(); ) {
+          worklist.add(Path.prepend(it.next(), p));
         }
       }
     }
