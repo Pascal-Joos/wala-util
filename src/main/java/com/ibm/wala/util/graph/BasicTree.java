@@ -36,11 +36,7 @@ public class BasicTree<T> {
 
   @Nullable
   public T getChildValue(int i) {
-    if (children.get(i) == null) {
-      return null;
-    } else {
-      return children.get(i).getRootValue();
-    }
+    return (children.get(i) == null) ? null : children.get(i).getRootValue();
   }
 
   public BasicTree<T> getChild(int i) {

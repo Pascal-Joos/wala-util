@@ -10,10 +10,13 @@
  */
 package com.ibm.wala.util.graph;
 
+import javax.annotation.Nullable;
+
 /** */
 public interface OrderedMultiGraph<T> extends Graph<T> {
 
   /** get the ith successor of a node */
+  @Nullable
   public T getSuccessor(T node, int i);
 
   /** add an edge and record it so dst is the ith successor of src */
