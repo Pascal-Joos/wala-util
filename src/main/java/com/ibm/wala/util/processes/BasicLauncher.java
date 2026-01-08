@@ -10,7 +10,6 @@
  */
 package com.ibm.wala.util.processes;
 
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -61,11 +60,11 @@ public class BasicLauncher extends Launcher {
     }
     if (isCaptureErr()) {
       Drainer d = (Drainer) d1;
-      setStdErr(Nullability.castToNonnull(d.getCapture()).toByteArray());
+      setStdErr(d.getCapture().toByteArray());
     }
     if (isCaptureOutput()) {
       Drainer d = (Drainer) d2;
-      setStdOut(Nullability.castToNonnull(d.getCapture()).toByteArray());
+      setStdOut(d.getCapture().toByteArray());
     }
     return p.exitValue();
   }
