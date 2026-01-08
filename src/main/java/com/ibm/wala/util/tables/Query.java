@@ -11,6 +11,7 @@
 package com.ibm.wala.util.tables;
 
 import com.ibm.wala.util.collections.HashSetFactory;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class Query {
     Collection<Map<String, T>> result = new ArrayList<>();
     for (int i = 0; i < t.getNumberOfRows(); i++) {
       Map<String, T> p = t.row2Map(i);
-      if (p.get(column).equals(value)) {
+      if (Nullability.castToNonnull(p.get(column)).equals(value)) {
         result.add(p);
       }
     }
