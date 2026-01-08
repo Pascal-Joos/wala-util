@@ -31,7 +31,6 @@ public class SimpleVector<T> implements IVector<T> {
   /**
    * @see com.ibm.wala.util.intset.IntVector#get(int)
    */
-  @Nullable
   @Override
   @SuppressWarnings("unchecked")
   public T get(int x) {

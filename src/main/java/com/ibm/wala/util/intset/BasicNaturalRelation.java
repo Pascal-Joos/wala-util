@@ -204,9 +204,6 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
           nextIndex = getFirstIndex(i);
           if (nextIndex == smallStore.length) {
             IntSet s = delegateStore.get(i);
-            if (s == null) {
-              return;
-            }
             assert s.size() > 0;
             delegateIterator = s.intIterator();
           }
@@ -258,7 +255,6 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
     }
   }
 
-  @Nullable
   private IntSet getDelegate(int x) {
     return delegateStore.get(x);
   }
@@ -328,11 +324,7 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
       return 0;
     } else {
       if (usingDelegate(x)) {
-        IntSet delegate = getDelegate(x);
-        if (delegate == null) {
-          return 0;
-        }
-        return delegate.size();
+        return getDelegate(x).size();
       } else {
         int result = 0;
         for (IntVector element : smallStore) {
@@ -357,9 +349,6 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
     if (usingDelegate(x)) {
       // TODO: switch representation back to small store?
       MutableIntSet s = (MutableIntSet) delegateStore.get(x);
-      if (s == null) {
-        return;
-      }
       s.remove(y);
       if (s.size() == 0) {
         delegateStore.set(x, null);
@@ -429,11 +418,7 @@ public final class BasicNaturalRelation implements IBinaryNaturalRelation, Seria
       throw new IllegalArgumentException("invalid y: " + y);
     }
     if (usingDelegate(x)) {
-      IntSet delegate = getDelegate(x);
-      if (delegate == null) {
-        return false;
-      }
-      return delegate.contains(y);
+      return getDelegate(x).contains(y);
     } else {
       for (IntVector element : smallStore) {
         if (element.get(x) == y) {
