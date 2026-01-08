@@ -22,7 +22,6 @@ import com.ibm.wala.util.intset.IntIterator;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.IntSetUtil;
 import com.ibm.wala.util.intset.MutableIntSet;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -107,7 +106,7 @@ public class ExtensionGraph<T> implements NumberedGraph<T> {
           assert !original.hasEdge(src, dst);
           assert containsNode(src) && containsNode(dst);
           inEdges.get(dst).remove(getNumber(src));
-          Nullability.castToNonnull(outEdges.get(src)).remove(getNumber(dst));
+          outEdges.get(src).remove(getNumber(dst));
         }
 
         @Override
