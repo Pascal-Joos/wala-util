@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public T next() {
+    return mapping == null ? null : mapping.getMappedObject(it.next());
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,61 @@
+<response>
+    <reason><![CDATA[
+The parameter of interest is `set` in:
+
+private boolean addAllInternal(SparseIntSet set)
+
+Within this method, `set` is never reassigned or modified; it is only:
+- dereferenced (`set.isEmpty()`),
+- and passed to `MutableSparseIntSet.make(set)` and `privatePart.addAll(set)`.
+
+So the question reduces to: can any call site invoke `addAllInternal` with `set == null`?
+
+From the provided call chain:
+
+1. Direct calls to this overload:
+   - In `MutableSharedBitVectorIntSet.addAll(IntSet set)`:
+
+     ```java
+     @Override
+     public boolean addAll(IntSet set) throws IllegalArgumentException {
+       if (set == null) {
+         throw new IllegalArgumentException("set == null");
+       }
+       ...
+       } else if (set instanceof SparseIntSet) {
+         boolean result = addAllInternal((SparseIntSet) set);
+         ...
+       } else if (set instanceof DebuggingMutableIntSet) {
+         SparseIntSet temp = new SparseIntSet(set);
+         boolean result = addAllInternal(temp);
+         ...
+       }
+       ...
+     }
+     ```
+
+     - A null check is performed at the very start; if `set` is null, an `IllegalArgumentException` is thrown, so the method does not proceed to any `addAllInternal` call.
+     - The call `addAllInternal((SparseIntSet) set)` casts a non-null `set` to `SparseIntSet`, so the argument passed to `addAllInternal` is non-null.
+     - For the `DebuggingMutableIntSet` branch, `temp` is created as `new SparseIntSet(set)` where `set` is already non-null. `temp` itself is a freshly constructed object, hence non-null when passed to `addAllInternal(temp)`.
+
+   - In other methods at depth 2, such as:
+     ```java
+     private boolean addAllInIntersectionInternal(SparseIntSet other, IntSet filter) {
+         ...
+         return addAll(temp);
+     }
+     ```
+     this calls `addAll(IntSet)` again, not `addAllInternal(SparseIntSet)` directly. Thus, these still go through the same `addAll(IntSet)` null-checking entry point before they can invoke `addAllInternal(SparseIntSet)`.
+
+2. No other direct caller:
+   - In `MutableSharedBitVectorIntSet.addAll(MutableSharedBitVectorIntSet set)`, the calls to `addAllInternal` are on `set.privatePart`, which is a `MutableSparseIntSet`, not a `SparseIntSet`. The provided code for this method does not show any call to `addAllInternal(SparseIntSet)`; it only calls `addAllInternal(set.privatePart)` where `privatePart` is of a different type (this refers to another overload, e.g., `addAllInternal(MutableSparseIntSet)` or similar). The `SparseIntSet` overload is only reached via `addAll(IntSet)` in the provided chain.
+
+3. Higher-level callers (`BitVectorVariable.addAll(...)`, `copySet`, `union`, `addAllInIntersectionGeneral`, `addAllInIntersectionInternal`) all call `MutableSharedBitVectorIntSet.addAll(IntSet)` or other overloads that in turn funnel through `addAll(IntSet)`. All such paths to this overload of `addAllInternal(SparseIntSet)` thus inherit the non-null guarantee from the `addAll(IntSet)` null check.
+
+Given the provided code, there is no call path where `addAllInternal(SparseIntSet set)` is invoked with a null `set`:
+- The only visible entry that calls this overload checks for `set == null` and throws before dispatching.
+- All constructed `SparseIntSet` instances passed in (e.g., `new SparseIntSet(set)`) are non-null by construction.
+
+Therefore, under the given context and call chain, the parameter `set` of `addAllInternal(SparseIntSet set)` cannot be null.]]></reason>
+    <value>NO</value>
+</response>

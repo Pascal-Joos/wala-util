@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method, the assignment at the line conceptually written as `result.elements[k] = j;` is always performed through the local variable `resultElements`, which is initialized as:
+
+    long[] resultElements = Nullability.castToNonnull(result.elements);
+
+Before that cast, the code explicitly checks:
+
+    if (result.elements == null) {
+        return SparseLongSet.singleton(j);
+    }
+
+So along any path that reaches the assignment, the following holds:
+
+1. A new `SparseLongSet` is created: `SparseLongSet result = new SparseLongSet(s.size + 1);`
+2. Immediately afterwards, `result.elements` is checked for null:
+   - If `result.elements == null`, the method returns early and does not proceed.
+   - Therefore, any subsequent execution (including the cast and the writes) is in a context where `result.elements != null`.
+3. `Nullability.castToNonnull(result.elements)` is then called. By its name and typical contract, this is a helper used to treat an already-checked reference as non-null, not to change its value.
+4. All writes to the array use `resultElements[...] = ...`, which refers to the same non-null array as `result.elements` in this control flow.
+
+Since there is an explicit null check on `result.elements` just before the cast, and no intervening assignments to `result.elements` that could introduce null, there is no execution path in this method where the line that performs the assignment (conceptually `result.elements[k] = j;`, implemented as `resultElements[k] = ...;`) can observe `result.elements` as null.
+
+Thus, under the semantics implied by the method and the null check, the expression `result.elements` at the point where it is used for the assignment cannot be null.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

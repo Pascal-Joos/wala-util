@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+        public void removeEdge(T src, T dst) throws UnsupportedOperationException {
+          assert hasEdge(src, dst);
+          assert !original.hasEdge(src, dst);
+          assert containsNode(src) && containsNode(dst);
+          Nullability.castToNonnull(inEdges.get(dst)).remove(getNumber(src));
+          outEdges.get(src).remove(getNumber(dst));
+}
+  ```
+    ]]>
+  </code>
+</response>

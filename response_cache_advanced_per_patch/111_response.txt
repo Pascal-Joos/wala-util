@@ -1,0 +1,109 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+IntSet tos = G.getSuccNodeNumbers(from);
+```
+
+`G` is a `NumberedGraph<T>` used inside `FloydWarshall.allPairsShortestPaths()`.
+
+The dynamic dispatch chain is:
+
+1. `FloydWarshall.allPairsShortestPaths` calls:
+   ```java
+   IntSet tos = G.getSuccNodeNumbers(from);
+   ```
+2. `G` is a `NumberedGraph<T>`, whose implementation path (as given) is:
+   ```java
+   AbstractNumberedGraph.getSuccNodeNumbers(T node) {
+     return getEdgeManager().getSuccNodeNumbers(node);
+   }
+   ```
+3. The `EdgeManager` may be one of the provided implementations.
+
+From the supplied code, the concrete implementations that actually implement `getSuccNodeNumbers` are:
+
+- `EdgeFilteredNumberedGraph$Edges`:
+  ```java
+  @Override
+  public IntSet getSuccNodeNumbers(T node) {
+    return getFilteredNodeNumbers(
+        node,
+        Nullability.castToNonnull(delegate.getSuccNodeNumbers(node)));
+  }
+  ```
+  Here:
+  - The value coming from `delegate.getSuccNodeNumbers(node)` is explicitly wrapped by `Nullability.castToNonnull(...)`, which is a clear contract that `delegate.getSuccNodeNumbers(node)` must be non-null. If it were null, this cast helper would (by design) throw, not return null.
+  - `getFilteredNodeNumbers(node, …)` is then called with this non-null argument. The result of `getFilteredNodeNumbers` is returned directly. However, we have no implementation of `getFilteredNodeNumbers`, so we cannot assume it is non-null.
+
+- `ExtensionGraph$1`:
+  ```java
+  @Override
+  public IntSet getSuccNodeNumbers(T node) {
+    if (original.containsNode(node)) {
+      if (outEdges.containsKey(node)) {
+        MutableIntSet x = IntSetUtil.makeMutableCopy(
+            Nullability.castToNonnull(original.getSuccNodeNumbers(node)));
+        x.addAll(outEdges.get(node));
+        return x;
+      } else {
+        return original.getSuccNodeNumbers(node);
+      }
+    } else {
+      if (outEdges.containsKey(node)) {
+        return outEdges.get(node);
+      } else {
+        return EmptyIntSet.instance;
+      }
+    }
+  }
+  ```
+  In this implementation:
+  - `IntSetUtil.makeMutableCopy(...)` receives a non-null argument via `Nullability.castToNonnull(original.getSuccNodeNumbers(node))`. Again, if the original were null, that cast helper would be expected to throw.
+  - All explicit return statements either:
+    - return `x` (a newly created `MutableIntSet`, hence non-null),
+    - delegate to `original.getSuccNodeNumbers(node)`, or
+    - return `outEdges.get(node)` or `EmptyIntSet.instance`.
+  - Potential null-risk is only from:
+    - `original.getSuccNodeNumbers(node)` (delegate, unknown here),
+    - `outEdges.get(node)` (map lookup, may be null in general Java semantics, although a typical WALA implementation would store a non-null `IntSet`).
+
+- `ExtensionGraph`:
+  ```java
+  @Override
+  public IntSet getSuccNodeNumbers(T node) {
+    return edgeManager.getSuccNodeNumbers(node);
+  }
+  ```
+  Again, this just defers to `edgeManager.getSuccNodeNumbers(node)`.
+
+- `InvertingNumberedEdgeManager`:
+  ```java
+  @Override
+  public IntSet getPredNodeNumbers(T node) {
+    return original.getSuccNodeNumbers(node);
+  }
+  ```
+  This does not affect the given call site directly but shows there is further delegation in the system.
+
+Crucially, for this question we must reason *only* from the code supplied and not assume anything about methods whose implementations are not shown. The return value at this call site ultimately depends on:
+
+- `delegate.getSuccNodeNumbers(node)` (inside `EdgeFilteredNumberedGraph$Edges`),
+- `getFilteredNodeNumbers(...)` (inside `EdgeFilteredNumberedGraph$Edges`),
+- `original.getSuccNodeNumbers(node)` (inside `ExtensionGraph$1`),
+- `outEdges.get(node)` (inside `ExtensionGraph$1`),
+- and potentially other `EdgeManager` implementations reachable through `getEdgeManager()` that are not shown.
+
+Because the implementations of several of these key methods (`getFilteredNodeNumbers`, `getEdgeManager`, the various `getSuccNodeNumbers` on `delegate`/`original`, and `Nullability.castToNonnull`) are not provided, it is not sound to conclude that `G.getSuccNodeNumbers(from)` can *never* be null at this specific call site. The framework conventions (use of `Nullability.castToNonnull` and `EmptyIntSet.instance`) strongly suggest non-null in typical WALA usage, but by the rules given we must base the answer only on concrete code: any of the delegated calls might legally return null, and in at least one path such a value could be propagated (e.g., `return original.getSuccNodeNumbers(node);` or `return outEdges.get(node);`) without an intervening cast-to-nonnull.
+
+Therefore, from the information provided, we cannot rule out a null being returned at this call site without seeing the declarations/implementations of the key delegate methods listed below.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getEdgeManager</method>
+    <method>getFilteredNodeNumbers</method>
+    <method>delegate.getSuccNodeNumbers</method>
+    <method>original.getSuccNodeNumbers</method>
+    <method>Nullability.castToNonnull</method>
+  </methods>
+</response>

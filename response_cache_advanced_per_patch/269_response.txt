@@ -1,0 +1,27 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided snippet we only know:
+
+@Override
+public void foreach(IntSetAction action) {
+    impl.foreach(action);
+}
+
+The nullability of `impl` at the call site `impl.foreach(action);` depends entirely on how `impl` is declared, initialized, and possibly reassigned elsewhere in the class (or via constructors, setters, or factory methods).
+
+The snippet does not show:
+- The field or variable declaration for `impl` (e.g., `private final IntSet impl;` vs `private IntSet impl;`).
+- Any constructor(s) or initialization logic that would guarantee `impl` is always assigned a non-null value.
+- Any invariants or contracts (e.g., annotations like `@NonNull`, defensive checks, or documentation) that guarantee `impl` cannot be null.
+- Whether there are code paths where `impl` might be explicitly set to `null`.
+
+Without this information, we cannot soundly conclude that `impl` is always non-null, nor can we prove that it can become null. Therefore, from the given code alone, the nullability of `impl` is indeterminate.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of the `impl` field/variable (including its type and any annotations).]]></request>
+        <request><![CDATA[Provide the constructors and any methods that assign to `impl`, including any places where it might be set to null.]]></request>
+    </requests>
+</response>
+```

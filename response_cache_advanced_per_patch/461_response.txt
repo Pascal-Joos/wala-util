@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void clear() {
+    sparsePart = MutableSparseIntSet.makeEmpty();
+    densePart = null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

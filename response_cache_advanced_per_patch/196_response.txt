@@ -1,0 +1,63 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean sameBits(OffsetBitVector set) throws IllegalArgumentException {
+      if (set == null) {
+        throw new IllegalArgumentException("set == null");
+      }
+      if (set.bits == null) {
+        throw new IllegalArgumentException("set.bits == null");
+      }
+      if (this == set) { // should help alias analysis
+        return true;
+      }
+
+      if (bits == null) {
+        throw new IllegalArgumentException("bits == null");
+      }
+  
+      int wordDiff = wordDiff(offset, set.offset);
+      int maxWord = Math.min(bits.length, set.bits.length - wordDiff);
+  
+      int i = 0;
+  
+      if (wordDiff < 0) {
+        for (; i < -wordDiff; i++) {
+          if (bits[i] != 0) {
+            return false;
+          }
+        }
+      } else {
+        for (int j = 0; j < wordDiff; j++) {
+          if (set.bits[j] != 0) {
+            return false;
+          }
+        }
+      }
+  
+      for (; i < maxWord; i++) {
+        if (bits[i] != set.bits[i + wordDiff]) {
+          return false;
+        }
+      }
+  
+      for (int j = maxWord + wordDiff; j < set.bits.length; j++) {
+        if (set.bits[j] != 0) {
+          return false;
+        }
+      }
+  
+      for (; i < bits.length; i++) {
+        if (bits[i] != 0) {
+          return false;
+        }
+      }
+  
+      return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

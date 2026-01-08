@@ -1,0 +1,40 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public int[][] allPairsShortestPaths() {
+      final int[][] result = new int[G.getNumberOfNodes()][G.getNumberOfNodes()];
+  
+      for (int[] ints : result) {
+        Arrays.fill(ints, Integer.MAX_VALUE);
+      }
+  
+      for (T from : G) {
+        final int fn = G.getNumber(from);
+        IntSet tos = Nullability.castToNonnull(G.getSuccNodeNumbers(from));
+        Nullability.castToNonnull(tos).foreach(x -> result[fn][x] = edgeCost());
+      }
+  
+      for (T kn : G) {
+        int k = G.getNumber(kn);
+        for (T in : G) {
+          int i = G.getNumber(in);
+          for (T jn : G) {
+            int j = G.getNumber(jn);
+            long newLen = (long) result[i][k] + (long) result[k][j];
+            if (newLen <= result[i][j]) {
+              pathCallback(i, j, k);
+            }
+            if (newLen < result[i][j]) {
+              result[i][j] = (int) newLen;
+            }
+          }
+        }
+      }
+  
+      return result;
+}
+  ```
+    ]]>
+  </code>
+</response>

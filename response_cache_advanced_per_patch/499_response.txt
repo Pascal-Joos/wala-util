@@ -1,0 +1,15 @@
+<response>
+  <reason><![CDATA[
+Based solely on the method body:
+
+```java
+public ByteArrayOutputStream getCapture() {
+    return capture;
+}
+```
+
+the return value is exactly the value of the field `capture`. There are no checks, assignments, or method calls in this method that could change or guarantee the non-nullness of `capture`. Since we have no information about how or where `capture` is initialized or assigned, it is entirely possible that `capture` was never set or was explicitly set to `null`.
+
+Because of this, there exists a possible execution where `capture` is `null`, and in that case this method will return `null`. Therefore, based only on this body, the method can return `null`.]]></reason>
+  <value>YES</value>
+</response>

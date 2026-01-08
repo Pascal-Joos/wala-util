@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int hashCode() {
+    int[] localBits = bits;
+    int h = 1234;
+    for (int i = localBits.length - 1; i >= 0; ) {
+      h ^= localBits[i] * (i + 1);
+      i--;
+    }
+    return h;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,6 @@
+<response>
+    <reason><![CDATA[
+The method name `addAllInIntersection` does not start with `init` or `initialize`, and it is not one of the known framework lifecycle methods (e.g., `onCreate`, `init` in standard APIs). Although it mutates internal state (`impl`), by the given criteria this makes it a regular mutator (akin to a setter-like operation) rather than a designated initializer method that NullAway should treat as part of the object’s construction/initialization phase. Therefore it should not be considered an initializer method for NullAway’s purposes.
+    ]]></reason>
+    <value>NO</value>
+</response>

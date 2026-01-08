@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public final boolean get(int bit) {
+    if (bit < 0) {
+      throw new IllegalArgumentException("illegal bit: " + bit);
+    }
+    if (bits == null) {
+      return false;
+    }
+    int ss = subscript(bit);
+    if (ss >= bits.length) {
+      return false;
+    }
+    int shiftBits = bit & LOW_MASK;
+    return ((bits[ss] & (1 << shiftBits)) != 0);
+  }
+  ```
+    ]]>
+  </code>
+</response>

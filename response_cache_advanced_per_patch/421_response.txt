@@ -1,0 +1,21 @@
+```xml
+<response>
+    <reason><![CDATA[
+We are checking whether the *expression* `elements` at the line `if (!X.contains(elements[i])) {` can be null.
+
+Control flow in `foreachExcluding`:
+
+1. `X` is checked for null and rejected with an exception if null.
+2. `action` is checked for null and rejected with an exception if null.
+3. `if (elements == null) { return; }` — this is an early return that exits the method immediately if `elements` is null.
+4. Only after passing this null check does execution reach the `for` loop:
+   - At this point, control flow guarantees `elements != null`.
+   - Therefore, at the line `if (!X.contains(elements[i])) {`, the variable `elements` itself cannot be null.
+
+This reasoning does not depend on the contents of the `elements` array (e.g., `elements[i]`) or on the contract of `X.contains`; it only concerns the nullness of the array reference `elements`, which is definitively checked and short-circuited before use.
+
+Given the provided method, there is no path where `elements` is null at that line.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

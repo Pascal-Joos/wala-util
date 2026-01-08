@@ -1,0 +1,21 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the method body, the only relevant code path is:
+
+public boolean contains(T object) {
+    if (this == EMPTY || S == null || mapping == null || object == null) {
+      return false;
+    }
+    int index = mapping.getMappedIndex(object);
+    return (index == -1) ? false : S.contains(index);
+}
+
+Before the line `int index = mapping.getMappedIndex(object);` executes, there is a compound if-condition that explicitly checks `mapping == null`. If `mapping` is null, the method returns `false` immediately and the subsequent line is never executed.
+
+Thus, along every execution path that reaches `mapping.getMappedIndex(object)`, `mapping` has been proven non-null by the preceding null check. No reassignments to `mapping` occur between the null check and the method call, and there are no other early exits or side effects shown that could invalidate this guarantee.
+
+Therefore the expression `mapping` at the line `int index = mapping.getMappedIndex(object);` cannot be null when executed.]]></reason>
+    <value>NO</value>
+</response>
+```

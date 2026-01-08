@@ -1,0 +1,37 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public int launch() throws IllegalArgumentException, IOException {
+    Process p = spawnProcess(getCmd());
+    Thread d1 = isCaptureErr() ? captureStdErr(p) : drainStdErr(p);
+    Thread d2 = isCaptureOutput() ? captureStdOut(p) : drainStdOut(p);
+    if (getInput() != null) {
+      try (final BufferedOutputStream input = new BufferedOutputStream(p.getOutputStream())) {
+        input.write(getInput(), 0, getInput().length);
+        input.flush();
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new IOException("error priming stdin", e);
+      }
+    }
+    try {
+      d1.join();
+      d2.join();
+    } catch (InterruptedException e) {
+      throw new Error("Internal error", e);
+    }
+    if (isCaptureErr()) {
+      Drainer d = (Drainer) d1;
+      setStdErr(Nullability.castToNonnull(d.getCapture()).toByteArray());
+    }
+    if (isCaptureOutput()) {
+      Drainer d = (Drainer) d2;
+      setStdOut(d.getCapture().toByteArray());
+    }
+    return p.exitValue();
+}
+  ```
+    ]]>
+  </code>
+</response>

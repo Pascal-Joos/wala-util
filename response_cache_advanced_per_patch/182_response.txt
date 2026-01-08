@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public final int length() {
+    return (bits == null ? 0 : bits.length << LOG_BITS_PER_UNIT);
+  }
+  ```
+    ]]>
+  </code>
+</response>

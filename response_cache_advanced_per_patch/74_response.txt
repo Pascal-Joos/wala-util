@@ -1,0 +1,40 @@
+<response>
+  <reason><![CDATA[
+At the call site, the value returned by succs.get(N) depends entirely on what was previously stored by:
+
+```java
+private void setSuccNodes(E N) {
+    succs.put(N, getConnected(N, G::getSuccNodes));
+}
+```
+
+Inside getSuccNodeCount:
+
+```java
+public int getSuccNodeCount(E N) {
+  if (!succs.containsKey(N)) {
+    setSuccNodes(N);
+  }
+  return succs.get(N).size();
+}
+```
+
+The logic guarantees that before succs.get(N) is called, succs.containsKey(N) is true (otherwise setSuccNodes(N) is invoked). However, Map.containsKey(k) only guarantees that there is an entry for key k; it does not guarantee that the associated value is non-null. It is legal in Java to put a null value into a Map for an existing key.
+
+Here, the value put for key N is the result of:
+
+```java
+getConnected(N, G::getSuccNodes)
+```
+
+We are not given the declaration or contract of getConnected. Per the instructions, we cannot assume anything about its return value (including non-nullity) without its full declaration. If getConnected can return null, then succs.put(N, null) is possible, and subsequently succs.get(N) would return null at this call site, causing a NullPointerException on .size().
+
+Therefore, without the declaration of getConnected, we cannot safely conclude that succs.get(N) is non-null. It is possible that getConnected returns null, making succs.get(N) null at this call site.
+
+To decide confidently, we need the declaration of getConnected.
+]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getConnected</method>
+  </methods>
+</response>

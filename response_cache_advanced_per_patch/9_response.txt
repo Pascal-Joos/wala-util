@@ -1,0 +1,33 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+BitVectorVariable v = solver.getOut(n);
+```
+
+the method executed is:
+
+```java
+public V getOut(Object node) {
+    assert node != null;
+    V v = node2Out.get(node);
+    assert v != null : "no out set for " + node;
+    return v;
+}
+```
+
+The only way this method could return null is if `node2Out.get(node)` evaluates to `null` and the method then returns that value. However, immediately after the map lookup, there is:
+
+```java
+assert v != null : "no out set for " + node;
+```
+
+If `v` were null, this assertion would fail and the method would throw an `AssertionError` instead of returning. By your rules, exception paths are not considered null returns.
+
+Thus, along every *normal* (non-exceptional) return path from `getOut`, `v` is guaranteed to be non-null at this call site. If the program continues past this call, `v` cannot be null. If the mapping is missing, the program does not return a null value; it aborts with an assertion failure.
+
+Therefore, `solver.getOut(n)` cannot return null at this specific call site.
+]]></reason>
+  <value>NO</value>
+</response>

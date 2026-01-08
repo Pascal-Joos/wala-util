@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public void foreachExcluding(LongSet X, LongSetAction action) {
+      if (X == null) {
+        throw new IllegalArgumentException("null X");
+      }
+      if (action == null) {
+        throw new IllegalArgumentException("null action");
+      }
+      if (elements == null) {
+        return;
+      }
+      long[] nonnullElements = Nullability.castToNonnull(elements);
+      for (int i = 0; i < size; i++) {
+        if (!X.contains(nonnullElements[i])) {
+          action.act(nonnullElements[i]);
+        }
+      }
+}
+  ```
+    ]]>
+  </code>
+</response>

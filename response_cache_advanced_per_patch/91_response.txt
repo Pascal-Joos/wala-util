@@ -1,0 +1,74 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no explicit guarantee that
+`acyclic.getPredNodeNumbers(acyclic.getNode(first))` is non-null.
+
+Key points in the control flow:
+
+1. `acyclic` is initialized as:
+   `EdgeFilteredNumberedGraph<T> acyclic = new EdgeFilteredNumberedGraph<>(G, computeBackEdges(G, root));`
+   so `acyclic` itself is non-null.
+
+2. The loop uses:
+   ```java
+   int first = p.get(0);
+   ...
+   for (IntIterator it = acyclic.getPredNodeNumbers(acyclic.getNode(first)).intIterator();
+        it.hasNext(); ) {
+       worklist.add(Path.prepend(it.next(), p));
+   }
+   ```
+   The potential null subexpression is:
+   `acyclic.getPredNodeNumbers(acyclic.getNode(first))`.
+
+3. `first` comes from `p.get(0)`, and `p` values are created only by:
+   - `Path sinkPath = Path.make(G.getNumber(sink));`
+   - `Path.prepend(it.next(), p)` where `it` iterates over values returned from
+     `acyclic.getPredNodeNumbers(acyclic.getNode(first)).intIterator()`.
+
+   So all `first` values are either `G.getNumber(sink)` or predecessors returned from
+   `acyclic.getPredNodeNumbers(...)`. However, that only constrains the *range* of
+   node numbers, not the *nullability* of the `getPredNodeNumbers` result.
+
+4. Whether `getPredNodeNumbers(Node)` can return null is entirely dependent on
+   the contract and implementation of:
+   - `EdgeFilteredNumberedGraph.getPredNodeNumbers(...)`
+   - `EdgeFilteredNumberedGraph.getNode(int)` (to ensure `getNode(first)` is valid)
+   - and potentially the `NumberedGraph` interface that `EdgeFilteredNumberedGraph`
+     wraps.
+
+   Typical graph APIs either:
+   - Return an empty iterator / empty collection instead of null for "no predecessors",
+     or
+   - May return null if they use null as "no predecessors" or for invalid nodes.
+
+   Nothing in this snippet checks for null or guards these methods, and the
+   method signatures and contracts for these graph APIs are not provided.
+   Without knowing whether:
+   - `getNode(first)` is guaranteed to return a valid, non-null node for any
+     integer that can appear in a `Path`, and
+   - `getPredNodeNumbers(...)` is specified to never return null (e.g., always
+     returns an empty `IntSet` / `IntCollection`),
+
+   we cannot conclude that `acyclic.getPredNodeNumbers(acyclic.getNode(first))`
+   is always non-null.
+
+   Therefore, from the code shown and absent the external API contracts,
+   we cannot definitively rule out null.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[
+Provide the interface or implementation (or Javadoc/contract) of:
+- NumberedGraph
+- EdgeFilteredNumberedGraph
+specifically the methods:
+- Node getNode(int number);
+- IntSet/IntCollection getPredNodeNumbers(Node n);
+and any documented guarantees about nullability or behavior for nodes with
+no predecessors or for invalid node numbers.
+        ]]></request>
+    </requests>
+</response>
+```

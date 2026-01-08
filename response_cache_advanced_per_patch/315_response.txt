@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean addAll(IntSet set) {
+      if (impl == null) {
+        return false;
+      }
+      if (set instanceof BitVectorIntSet && !(impl instanceof BitVectorIntSet)) {
+        // change the representation before performing the operation
+        impl = new BitVectorIntSet(impl);
+      }
+      boolean result = Nullability.castToNonnull(impl).addAll(set);
+      if (result) {
+        maybeChangeRepresentation();
+      }
+      return result;
+}
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,10 @@
+```xml
+<response>
+    <reason><![CDATA[
+The expression in question is literally `return null;`. In Java, the `null` literal is always the null reference. There is no control flow, variable assignment, or method call that can change this fact: when execution reaches that `else` branch, the method will return a null reference of type `T`.
+
+Your analysis requirements (control flow, variable assignments, contracts, etc.) are relevant for determine whether expressions *might* evaluate to null, but here the expression itself is the null literal, with no conditions or transformations applied to it. Therefore, the returned value at that line is definitively null.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

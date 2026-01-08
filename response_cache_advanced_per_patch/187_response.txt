@@ -1,0 +1,22 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public final boolean intersectionEmpty(BitVector other) {
+    if (other == null || other.bits == null) {
+      throw new IllegalArgumentException("other is null");
+    }
+    int n = Math.min(bits.length, other.bits.length);
+    for (int i = n - 1; i >= 0; ) {
+      if ((bits[i] & other.bits[i]) != 0) {
+        return false;
+      }
+      i--;
+    }
+    return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

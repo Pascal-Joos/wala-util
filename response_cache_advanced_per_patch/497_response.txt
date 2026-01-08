@@ -1,0 +1,28 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided code, we only know that `getCapture()` returns the field `capture`:
+
+public ByteArrayOutputStream getCapture() {
+      return capture;
+}
+
+There is no information about:
+- where and how `capture` is declared,
+- how and when `capture` is initialized,
+- whether `capture` is ever assigned a non-null value,
+- whether `capture` is annotated as non-null (e.g., @NotNull),
+- or whether any invariants/constructors guarantee it is always non-null.
+
+Without seeing the field declaration, its initialization (e.g., in constructors, setters, or factory methods), or any class-level contracts, it is not possible to determine if `capture` can be null at the point of `return capture;`.
+
+Therefore, based solely on the given snippet, we cannot conclude whether `capture` is guaranteed to be non-null.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of the field `capture` (including any annotations), e.g., its type, modifiers, and where it is defined in the class.]]></request>
+        <request><![CDATA[Provide the class constructors and any methods that assign a value to `capture`, so we can see if it is always initialized to a non-null ByteArrayOutputStream before `getCapture()` is called.]]></request>
+        <request><![CDATA[If available, provide any relevant documentation or contracts (e.g., Javadoc, annotations like @NotNull/@Nullable) that describe whether `getCapture()` or `capture` should ever be null.]]></request>
+    </requests>
+</response>
+```

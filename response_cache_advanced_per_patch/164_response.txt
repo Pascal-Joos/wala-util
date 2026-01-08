@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void andNot(OffsetBitVector set) throws IllegalArgumentException {
+    if (set == null) {
+      throw new IllegalArgumentException("set == null");
+    }
+    if (this == set) {
+      clearAll();
+      return;
+    }
+
+    int[] setBits = set.bits;
+    int wordDiff = wordDiff(offset, set.offset);
+    int maxWord = Math.min(bits.length, setBits.length - wordDiff);
+
+    int i = Math.max(0, -wordDiff);
+
+    for (; i < maxWord; i++) {
+      bits[i] &= ~setBits[i + wordDiff];
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

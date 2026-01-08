@@ -1,0 +1,6 @@
+<response>
+    <reason><![CDATA[
+The method name is copySet, which does not match any of the patterns NullAway treats as initializer methods (well-known framework lifecycle methods like onCreate, init, etc., or methods whose names start with "init" or "initialize"). It also represents a regular mutator/copy operation rather than a lifecycle/setup method that is guaranteed to run before any other usage of the object. Therefore, even though it assigns to fields, it should be considered a normal setter-like method, not an initializer method under the described rules.
+    ]]></reason>
+    <value>NO</value>
+</response>

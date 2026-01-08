@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private int makeHashCode() {
+        int result = operator.hashCode();
+        if (lhs != null) result += lhs.hashCode() * primes[0];
+        if (rhs != null) {
+          Object[] nonNullRhs = Nullability.castToNonnull(rhs);
+          for (int i = 0; i < Math.min(nonNullRhs.length, 2); i++) {
+            if (nonNullRhs[i] != null) {
+              result += primes[i + 1] * nonNullRhs[i].hashCode();
+            }
+          }
+        }
+        return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

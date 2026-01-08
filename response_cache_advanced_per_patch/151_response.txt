@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void clear(int bit) {
+    if (bit < offset) {
+      return;
+    }
+    bit -= offset;
+
+    if (bits == null) {
+      return;
+    }
+    int ss = subscript(bit);
+    if (ss >= bits.length) {
+      return;
+    }
+    int shiftBits = bit & LOW_MASK;
+    bits[ss] &= ~(1 << shiftBits);
+  }
+  ```
+    ]]>
+  </code>
+</response>

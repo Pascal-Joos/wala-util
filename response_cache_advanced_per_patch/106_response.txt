@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+      public IntSet getPredNodeNumbers(T node) {
+        return getFilteredNodeNumbers(node, Nullability.castToNonnull(delegate.getPredNodeNumbers(node)));
+  }
+  ```
+    ]]>
+  </code>
+</response>

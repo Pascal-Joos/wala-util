@@ -1,0 +1,34 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public static MutableIntSetFactory<?> getDefaultIntSetFactory() {
+    return defaultIntSetFactory;
+}
+```
+
+simply returns the value of the static field `defaultIntSetFactory`. There is no initialization, assignment, or invariant shown for this field in the provided code. In Java, a static reference field that is never explicitly initialized will have the default value `null`.
+
+Because:
+- The method has exactly one return path: `return defaultIntSetFactory;`
+- No other methods are involved in computing this value
+- No constraints or guarantees are shown that `defaultIntSetFactory` is ever set to a non-null value
+
+it is entirely possible, at this specific call site `IntSetUtil.getDefaultIntSetFactory()`, that `defaultIntSetFactory` is still `null`, and therefore the method can return `null`.
+
+The later code you provided (e.g., the explicit null-check in `addAll`):
+
+```java
+MutableIntSetFactory<?> factory = IntSetUtil.getDefaultIntSetFactory();
+if (factory == null) {
+  return false;
+}
+```
+
+also indicates that the library author anticipates and handles the possibility that `getDefaultIntSetFactory()` may return `null`.
+
+Since the return value does not depend on any other method and only reflects the current content of `defaultIntSetFactory`, and we have no evidence that this field is always non-null, we must treat `null` as a possible value at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

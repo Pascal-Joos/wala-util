@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+@Override
+    public boolean remove(int i) {
+      if (primaryImpl == null || secondaryImpl == null) {
+        throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+      }
+  
+      boolean result = primaryImpl.remove(i);
+      Nullability.castToNonnull(secondaryImpl).remove(i);
+      assertEquiv();
+      return result;
+}
+  ```
+    ]]>
+  </code>
+</response>

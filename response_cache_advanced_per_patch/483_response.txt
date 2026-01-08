@@ -1,0 +1,40 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public IntIterator intIterator() {
+      class DensePartIterator implements IntIterator {
+        private int i = -1;
+  
+        @Override
+        public boolean hasNext() {
+          return densePart.nextSetBit(i + 1) != -1;
+        }
+  
+        @Override
+        public int next() {
+          int next = densePart.nextSetBit(i + 1);
+          i = next;
+          return next;
+        }
+      }
+  
+      if (sparsePart == null || Nullability.castToNonnull(sparsePart).isEmpty()) {
+        if (densePart == null || densePart.isZero()) {
+          return EmptyIntIterator.instance();
+        } else {
+          return new DensePartIterator();
+        }
+      } else {
+        if (densePart == null || densePart.isZero()) {
+          return Nullability.castToNonnull(sparsePart).intIterator();
+        } else {
+          return new CompoundIntIterator(Nullability.castToNonnull(sparsePart).intIterator(), new DensePartIterator());
+        }
+      }
+    }
+  ```
+    ]]>
+  </code>
+</response>

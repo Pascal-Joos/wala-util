@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public int nextSetBit(int start) {
+      if (start < 0) {
+        throw new IllegalArgumentException("illegal start: " + start);
+      }
+      if (bits == null) {
+        return -1;
+      }
+      int word = subscript(start);
+      int bit = (1 << (start & LOW_MASK));
+      while (word < bits.length) {
+        if (bits[word] != 0) {
+          do {
+            if ((bits[word] & bit) != 0) return start;
+            bit <<= 1;
+            start++;
+          } while (bit != 0);
+        } else {
+          start += (BITS_PER_UNIT - (start & LOW_MASK));
+        }
+
+        word++;
+        bit = 1;
+      }
+
+      return -1;
+  }
+  ```
+    ]]>
+  </code>
+</response>

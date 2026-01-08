@@ -1,0 +1,94 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+IntSet s = delegateStore.get(i);
+```
+
+`delegateStore` is an `IVector<IntSet>` implemented by `TwoLevelVector`. Its `get(int x)` method is:
+
+```java
+public T get(int x) {
+  if (x < 0) {
+    throw new IllegalArgumentException("invalid x: " + x);
+  }
+  int page = getPageNumber(x);
+  if (page >= data.size()) {
+    return null;
+  }
+  IVector<T> v = data.get(page);
+  if (v == null) {
+    return null;
+  }
+  int localX = x - getFirstIndexOnPage(page);
+  return v.get(localX);
+}
+```
+
+From this code alone, `get(x)` can clearly return null in three cases:
+
+1. `page >= data.size()` → explicit `return null;`
+2. `v == null` after `IVector<T> v = data.get(page);` → explicit `return null;`
+3. `v.get(localX)` returns null.
+
+For this specific call site, the argument is `i` inside `BasicNaturalRelation$TotalIterator.advanceX()`:
+
+```java
+for (int i = nextX + 1; i <= maxX; i++) {
+  if (anyRelated(i)) {
+    nextX = i;
+    nextIndex = getFirstIndex(i);
+    if (nextIndex == smallStore.length) {
+      IntSet s = delegateStore.get(i);
+      assert s.size() > 0;
+      delegateIterator = s.intIterator();
+    }
+    return;
+  }
+}
+```
+
+The only constraints we see are:
+
+- `i` is between `nextX + 1` and `maxX` and satisfies `anyRelated(i)`.
+- `nextIndex == smallStore.length` (so this `i` is known to be in the delegate part rather than smallStore).
+- There is an assertion `assert s.size() > 0;`, but assertions are not semantic guarantees and can be disabled; they do not prevent `s` from being null at runtime.
+
+We do not have definitions for:
+
+- `anyRelated(int)`
+- `getFirstIndex(int)`
+- `getPageNumber(int)`
+- `getFirstIndexOnPage(int)`
+- the type and initialization logic of `data`
+- the implementation of `IVector<T>.get(int)` for `v`
+
+Without those, there is no guarantee that:
+
+- `page < data.size()` for all such `i`,
+- `data.get(page)` is never null for such `i`, or
+- `v.get(localX)` is non-null for such `i`.
+
+The surrounding `BasicNaturalRelation` logic (e.g., `add`, `remove`, `getDelegate`, `usingDelegate`, `getRelatedCount`) shows that `delegateStore.set(x, null)` is explicitly performed when a delegate set becomes empty:
+
+```java
+if (s.size() == 0) {
+  delegateStore.set(x, null);
+  ...
+}
+```
+
+This shows that `delegateStore` can legitimately contain null entries at indices that were previously used, and later code still calls `delegateStore.get(x)` for such indices (e.g., in `remove`, `getRelated`, `getRelatedCount`, and `TotalIterator.advanceX`). The only “guards” against null at this particular call site are `anyRelated(i)` and `nextIndex == smallStore.length`, but their implementations are not given, so we cannot use them to prove non-nullity.
+
+Given:
+
+- `TwoLevelVector.get` has explicit `return null` paths depending on internal paging and `data`,
+- `delegateStore.set(x, null)` is used in `BasicNaturalRelation.remove`, so null is a valid stored value,
+- nothing in the provided code rules out that such a null entry could be observed at `i` when `advanceX` is called,
+
+we must conclude that `delegateStore.get(i)` can evaluate to null at this call site. The subsequent `assert s.size() > 0;` would then throw an `AssertionError` (or NPE inside `assert` evaluation), but that still means the method can return null; an exception path is not a guarantee of non-nullity.
+
+Therefore, `IntSet s` may be assigned null at this call site.]]></reason>
+  <value>YES</value>
+</response>

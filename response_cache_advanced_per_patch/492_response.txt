@@ -1,0 +1,77 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private boolean addAll(long[] that, int thatSize) {
+    if (elements == null) {
+      if (thatSize == 0) {
+        return false;
+      }
+      elements = new long[thatSize];
+      System.arraycopy(that, 0, elements, 0, thatSize);
+      size = thatSize;
+      return true;
+    }
+    long[] ar = this.elements;
+    int ai = 0;
+    final int al = size();
+    int bi = 0;
+
+    // invariant: assume cr has same value as ar until cr is allocated.
+    // we allocate cr lazily when we discover cr != ar.
+    long[] cr = null;
+    int ci = 0;
+
+    while (ai < al && bi < thatSize) {
+      long cmp = (ar[ai] - that[bi]);
+
+      // (always accept element)
+      if (cmp > 0) { // a greater
+        if (cr == null) {
+          cr = new long[al + thatSize];
+          System.arraycopy(ar, 0, cr, 0, ci);
+        }
+        cr[ci++] = that[bi++];
+      } else if (cmp < 0) { // b greater
+        if (cr != null) {
+          cr[ci] = ar[ai];
+        }
+        ci++;
+        ai++;
+      } else {
+        if (cr != null) {
+          cr[ci] = ar[ai]; // (same: use a)
+        }
+        ci++;
+        ai++;
+        bi++;
+      }
+    }
+
+    // append tail if any (at most one of a or b has tail)
+    if (ai < al) {
+      int tail = al - ai;
+      if (cr != null) {
+        System.arraycopy(ar, ai, cr, ci, tail);
+      }
+      ci += tail;
+    } else if (bi < thatSize) {
+      int tail = thatSize - bi;
+      if (cr == null) {
+        cr = new long[al + thatSize];
+        System.arraycopy(ar, 0, cr, 0, ci);
+      }
+      System.arraycopy(that, bi, cr, ci, tail);
+      ci += tail;
+    }
+
+    assert ci > 0;
+
+    elements = (cr == null) ? ar : cr;
+    size = ci;
+    return (al != size);
+  }
+  ```
+    ]]>
+  </code>
+</response>

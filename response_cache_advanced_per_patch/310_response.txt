@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+ public static MutableIntSet makeMutableCopy(IntSet set)
+      throws IllegalArgumentException, UnimplementedError {
+    if (set == null) {
+      throw new IllegalArgumentException("set == null");
+    }
+    if (set instanceof SparseIntSet) {
+      return MutableSparseIntSet.make(set);
+    } else if (set instanceof BitVectorIntSet) {
+      return new BitVectorIntSet(set);
+    } else if (set instanceof BimodalMutableIntSet) {
+      return BimodalMutableIntSet.makeCopy(set);
+    } else if (set instanceof MutableSharedBitVectorIntSet) {
+      return new MutableSharedBitVectorIntSet((MutableSharedBitVectorIntSet) set);
+    } else if (set instanceof SemiSparseMutableIntSet) {
+      return new SemiSparseMutableIntSet((SemiSparseMutableIntSet) set);
+    } else if (set instanceof DebuggingMutableIntSet) {
+      MutableIntSet pCopy = makeMutableCopy(((DebuggingMutableIntSet) set).primaryImpl);
+      MutableIntSet sCopy = makeMutableCopy(((DebuggingMutableIntSet) set).secondaryImpl);
+      return new DebuggingMutableIntSet(pCopy, Nullability.castToNonnull(sCopy));
+    } else if (set instanceof EmptyIntSet) {
+      return IntSetUtil.make();
+    } else {
+      Assertions.UNREACHABLE(set.getClass().toString());
+      return null;
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

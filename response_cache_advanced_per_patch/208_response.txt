@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean isSubset(IntSet that) {
+    if (that instanceof DebuggingMutableIntSet) {
+      if (primaryImpl == null || secondaryImpl == null) {
+        throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+      }
+
+      DebuggingMutableIntSet db = (DebuggingMutableIntSet) that;
+      boolean ppr = primaryImpl.isSubset(db.primaryImpl);
+      boolean ssr = secondaryImpl.isSubset(db.secondaryImpl);
+
+      assert ppr == ssr;
+
+      return ppr;
+    } else {
+      Assertions.UNREACHABLE();
+      return false;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

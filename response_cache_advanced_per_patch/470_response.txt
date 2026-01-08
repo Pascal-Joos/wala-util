@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean containsAny(IntSet set) {
+    if (set == null) {
+      throw new IllegalArgumentException("null set");
+    }
+    if (sparsePart != null && !sparsePart.isEmpty() && sparsePart.containsAny(set)) {
+      return true;
+    } else if (densePart != null) {
+      int lower = densePart.getOffset();
+      for (IntIterator is = set.intIterator(); is.hasNext(); ) {
+        int i = is.next();
+        if (i < lower) continue;
+        if (densePart.get(i)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+  ```
+    ]]>
+  </code>
+</response>

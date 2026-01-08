@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public final long elementAt(int idx) throws NoSuchElementException {
+    if (elements == null || idx < 0 || idx >= size) {
+      throw new NoSuchElementException();
+    }
+    return elements[idx];
+  }
+  ```
+    ]]>
+  </code>
+</response>

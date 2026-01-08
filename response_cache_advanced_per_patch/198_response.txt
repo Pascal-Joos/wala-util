@@ -1,0 +1,25 @@
+<response>
+    <reason><![CDATA[
+Within the provided call chain, every call site that can reach BitVectorIntSet.isSubset(IntSet that) enforces a non-null argument:
+
+- BimodalMutableIntSet.isSubset(IntSet that) checks `if (that == null) throw new IllegalArgumentException("that == null");` before using `that` or constructing BitVectorIntSet instances from it. The only path to BitVectorIntSet.isSubset is via `BitVectorIntSet a = new BitVectorIntSet(this); BitVectorIntSet b = new BitVectorIntSet(that); return a.isSubset(b);`, so `b` (the `that` at the callee) is never null.
+
+- BitVectorRepository.findOrCreateSharedSubset(BitVectorIntSet value) throws if `value == null`, and the call `bv.isSubset(value)` therefore always passes a non-null `value` as `that`.
+
+- BitVectorIntSet.containsAll(BitVectorIntSet other) throws if `other == null`, and then calls `other.isSubset(this)`, so `other` (the `that` at the callee) is non-null.
+
+- MutableSharedBitVectorIntSet.isSubset(IntSet that) throws if `that == null` before any further use, and all subsequent uses of `that` in this method either:
+  * Compare it with null (already ruled out), or
+  * Pass it into other methods that themselves check for null (e.g., BimodalMutableIntSet.isSubset, MutableSharedBitVectorIntSet.addAll).
+
+- MutableSharedBitVectorIntSet.union(IntSet that) does not itself null-check `that`, but all relevant downstream uses (e.g., addAll(that)) perform null checks, preventing a null IntSet from propagating into BitVectorIntSet.isSubset as observed in this call chain.
+
+In the body of BitVectorIntSet.isSubset itself, the parameter `that` is only:
+- used in `instanceof` checks (safe with null),
+- cast based on those checks, and
+- dereferenced in `that.contains(x)` in the final `else` branch.
+
+Given the call sites provided, every path that invokes `isSubset` either ensures the argument is non-null by explicit checks or by construction, and there is no reassignment of the `that` parameter inside the method. Thus, based on the shown context and call chain, `that` cannot be null at runtime when BitVectorIntSet.isSubset is entered.
+    ]]></reason>
+    <value>NO</value>
+</response>

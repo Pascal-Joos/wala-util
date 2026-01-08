@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public int max() throws IllegalStateException {
+      if (sparsePart == null) {
+        throw new IllegalStateException("sparsePart == null");
+      }
+      if (densePart == null) {
+        return sparsePart.max();
+      } else {
+        int sparseMax = sparsePart.max();
+        if (sparseMax < 0) {
+          return densePart.max();
+        } else {
+          return Math.max(sparseMax, densePart.max());
+        }
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

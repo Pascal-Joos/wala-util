@@ -1,0 +1,44 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the provided method body, it is not possible to prove that d.getCapture() is non-null in all executions.
+
+Key points from the code:
+
+1. The line in question is executed only under the condition:
+   if (isCaptureOutput()) {
+       Drainer d = (Drainer) d2;
+       setStdOut(d.getCapture().toByteArray());
+   }
+
+2. When isCaptureOutput() is true, d2 is assigned as:
+   Thread d2 = isCaptureOutput() ? captureStdOut(p) : drainStdOut(p);
+   So in this branch, d2 is expected to be a Thread whose runtime type is Drainer (as implied by the cast).
+
+3. The nullability of d.getCapture() depends on:
+   - The implementation and contract of the Drainer class
+   - The implementation and contract of Drainer.getCapture()
+   - How Drainer is constructed or initialized in captureStdOut(p)
+   None of these are shown.
+
+4. There is no visible null-check on d.getCapture() (unlike the stderr path, which uses Nullability.castToNonnull(d.getCapture()) for setStdErr). This asymmetry suggests that either:
+   - getCapture() is assumed by the author to be non-null in both cases (and the castToNonnull is used only for static analysis/annotation purposes), or
+   - there is some possibility of null that the author was explicitly addressing on stderr but not on stdout.
+
+5. Without:
+   - The definition of Drainer,
+   - The implementation of captureStdOut(p),
+   - The contract or annotations for Drainer.getCapture(),
+   we cannot prove that getCapture() is guaranteed non-null. It might:
+   - Always initialize its internal buffer in the constructor and thus always return a non-null ByteArrayOutputStream (or similar), or
+   - Return null if, for example, capture was disabled midway, an error occurred, or initialization failed.
+
+Since the method itself does not enforce any non-null invariant for d.getCapture(), and the needed guarantees live outside the snippet (in Drainer and captureStdOut), the nullability cannot be conclusively determined from the given information.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation of the Drainer class, especially its fields, constructor, and the getCapture() method.]]></request>
+        <request><![CDATA[Provide the implementation (or at least the contract) of captureStdOut(Process p), including how it constructs and configures the Drainer instance used as d2.]]></request>
+    </requests>
+</response>
+```

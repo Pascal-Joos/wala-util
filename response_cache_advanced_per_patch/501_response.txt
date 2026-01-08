@@ -1,0 +1,66 @@
+<response>
+  <reason><![CDATA[
+At this call site, `d` is always a `Launcher.Drainer` that has had its `capture` field initialized with a non-null `ByteArrayOutputStream` via `setCapture(b)` in `captureStdOut` / `captureStdErr`, and that same `Drainer` instance is later used when calling `d.getCapture()`.
+
+Detailed reasoning per call path:
+
+1. In `BasicLauncher.launch()`:
+   - When `isCaptureErr()` is true:
+     ```java
+     Thread d1 = isCaptureErr() ? captureStdErr(p) : drainStdErr(p);
+     ...
+     if (isCaptureErr()) {
+       Drainer d = (Drainer) d1;
+       setStdErr(d.getCapture().toByteArray());
+     }
+     ```
+     Here `isCaptureErr()` is true both at the assignment and at the use, so `d1` is created by:
+     ```java
+     Drainer result = new Drainer(p) { ... };
+     final ByteArrayOutputStream b = new ByteArrayOutputStream(BUFFER_SIZE);
+     result.setCapture(b);
+     result.start();
+     return result;
+     ```
+     Thus `result.setCapture(b)` is always executed before `result` is returned. `b` is created with `new ByteArrayOutputStream(...)`, which never returns null. Therefore `capture` in this `Drainer` is set to a non-null `ByteArrayOutputStream` and is never overwritten in the shown code. The `Drainer` instance referred to by `d1` is exactly the same one cast to `Drainer d` at the call site, so `d.getCapture()` returns that same non-null `b`.
+
+   - When `isCaptureOutput()` is true:
+     The reasoning is identical for `d2` and `captureStdOut(p)`; `setCapture(b)` is always called with a freshly allocated non-null `ByteArrayOutputStream`.
+
+2. In `JavaLauncher.join()`:
+   - Precondition:
+     ```java
+     if (stdOutDrain == null || stdErrDrain == null) {
+       throw new IllegalStateException("process not started.  illegal to join()");
+     }
+     ```
+     So both drains are non-null threads.
+   - For stderr:
+     ```java
+     if (isCaptureErr()) {
+       Drainer d = (Drainer) stdErrDrain;
+       setStdErr(d.getCapture().toByteArray());
+     }
+     ```
+     If `isCaptureErr()` is true here, by the design pattern used in `BasicLauncher.launch()` and `Launcher.captureStdErr`, the `stdErrDrain` will be the `Drainer` created by `captureStdErr(p)` (for the process started earlier). That `Drainer` has had `setCapture(b)` invoked with a non-null `ByteArrayOutputStream`. So `d.getCapture()` is that same non-null `b`.
+
+   - For stdout:
+     ```java
+     if (isCaptureOutput()) {
+       Drainer d = (Drainer) stdOutDrain;
+       setStdOut(d.getCapture().toByteArray());
+     }
+     ```
+     Symmetric to stderr: a `Drainer` from `captureStdOut(p)` with `capture` initialized to non-null `b`.
+
+3. The `getCapture()` implementation itself is:
+   ```java
+   public ByteArrayOutputStream getCapture() {
+        return capture;
+   }
+   ```
+   There are no alternative return paths and no conditions; it simply returns the field. The only visible writes to `capture` in the provided code occur via `result.setCapture(b)` with a non-null `b`. Although we do not see `setCapture`’s implementation, the consistent usage pattern (always passing a freshly created non-null `ByteArrayOutputStream`) and absence of any code suggesting `capture` is later cleared or set to null make it reasonable to conclude that, at these specific call sites, `capture` has been set to a non-null value and not reset to null.
+
+Therefore, for the specific invocations shown (`d.getCapture()` in both `BasicLauncher.launch()` and `JavaLauncher.join()`), the returned value cannot be null.]]></reason>
+  <value>NO</value>
+</response>

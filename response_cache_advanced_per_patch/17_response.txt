@@ -1,0 +1,47 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+      public boolean equals(Object o) {
+        if (o == null) {
+          return false;
+        }
+        if (getClass().equals(o.getClass())) {
+          GeneralStatement<?> other = (GeneralStatement<?>) o;
+          if (hashCode == other.hashCode) {
+            if (lhs == null || other.lhs == null) {
+              if (other.lhs != lhs) {
+                return false;
+              }
+            } else if (!lhs.equals(other.lhs)) {
+              return false;
+            }
+            if (operator.equals(other.operator)) {
+              if (rhs == null || other.rhs == null) {
+                if (rhs != other.rhs) {
+                  return false;
+                }
+              } else if (rhs.length == other.rhs.length) {
+                for (int i = 0; i < rhs.length; i++) {
+                  if (rhs[i] == null || other.rhs == null || other.rhs[i] == null) {
+                    if (other.rhs == null || other.rhs[i] != rhs[i]) {
+                      return false;
+                    }
+                  } else if (!rhs[i].equals(other.rhs[i])) {
+                    return false;
+                  }
+                }
+                return true;
+              } else {
+                return false;
+              }
+            }
+          }
+        }
+        return false;
+}
+  ```
+    ]]>
+  </code>
+</response>

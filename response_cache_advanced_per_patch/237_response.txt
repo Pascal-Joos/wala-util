@@ -1,0 +1,27 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the body of foreachExcluding, the first statement is:
+
+  if (primaryImpl == null || secondaryImpl == null) {
+    throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+  }
+
+This is a guard clause that immediately throws an exception if secondaryImpl is null. Because the exception is thrown before any further code is executed, every subsequent line in this method (including the call
+
+  secondaryImpl.foreachExcluding(
+      X,
+      x -> {
+        assert bits.contains(x);
+        bits.remove(x);
+      });
+
+is only reachable on the control-flow paths where secondaryImpl != null.
+
+There are no reassignments to secondaryImpl in the method, and no other control-flow branches that could reintroduce a null value between the null check and the usage. Therefore, along all reachable execution paths to the expression "secondaryImpl.foreachExcluding(", secondaryImpl is guaranteed to be non-null at the point of use.
+
+This conclusion assumes standard Java semantics (no use of reflection to change fields mid-method, no VM corruption, etc.) and that the snippet is taken literally as-is. Under those normal assumptions, secondaryImpl cannot be null at the call site.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

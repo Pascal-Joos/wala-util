@@ -1,0 +1,71 @@
+```xml
+<response>
+    <reason><![CDATA[
+We are checking whether `elements` (the field of `this`) can be null at the line:
+
+    elements[0] = that.elements[0];
+
+To answer this, we must examine all control-flow paths that can reach this line.
+
+The assignment is inside this block:
+
+    if (that.size == 1) {
+        if (that.elements != null && contains(that.elements[0])) {
+            if (size > INITIAL_NONEMPTY_SIZE) {
+                elements = new long[INITIAL_NONEMPTY_SIZE];
+            }
+            if (elements == null) {
+                elements = new long[INITIAL_NONEMPTY_SIZE];
+            }
+            size = 1;
+            elements[0] = that.elements[0];
+            return;
+        } else {
+            elements = null;
+            size = 0;
+            return;
+        }
+    }
+
+This code can only execute if:
+
+1. `that.size == 1`
+2. The condition `that.elements != null && contains(that.elements[0])` is true
+
+Inside the `if`:
+
+- First, there is an optional reallocation when `size > INITIAL_NONEMPTY_SIZE`:
+  
+      if (size > INITIAL_NONEMPTY_SIZE) {
+          elements = new long[INITIAL_NONEMPTY_SIZE];
+      }
+
+  After this line, `elements` is guaranteed non-null if the condition is true, because it is assigned a freshly allocated array.
+
+- Next, regardless of the previous condition, there is an explicit null-check and initialization:
+
+      if (elements == null) {
+          elements = new long[INITIAL_NONEMPTY_SIZE];
+      }
+
+  After this `if`, one of two things must be true:
+  - Either `elements` was already non-null before, or
+  - It was null and is now set to `new long[INITIAL_NONEMPTY_SIZE]`.
+
+In either case, after this `if` completes, `elements` is definitely non-null.
+
+Then:
+
+    size = 1;
+    elements[0] = that.elements[0];
+
+Because `elements` has just been ensured non-null and assigned to a newly-created array if needed, it cannot be null at this line. No intervening assignments to `elements` occur between the null-check/initialization and the `elements[0]` write.
+
+Also, there are no other control-flow paths that jump directly to this line without passing through the `if (elements == null) { elements = new long[...] }` logic, since the assignment is lexically and structurally contained within that `if (that.size == 1)`/`if (that.elements != null && ...)` block.
+
+Therefore, under all possible paths that reach `elements[0] = that.elements[0];`, the `elements` reference is guaranteed to be non-null.
+
+]]></reason>
+    <value>NO</value>
+</response>
+```
