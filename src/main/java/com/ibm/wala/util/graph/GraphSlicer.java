@@ -17,7 +17,6 @@ import com.ibm.wala.util.collections.IteratorUtil;
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.graph.impl.GraphInverter;
 import com.ibm.wala.util.graph.traverse.DFS;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -289,7 +288,7 @@ public class GraphSlicer {
             if (!succs.containsKey(N)) {
               setSuccNodes(N);
             }
-            return Nullability.castToNonnull(succs.get(N)).iterator();
+            return succs.get(N).iterator();
           }
 
           @Override
