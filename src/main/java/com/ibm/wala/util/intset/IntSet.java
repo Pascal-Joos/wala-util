@@ -11,6 +11,7 @@
 package com.ibm.wala.util.intset;
 
 import java.io.Serializable;
+import javax.annotation.Nullable;
 
 /** Set of integers; not necessary mutable TODO: extract a smaller interface? */
 public interface IntSet extends Serializable {
@@ -30,6 +31,7 @@ public interface IntSet extends Serializable {
    *
    * @return a new IntSet which is the intersection of this and that
    */
+  @Nullable
   public IntSet intersection(IntSet that);
 
   /**
