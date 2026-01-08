@@ -29,7 +29,6 @@ import com.ibm.wala.util.graph.impl.GraphInverter;
 import com.ibm.wala.util.intset.MutableMapping;
 import com.ibm.wala.util.intset.OrdinalSet;
 import com.ibm.wala.util.intset.OrdinalSetMapping;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -72,10 +71,10 @@ public class GraphReachability<T, S> {
     }
     BitVectorVariable v = solver.getOut(n);
     assert v != null : "null variable for node " + n;
-    if (Nullability.castToNonnull(v).getValue() == null) {
+    if (v.getValue() == null) {
       return OrdinalSet.empty();
     } else {
-      return new OrdinalSet<>(Nullability.castToNonnull(v).getValue(), domain);
+      return new OrdinalSet<>(v.getValue(), domain);
     }
   }
 

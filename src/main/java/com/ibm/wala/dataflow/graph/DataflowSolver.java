@@ -82,7 +82,6 @@ public abstract class DataflowSolver<T, V extends IVariable<V>> extends DefaultF
     buildEquations(true, false);
   }
 
-  @Nullable
   public V getOut(Object node) {
     assert node != null;
     V v = node2Out.get(node);
