@@ -14,6 +14,7 @@ import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.debug.Assertions;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -577,7 +578,7 @@ public class HeapTracer {
         Integer I = instanceCount.get(key);
         Integer bytes = sizeCount.get(key);
         result.append("  ").append(I).append("   ").append(bytes).append("   ");
-        result.append(bytes / I).append("   ");
+        result.append(Nullability.castToNonnull(bytes) / I).append("   ");
         result.append(key);
         result.append('\n');
       }
