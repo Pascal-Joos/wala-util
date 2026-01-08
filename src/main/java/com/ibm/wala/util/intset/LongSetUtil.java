@@ -12,7 +12,6 @@ package com.ibm.wala.util.intset;
 
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.UnimplementedError;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import javax.annotation.Nullable;
 
 /** Utilities for dealing with LongSets */
@@ -21,7 +20,7 @@ public class LongSetUtil {
   public static final String INT_SET_FACTORY_CONFIG_PROPERTY_NAME =
       "com.ibm.wala.mutableLongSetFactory";
 
-  @Nullable private static MutableLongSetFactory defaultLongSetFactory;
+  private static MutableLongSetFactory defaultLongSetFactory;
 
   static {
     MutableLongSetFactory defaultFactory = new MutableSparseLongSetFactory();
@@ -45,9 +44,6 @@ public class LongSetUtil {
   }
 
   public static MutableLongSet make() {
-    if (defaultLongSetFactory == null) {
-      throw new IllegalStateException("null defaultLongSetFactory");
-    }
     return defaultLongSetFactory.make();
   }
 
@@ -120,7 +116,7 @@ public class LongSetUtil {
     if (A instanceof SparseLongSet && B instanceof SparseLongSet) {
       return SparseLongSet.diff((SparseLongSet) A, (SparseLongSet) B);
     } else {
-      return defaultSlowDiff(A, B, Nullability.castToNonnull(factory));
+      return defaultSlowDiff(A, B, factory);
     }
   }
 
@@ -182,7 +178,6 @@ public class LongSetUtil {
     }
   }
 
-  @Nullable
   public static MutableLongSetFactory getDefaultLongSetFactory() {
     return defaultLongSetFactory;
   }
