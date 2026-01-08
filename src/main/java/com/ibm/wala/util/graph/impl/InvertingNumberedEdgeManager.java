@@ -13,6 +13,7 @@ package com.ibm.wala.util.graph.impl;
 import com.ibm.wala.util.graph.NumberedEdgeManager;
 import com.ibm.wala.util.intset.IntSet;
 import java.util.Iterator;
+import javax.annotation.Nullable;
 
 /** An edge manager that reverses the edges in a graph */
 public class InvertingNumberedEdgeManager<T> implements NumberedEdgeManager<T> {
@@ -76,11 +77,13 @@ public class InvertingNumberedEdgeManager<T> implements NumberedEdgeManager<T> {
     original.removeIncomingEdges(node);
   }
 
+  @Nullable
   @Override
   public IntSet getSuccNodeNumbers(T node) throws IllegalArgumentException {
     return original.getPredNodeNumbers(node);
   }
 
+  @Nullable
   @Override
   public IntSet getPredNodeNumbers(T node) throws IllegalArgumentException {
     return original.getSuccNodeNumbers(node);

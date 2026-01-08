@@ -11,6 +11,7 @@
 package com.ibm.wala.util.graph;
 
 import com.ibm.wala.util.intset.IntSet;
+import javax.annotation.Nullable;
 
 /** Additional functionality for edges in numbered graphs */
 public interface NumberedEdgeManager<T> extends EdgeManager<T> {
@@ -18,6 +19,7 @@ public interface NumberedEdgeManager<T> extends EdgeManager<T> {
   /**
    * @return the numbers identifying the immediate successors of node
    */
+  @Nullable
   public IntSet getSuccNodeNumbers(T node);
 
   /**
