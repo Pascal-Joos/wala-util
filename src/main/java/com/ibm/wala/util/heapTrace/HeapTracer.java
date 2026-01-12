@@ -578,7 +578,9 @@ public class HeapTracer {
         Integer I = instanceCount.get(key);
         Integer bytes = sizeCount.get(key);
         result.append("  ").append(I).append("   ").append(bytes).append("   ");
-        result.append(bytes / Nullability.castToNonnull(I)).append("   ");
+        result
+            .append(Nullability.castToNonnull(bytes) / Nullability.castToNonnull(I))
+            .append("   ");
         result.append(key);
         result.append('\n');
       }
