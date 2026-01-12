@@ -133,7 +133,7 @@ public class DFS {
       Integer t1 = order.get(o1);
       Integer t2 = order.get(o2);
       // throws an exception if either node has not been ordered
-      return (Nullability.castToNonnull(t1) - t2);
+      return (Nullability.castToNonnull(t1) - Nullability.castToNonnull(t2));
     }
   }
 
