@@ -281,7 +281,7 @@ public class GraphSlicer {
             if (!succs.containsKey(N)) {
               setSuccNodes(N);
             }
-            return succs.get(N).size();
+            return Nullability.castToNonnull(succs.get(N)).size();
           }
 
           @Override
