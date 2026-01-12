@@ -137,6 +137,9 @@ public class TwoLevelVector<T> implements IVector<T>, Serializable {
 
       @Override
       public T next() {
+        if (inner == null) {
+          throw new java.util.NoSuchElementException();
+        }
         T result = inner.next();
         if (!inner.hasNext()) {
           inner = null;
