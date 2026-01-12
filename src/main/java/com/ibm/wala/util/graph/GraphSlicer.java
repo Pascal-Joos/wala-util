@@ -297,7 +297,7 @@ public class GraphSlicer {
             if (!preds.containsKey(dst)) {
               setPredNodes(dst);
             }
-            return preds.get(dst).contains(src);
+            return Nullability.castToNonnull(preds.get(dst)).contains(src);
           }
 
           @Override
