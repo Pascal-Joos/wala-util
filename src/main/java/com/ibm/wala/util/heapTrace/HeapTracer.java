@@ -597,7 +597,7 @@ public class HeapTracer {
       public int compare(Object o1, Object o2) {
         Integer i1 = sizeCount.get(o1);
         Integer i2 = sizeCount.get(o2);
-        return i2 - Nullability.castToNonnull(i1);
+        return Nullability.castToNonnull(i2) - Nullability.castToNonnull(i1);
       }
     }
 
