@@ -1,0 +1,48 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method, the expression in question is effectively `resultElements[...] = ...`, and `resultElements` is later assigned back to `result.elements`. The concerned write occurs here:
+
+    resultElements[k++] = sElements[m++];
+
+and the question is whether `result.elements` at that point (i.e., the underlying array represented by `resultElements`) can be null.
+
+Trace of relevant control flow and initializations:
+
+1. `if (s == null) throw ...;`  
+   So `s` is guaranteed non-null.
+
+2. `if (s.elements == null) { return SparseIntSet.singleton(j); }`  
+   If `s.elements` is null, the method returns immediately. Therefore, along any path reaching the assignment, `s.elements` is guaranteed non-null.
+
+3. `SparseIntSet result = new SparseIntSet(s.size + 1);`  
+   We know only that `result` is non-null. We *do not* know what `SparseIntSet`’s constructor does with `result.elements`.
+
+4. 
+   ```java
+   if (result.elements == null) {
+       result.elements = new int[result.size];
+   }
+   ```
+   After this conditional, `result.elements` is guaranteed non-null, regardless of whether it was initialized by the constructor or just now. Either the constructor set it to a non-null array, or this block does.
+
+5. Local copies:
+   ```java
+   int[] resultElements = result.elements;
+   int[] sElements = s.elements;
+   ```
+   Since both `result.elements` and `s.elements` are non-null at this point, `resultElements` and `sElements` are also non-null.
+
+6. All subsequent assignments write into `resultElements[...]` and `sElements[...]`. There is no reassignment of `resultElements` to null, and `result.elements` itself is not modified to null anywhere; it is only (re)assigned at the end:
+   ```java
+   result.elements = resultElements;
+   ```
+
+Given these steps, at the line that conceptually corresponds to `result.elements[k++] = s.elements[m++];` (implemented via `resultElements` and `sElements`), the underlying array (`result.elements`) is guaranteed to be non-null along all possible execution paths that reach that line, based solely on the code shown and standard Java semantics (array allocation never yields null, throws if it fails).
+
+No additional information about `SparseIntSet` is required for this particular nullness guarantee because the method itself guards against a null `result.elements` created by its constructor.
+
+Therefore, the expression cannot be null at that line.]]></reason>
+    <value>NO</value>
+</response>
+```

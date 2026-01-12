@@ -1,0 +1,36 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public static BimodalMutableIntSet makeCopy(IntSet B)
+      throws UnimplementedError, IllegalArgumentException {
+    if (B == null) {
+      throw new IllegalArgumentException("B == null");
+    }
+    if (B instanceof BimodalMutableIntSet) {
+      BimodalMutableIntSet that = (BimodalMutableIntSet) B;
+      BimodalMutableIntSet result = new BimodalMutableIntSet();
+      if (that.impl == null) {
+        result.impl = null;
+      } else {
+        result.impl = IntSetUtil.makeMutableCopy(that.impl);
+        assert result.impl instanceof BitVectorIntSet || result.impl instanceof MutableSparseIntSet;
+      }
+      return result;
+    } else if (B instanceof MutableSharedBitVectorIntSet) {
+      BimodalMutableIntSet result = new BimodalMutableIntSet();
+      MutableSharedBitVectorIntSet s = (MutableSharedBitVectorIntSet) B;
+      result.impl = IntSetUtil.makeMutableCopy(s.makeSparseCopy());
+      assert result.impl instanceof BitVectorIntSet || result.impl instanceof MutableSparseIntSet;
+      return result;
+    } else {
+      BimodalMutableIntSet result = new BimodalMutableIntSet();
+      result.impl = IntSetUtil.makeMutableCopy(B);
+      assert result.impl instanceof BitVectorIntSet || result.impl instanceof MutableSparseIntSet;
+      return result;
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

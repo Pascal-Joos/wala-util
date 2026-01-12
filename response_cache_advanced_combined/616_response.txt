@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean sameValue(IntSet that) {
+    if (impl == null) {
+      return that == null || that.size() == 0;
+    }
+    return impl.sameValue(that);
+  }
+  ```
+    ]]>
+  </code>
+</response>

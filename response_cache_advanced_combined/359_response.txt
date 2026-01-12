@@ -1,0 +1,53 @@
+```xml
+<response>
+    <reason><![CDATA[
+We are checking whether the variable `br` (used in the expression `ar[ai] - br[bi]`) can be null at that point.
+
+Relevant code excerpt near the end:
+
+    if (elements == null) {
+      return;
+    }
+    if (that.elements == null) {
+      elements = null;
+      size = 0;
+      return;
+    }
+    int[] ar = this.elements;
+    int ai = 0;
+    int al = size;
+    int[] br = that.elements;
+    int bi = 0;
+    int bl = that.size;
+    int[] cr = null; // allocate on demand
+    int ci = 0;
+
+    while (ai < al && bi < bl) {
+      int cmp = (ar[ai] - br[bi]);
+
+The only assignment to `br` is:
+
+    int[] br = that.elements;
+
+Immediately before this assignment, the method checks:
+
+    if (that.elements == null) {
+      elements = null;
+      size = 0;
+      return;
+    }
+
+So, if `that.elements` is null, the method returns before `br` is declared or used. Therefore, along any code path that reaches the `while (ai < al && bi < bl)` loop and the statement `int cmp = (ar[ai] - br[bi]);`, the following must be true:
+
+- `that` is non-null (enforced at the top: `if (set == null) throw ...;` and `SparseIntSet that = set;`).
+- `that.elements` is non-null (enforced by the `if (that.elements == null) { ... return; }` check right before `br` is initialized).
+- Therefore, `br = that.elements` assigns a non-null array reference.
+- After this point, no reassignment to `that` or `br` occurs before `br[bi]` is used.
+
+Other earlier branches (`that.isEmpty()`, `that.elements == null` in the `size == 1` and `that.size == 1` optimizations, etc.) all return before reaching this final block, and thus do not introduce any path where `br` could be null at the expression.
+
+Because there is a definitive null check on `that.elements` immediately prior to assigning it to `br`, and no subsequent modifications that could null it out, `br` is guaranteed to be non-null at the line `int cmp = (ar[ai] - br[bi]);`.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

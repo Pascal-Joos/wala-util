@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public BitVector(BitVector s) {
+    if (s == null || s.bits == null) {
+      throw new IllegalArgumentException("s is null");
+    }
+    bits = new int[s.bits.length];
+    copyBits(s);
+}
+  ```
+    ]]>
+  </code>
+</response>

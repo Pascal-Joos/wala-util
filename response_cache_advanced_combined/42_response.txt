@@ -1,0 +1,31 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean contains(int x, int y) {
+    if (x < 0) {
+      throw new IllegalArgumentException("invalid x: " + x);
+    }
+    if (y < 0) {
+      throw new IllegalArgumentException("invalid y: " + y);
+    }
+    if (usingDelegate(x)) {
+      IntSet delegate = getDelegate(x);
+      if (delegate == null) {
+        return false;
+      }
+      return delegate.contains(y);
+    } else {
+      for (IntVector element : smallStore) {
+        if (element.get(x) == y) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

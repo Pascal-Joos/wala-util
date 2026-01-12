@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  @SuppressWarnings("unchecked")
+  public Object clone() {
+    BitVectorBase<T> result = null;
+    try {
+      result = (BitVectorBase<T>) super.clone();
+    } catch (CloneNotSupportedException e) {
+      // this shouldn't happen, since we are Cloneable
+      throw new InternalError();
+    }
+    if (bits == null) {
+      result.bits = null;
+    } else {
+      result.bits = new int[bits.length];
+      System.arraycopy(bits, 0, result.bits, 0, result.bits.length);
+    }
+    return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,25 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method, the field `elements` is first checked for null:
+
+    if (elements == null || set.elements == null) {
+        return false;
+    }
+
+If `elements` were null, the method would return immediately and no further code would execute. After this check passes, we have the assignment:
+
+    long[] thatElements = set.elements;
+    long[] thisElements = elements;
+
+Because `elements` was already verified to be non-null, `thisElements` is guaranteed to be non-null at this point. The loop condition in question uses `thisElements`:
+
+    while (i < size && thisElements[i] < x) {
+
+No code between the null check and this loop can change `elements` or `thisElements`, and there are no method calls or side effects that could reassign them. Therefore `thisElements` (corresponding to `elements` in the original expression) cannot be null when this line is executed.
+
+The only caveat would be if some external concurrent thread could mutate the `elements` field of this object to null between the null check and the loop. However, in standard single-threaded or properly encapsulated usage – and absent any indication of such concurrent mutation – within the scope of this method’s control flow, the reference used in the expression cannot be null.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

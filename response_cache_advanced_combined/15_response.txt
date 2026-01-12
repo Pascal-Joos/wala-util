@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public byte evaluate() {
+    if (rhs == null) {
+      throw new IllegalStateException("rhs is null");
+    }
+    return operator.evaluate(lhs, rhs);
+  }
+  ```
+    ]]>
+  </code>
+</response>

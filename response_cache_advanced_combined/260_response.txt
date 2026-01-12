@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean addAllInIntersection(IntSet other, IntSet filter) {
+    if (V == null) {
+      MutableIntSetFactory<?> factory = IntSetUtil.getDefaultIntSetFactory();
+      if (factory == null) {
+        return false;
+      }
+      V = factory.makeCopy(other);
+      V.intersectWith(filter);
+      if (V.isEmpty()) {
+        V = null;
+      }
+      return (V != null);
+    } else {
+      boolean result = V.addAllInIntersection(other, filter);
+      return result;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

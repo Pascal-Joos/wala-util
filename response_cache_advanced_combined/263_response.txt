@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void copyState(T other) {
+    if (V == null) {
+      if (other.V != null) {
+        MutableIntSetFactory<?> factory = IntSetUtil.getDefaultIntSetFactory();
+        if (factory == null) {
+          return;
+        }
+        V = factory.makeCopy(other.V);
+      }
+      return;
+    } else {
+      if (other.V != null) {
+        V.copySet(other.V);
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

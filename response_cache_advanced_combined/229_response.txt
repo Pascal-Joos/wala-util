@@ -1,0 +1,26 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the body of foreach, the very first statement is:
+
+    if (primaryImpl == null || secondaryImpl == null) {
+        throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+    }
+
+This check ensures that if secondaryImpl is null, the method throws an IllegalArgumentException and exits immediately. Therefore, for any execution path that reaches the call:
+
+    secondaryImpl.foreach(
+        x -> {
+            assert bits.contains(x);
+            bits.remove(x);
+        });
+
+it must be the case that secondaryImpl != null, because otherwise the prior if-condition would have been true and the method would already have returned via the exception.
+
+There are no assignments to secondaryImpl within this method, and nothing in the intervening code can change its value. Also, there is no indication that secondaryImpl is some volatile or otherwise concurrently mutated field that could become null between the null-check and the foreach invocation (and, absent explicit evidence of concurrent mutation, standard reasoning assumes it is stable across the method body).
+
+So, along all intra-method control-flow paths that actually reach the line containing "secondaryImpl.foreach(", the expression secondaryImpl is guaranteed to be non-null by the preceding null-check.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

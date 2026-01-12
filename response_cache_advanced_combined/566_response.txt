@@ -1,0 +1,38 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+@Override
+    public boolean addAll(IntSet set) {
+      if (set instanceof DebuggingMutableIntSet) {
+        DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
+        int ps = primaryImpl.size();
+        int ss = secondaryImpl == null ? 0 : secondaryImpl.size();
+        boolean ppr = primaryImpl.addAll(db.primaryImpl);
+        boolean ssr = secondaryImpl != null && secondaryImpl.addAll(db.secondaryImpl);
+  
+        if (ppr != ssr) {
+          System.err.println(
+              "ppr was "
+                  + ppr
+                  + " (should be "
+                  + (ps != primaryImpl.size())
+                  + ") but ssr was "
+                  + ssr
+                  + " (should be "
+                  + (secondaryImpl != null && ss != secondaryImpl.size())
+                  + ')');
+          System.err.println("adding " + set + " to " + this + " failed");
+          Assertions.UNREACHABLE();
+        }
+  
+        return ppr;
+      } else {
+        Assertions.UNREACHABLE();
+        return false;
+      }
+}
+  ```
+    ]]>
+  </code>
+</response>

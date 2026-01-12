@@ -1,0 +1,30 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean addAllInIntersection(IntSet other, IntSet filter) {
+      if (other == null || filter == null) {
+        throw new IllegalArgumentException("null argument");
+      }
+      if (primaryImpl == null || secondaryImpl == null) {
+        throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+      }
+      if (other instanceof DebuggingMutableIntSet && filter instanceof DebuggingMutableIntSet) {
+        DebuggingMutableIntSet db = (DebuggingMutableIntSet) other;
+        DebuggingMutableIntSet df = (DebuggingMutableIntSet) filter;
+        boolean pr = primaryImpl.addAllInIntersection(db.primaryImpl, df.primaryImpl);
+        boolean sr = secondaryImpl.addAllInIntersection(db.secondaryImpl, df.secondaryImpl);
+  
+        assert pr == sr;
+  
+        return pr;
+      } else {
+        Assertions.UNREACHABLE();
+        return false;
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

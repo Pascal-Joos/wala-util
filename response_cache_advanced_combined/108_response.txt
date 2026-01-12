@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public IntSet getPredNodeNumbers(T node) {
+    if (original.containsNode(node)) {
+      if (inEdges.containsKey(node)) {
+        MutableIntSet x = IntSetUtil.makeMutableCopy(Nullability.castToNonnull(original.getPredNodeNumbers(node)));
+        x.addAll(inEdges.get(node));
+        return x;
+      } else {
+        return original.getPredNodeNumbers(node);
+      }
+    } else {
+      if (inEdges.containsKey(node)) {
+        return inEdges.get(node);
+      } else {
+        return EmptyIntSet.instance;
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

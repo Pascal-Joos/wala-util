@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private boolean sameValueInternal(SparseIntSet that) {
+        if (size != that.size) {
+          return false;
+        } else {
+          if (elements == null || that.elements == null) {
+            return elements == that.elements;
+          }
+          int[] ar = this.elements;
+          int[] br = that.elements;
+          for (int i = 0; i < size; i++) {
+            if (ar[i] != br[i]) {
+              return false;
+            }
+          }
+          return true;
+        }
+  }
+  ```
+    ]]>
+  </code>
+</response>

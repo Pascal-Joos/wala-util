@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the shown method body, the call to `secondaryImpl.foreachExcluding(...)` is *guarded* by an explicit null check:
+
+```java
+if (secondaryImpl != null) {
+  secondaryImpl.foreachExcluding(
+      X,
+      x -> {
+        assert bits.contains(x);
+        bits.remove(x);
+      });
+}
+```
+
+Control flow guarantees that the expression `secondaryImpl.foreachExcluding(...)` is only evaluated when `secondaryImpl != null`. If `secondaryImpl` were `null`, the `if` condition would fail and the body (including the method call) would not execute.
+
+However, the question of whether `secondaryImpl` itself can *ever* be `null` at runtime depends on code not shown here: its declaration, initialization, and any later assignments. From this snippet alone, we know only that it is *treated as potentially null* and safely guarded before dereference. We do not know whether other code paths might leave it null or always assign it a non-null value.
+
+Because that information is outside the given method and not provided, it is not possible to categorically say whether `secondaryImpl` can or cannot be null in the broader program; we can only say the dereference here is null-safe due to the guard.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Show the declaration of `secondaryImpl` (its type, annotations, and where it is initialized).]]></request>
+        <request><![CDATA[Show all constructors and any other methods that assign to `secondaryImpl`.]]></request>
+    </requests>
+</response>
+```

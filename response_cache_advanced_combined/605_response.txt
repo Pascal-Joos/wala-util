@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+@Override
+    public void intersectWith(IntSet set) throws UnimplementedError {
+      if (set == null) {
+        throw new IllegalArgumentException("null set");
+      }
+      if (set instanceof BimodalMutableIntSet) {
+        BimodalMutableIntSet that = (BimodalMutableIntSet) set;
+        if (that.impl == null) {
+          return;
+        }
+        if (impl == null) {
+          return;
+        }
+        IntSet thatImpl = that.impl;
+        if (thatImpl == null) {
+          return;
+        }
+        IntSet thisImpl = impl;
+        if (thisImpl == null) {
+          return;
+        }
+        thisImpl.intersectWith(thatImpl);
+      } else {
+        Assertions.UNREACHABLE();
+      }
+}
+  ```
+    ]]>
+  </code>
+</response>

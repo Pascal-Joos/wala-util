@@ -1,0 +1,25 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided snippet alone, there is no guarantee that the result of `mapping.getMappedObject(it.next())` is non-null.
+
+To determine nullability, we would need to know:
+- The implementation and contract of `mapping.getMappedObject(...)` (e.g., does it guarantee a non-null return, or can it legally return null for some or all inputs?).
+- Any invariants or preconditions established elsewhere that ensure `mapping` always returns non-null values for the elements produced by `it.next()`.
+
+The method body itself only:
+1. Calls `it.next()` to obtain an element.
+2. Passes that element to `mapping.getMappedObject(...)`.
+3. Returns whatever `getMappedObject` returns, without any null check.
+
+No null checks or constraints are visible in the provided code, and Java itself does not enforce non-null returns without external guarantees (such as annotations or documented contracts) that we do not see here.
+
+Therefore, without additional information about `mapping` and `getMappedObject`, we cannot safely conclude that the return value is always non-null or that it can be null. The correct classification, given only this snippet, is that the nullability is unknown.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration and implementation (or documented contract) of the `mapping` object and its `getMappedObject` method.]]></request>
+        <request><![CDATA[Provide any class- or method-level annotations (e.g., @NonNull, @Nullable) and documentation that apply to `getMappedObject` and to the iterator `it`.]]></request>
+    </requests>
+</response>
+```

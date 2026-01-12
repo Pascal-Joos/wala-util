@@ -1,0 +1,50 @@
+```xml
+<response>
+    <reason><![CDATA[
+The expression in question is `set.elements` at the line:
+
+    long x = set.elements[j];
+
+Walkthrough of the relevant control flow:
+
+1. The method parameter is checked:
+   
+   if (set == null) {
+     throw new IllegalArgumentException("set == null");
+   }
+
+   So from this point onwards, `set` itself is guaranteed non-null.
+
+2. Immediately afterward:
+
+   if (elements == null || set.elements == null) {
+     return false;
+   }
+
+   This explicitly checks whether `set.elements` is null, and if it is, the method returns immediately. Therefore, if execution reaches past this `if` statement, `set.elements` is guaranteed to be non-null.
+
+3. On the next lines:
+
+   long[] thatElements = set.elements;
+   long[] thisElements = Nullability.castToNonnull(elements);
+
+   At this point, `thatElements` is a non-null reference to the same array as `set.elements`. There is no reassignment of `set` or `thatElements` before the loop.
+
+4. In the loop:
+
+   for (int j = 0; j < set.size; j++) {
+     long x = thatElements[j];
+     ...
+   }
+
+   Note the code actually uses `thatElements[j]` rather than `set.elements[j]`. But either way, because of the earlier null-check, `set.elements` (and thus `thatElements`) cannot be null along any path that reaches this line.
+
+5. No intervening operations can legally make `set.elements` null in Java without reassigning it explicitly, and there is no such reassignment in this method. Java arrays are not volatile in a way that would become null spontaneously.
+
+Given the explicit null check and immediate return when `set.elements` is null, plus the absence of any reassignments that could null out `set.elements` afterward, the expression cannot be null at the point of use.
+
+Therefore, `set.elements` cannot be null at the line where it is dereferenced.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,82 @@
+```xml
+<response>
+    <reason><![CDATA[
+There are two distinct occurrences of the expression
+    for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+
+We need to analyze both in context.
+
+1) FIRST OCCURRENCE
+
+This one is in the branch:
+
+    if (densePart == null) {
+
+      // that dense part only
+      if (that.densePart != null) {
+        int oldSize = size();
+        densePart = new OffsetBitVector(that.densePart);
+
+        if (sparsePart != null) {
+          for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+            ...
+          }
+          sparsePart.removeAll(densePart);
+        }
+        ...
+
+Here, the loop is guarded by:
+
+    if (sparsePart != null) {
+        for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+
+Therefore, along all paths to this particular `for` statement, `sparsePart` is known to be non-null. There is no mutation of `sparsePart` between the `if (sparsePart != null)` and the `for`. Hence, for this first occurrence, `sparsePart` CANNOT be null.
+
+2) SECOND OCCURRENCE
+
+This one is in the else-branch of `if (densePart == null)`:
+
+    } else {
+      // both dense parts
+      if (that.densePart != null) {
+        int oldSize = size();
+
+        densePart.or(that.densePart);
+
+        if (sparsePart == null) {
+          sparsePart = MutableSparseIntSet.makeEmpty();
+        }
+        if (that.sparsePart != null) {
+          sparsePart.addAll(that.sparsePart);
+        }
+
+        for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+          int bit = bits.next();
+          if (inDenseRange(bit)) {
+            densePart.set(bit);
+          }
+        }
+
+        sparsePart.removeAll(densePart);
+        ...
+
+Before this `for` loop, there is an explicit check:
+
+    if (sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    }
+
+Assuming `MutableSparseIntSet.makeEmpty()` is a regular factory method that never returns null (which is the standard and reasonable contract for an “empty set” factory method), then after this point `sparsePart` is guaranteed to be non-null on entry to the loop. There is no intervening assignment to `sparsePart` between that null-check/initialization and the `for` loop, so under that normal contract `sparsePart` CANNOT be null here.
+
+The only way `sparsePart` could be null at this second occurrence is if `MutableSparseIntSet.makeEmpty()` itself returns null, which would violate its implied contract as an “empty set” factory. In typical Java codebases, this would be considered a bug in `makeEmpty()`. Based on normal semantics and reasonable assumptions about that method, we treat it as non-null.
+
+Conclusion:
+
+- First `for` loop: `sparsePart` is non-null due to explicit `if (sparsePart != null)` guard.
+- Second `for` loop: `sparsePart` is non-null due to either existing non-null value or initialization via `MutableSparseIntSet.makeEmpty()`, which by standard contract should not return null.
+
+Under standard assumptions, the expression `sparsePart` at the indicated `for` line(s) cannot be null.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,41 @@
+<response>
+  <reason><![CDATA[
+The method `Launcher$Drainer.getCapture()` simply returns the field `capture`:
+
+```java
+public ByteArrayOutputStream getCapture() {
+    return capture;
+}
+```
+
+There is no initialization or invariant shown for `capture` in the provided code. At the call sites:
+
+```java
+Drainer d = (Drainer) stdErrDrain;
+setStdErr(d.getCapture().toByteArray());
+```
+
+and
+
+```java
+Drainer d = (Drainer) stdOutDrain;
+setStdOut(d.getCapture().toByteArray());
+```
+
+in `JavaLauncher.join()`, and similarly in `BasicLauncher.launch()`:
+
+```java
+Drainer d = (Drainer) d1;
+setStdErr(Nullability.castToNonnull(d.getCapture()).toByteArray());
+...
+Drainer d = (Drainer) d2;
+setStdOut(d.getCapture().toByteArray());
+```
+
+the code *assumes* `d.getCapture()` is non-null (it immediately dereferences it with `.toByteArray()` and, in one case, passes it through `Nullability.castToNonnull`), but that is not a proof that `capture` is non-null. Without seeing where and how the `Drainer` instances are constructed and how the `capture` field is initialized or updated, we cannot exclude the possibility that `capture` is left null.
+
+In particular, `capture`’s value depends entirely on the internal logic of `Launcher$Drainer` (its constructor, any setter, and any logic that might assign to or clear `capture`). None of that is provided. Therefore, based solely on the given code, `getCapture()` *can* return null at this call site in principle.
+
+To make a confident non-null determination, we would need the declarations that show how `capture` is initialized and maintained.]]></reason>
+  <value>YES</value>
+</response>

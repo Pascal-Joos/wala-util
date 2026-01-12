@@ -1,0 +1,125 @@
+<response>
+  <reason><![CDATA[
+We need to know, for this specific call site inside `FloydWarshall.allPairsShortestPaths()`,
+
+```java
+IntSet tos = Nullability.castToNonnull(G.getSuccNodeNumbers(from));
+```
+
+whether `G.getSuccNodeNumbers(from)` can be null.
+
+From the provided chain:
+
+- `G` is a `NumberedGraph<T>` and its `getSuccNodeNumbers` implementation (eventually) is:
+
+```java
+class com.ibm.wala.util.graph.AbstractNumberedGraph {
+  @Override
+  public IntSet getSuccNodeNumbers(T node) throws IllegalArgumentException {
+    return getEdgeManager().getSuccNodeNumbers(node);
+  }
+}
+```
+
+So the nullability of the result at this call site depends entirely on `getEdgeManager().getSuccNodeNumbers(node)`.
+
+The relevant edge-manager implementations you showed:
+
+```java
+class com.ibm.wala.util.graph.EdgeFilteredNumberedGraph$Edges {
+  @Override
+  public IntSet getSuccNodeNumbers(T node) {
+    return getFilteredNodeNumbers(node, Nullability.castToNonnull(delegate.getSuccNodeNumbers(node)));
+  }
+}
+```
+
+```java
+class com.ibm.wala.util.graph.impl.InvertingNumberedEdgeManager {
+  @Override
+  public IntSet getPredNodeNumbers(T node) throws IllegalArgumentException {
+    return original.getSuccNodeNumbers(node);
+  }
+}
+```
+
+```java
+class com.ibm.wala.util.graph.impl.ExtensionGraph$1 {
+  @Override
+  public IntSet getSuccNodeNumbers(T node) {
+    if (original.containsNode(node)) {
+      if (outEdges.containsKey(node)) {
+        MutableIntSet x = IntSetUtil.makeMutableCopy(Nullability.castToNonnull(original.getSuccNodeNumbers(node)));
+        x.addAll(outEdges.get(node));
+        return x;
+      } else {
+        return original.getSuccNodeNumbers(node);
+      }
+    } else {
+      if (outEdges.containsKey(node)) {
+        return outEdges.get(node);
+      } else {
+        return EmptyIntSet.instance;
+      }
+    }
+  }
+}
+```
+
+```java
+class com.ibm.wala.util.graph.impl.ExtensionGraph {
+  @Override
+  public IntSet getSuccNodeNumbers(T node) {
+    return edgeManager.getSuccNodeNumbers(node);
+  }
+}
+```
+
+We can see:
+
+- `ExtensionGraph$1.getSuccNodeNumbers` is non-null on all of its explicit return statements:
+  - `IntSetUtil.makeMutableCopy(Nullability.castToNonnull(original.getSuccNodeNumbers(node)))` – the copy is assumed non-null; but this *depends* on `original.getSuccNodeNumbers(node)` being non-null (enforced via `castToNonnull`).
+  - `outEdges.get(node)` – may be null in general; whether it is null here depends on how `outEdges` is populated.
+  - `EmptyIntSet.instance` – clearly non-null.
+- `EdgeFilteredNumberedGraph$Edges.getSuccNodeNumbers` is just:
+  ```java
+  return getFilteredNodeNumbers(node, Nullability.castToNonnull(delegate.getSuccNodeNumbers(node)));
+  ```
+  This again assumes `delegate.getSuccNodeNumbers(node)` is non-null, but whether this holds depends on the delegate implementation.
+- `InvertingNumberedEdgeManager.getPredNodeNumbers` does not constrain succ-nullability either; it simply forwards.
+
+Crucially, for this specific call site, we do not know:
+
+1. Which concrete `NumberedGraph` implementation `G` is (and thus which concrete edge manager is used).
+2. For `ExtensionGraph$1`, what guarantees exist on `original.getSuccNodeNumbers(node)` and on `outEdges.get(node)` (can `outEdges` map to null values?).
+3. For `EdgeFilteredNumberedGraph$Edges`, what `delegate` is, and whether its `getSuccNodeNumbers` might return null.
+4. The behavior of helper methods like `getFilteredNodeNumbers`, `IntSetUtil.makeMutableCopy`, and the semantics of `Nullability.castToNonnull` beyond its name. We must not assume they sanitize nulls unless shown.
+
+Because the return value at the call site is ultimately forwarded from `getEdgeManager().getSuccNodeNumbers(node)` and all concrete edge-manager variants that might be in use depend on:
+- `delegate.getSuccNodeNumbers`
+- `original.getSuccNodeNumbers`
+- `outEdges.get`
+- and helper methods
+
+none of whose full declarations and contracts are provided, we cannot soundly determine that null is impossible, nor that it must be possible, at this precise call.
+
+To reach a confident answer, we need the declarations (and thus bodies/return behavior) of the methods whose results directly influence `getSuccNodeNumbers` at this site. In particular:
+
+- The edge manager provider for `G` (via `getEdgeManager`)
+- The graph implementations that might serve as `original`/`delegate`
+- The map access supplying `outEdges.get(node)`
+- The helper that processes the delegate’s result
+
+Without these, any statement that the returned `IntSet` is definitely non-null (or definitely may be null) would be speculative and violate the constraints you imposed (no assumptions about methods without declarations).
+
+Therefore I cannot yet determine with confidence whether `G.getSuccNodeNumbers(from)` can be null at this call site.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getEdgeManager</method>
+    <method>getFilteredNodeNumbers</method>
+    <method>containsNode</method>
+    <method>getSuccNodeNumbers</method>
+    <method>makeMutableCopy</method>
+    <method>castToNonnull</method>
+  </methods>
+</response>

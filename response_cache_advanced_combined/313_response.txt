@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public BimodalMutableIntSet(BimodalMutableIntSet x) {
+        if (x == null) {
+          throw new IllegalArgumentException("x is null");
+        }
+        if (x.impl == null) {
+          impl = null;
+          return;
+        }
+        impl = IntSetUtil.makeMutableCopy(Nullability.castToNonnull(x.impl));
+        assert impl instanceof BitVectorIntSet || impl instanceof MutableSparseIntSet;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,36 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public static <T> Collection<Path> computeAcyclicPaths(
+      NumberedGraph<T> G, T root, T src, T sink, int max) {
+    Collection<Path> result = HashSetFactory.make();
+    EdgeFilteredNumberedGraph<T> acyclic =
+        new EdgeFilteredNumberedGraph<>(G, computeBackEdges(G, root));
+
+    Collection<Path> worklist = HashSetFactory.make();
+    Path sinkPath = Path.make(G.getNumber(sink));
+    worklist.add(sinkPath);
+    while (!worklist.isEmpty() && result.size() <= max) {
+      Path p = worklist.iterator().next();
+      worklist.remove(p);
+      int first = p.get(0);
+      if (first == G.getNumber(src)) {
+        result.add(p);
+      } else {
+        T firstNode = acyclic.getNode(first);
+        if (firstNode != null) {
+          for (IntIterator it = acyclic.getPredNodeNumbers(firstNode).intIterator();
+              it.hasNext(); ) {
+            worklist.add(Path.prepend(it.next(), p));
+          }
+        }
+      }
+    }
+
+    return result;
+}
+  ```
+    ]]>
+  </code>
+</response>

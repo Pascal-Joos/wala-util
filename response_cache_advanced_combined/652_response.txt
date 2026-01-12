@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+      public int next() {
+        int next = densePart == null ? -1 : Nullability.castToNonnull(densePart).nextSetBit(i + 1);
+        i = next;
+        return next;
+}
+  ```
+    ]]>
+  </code>
+</response>

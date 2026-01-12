@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public String toString() {
+    return "[[P "
+        + (primaryImpl == null ? "null" : primaryImpl.toString())
+        + ", S "
+        + (secondaryImpl == null ? "null" : secondaryImpl.toString())
+        + " ]]";
+  }
+  ```
+    ]]>
+  </code>
+</response>

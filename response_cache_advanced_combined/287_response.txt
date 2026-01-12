@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void intersectWith(IntSet set) throws UnimplementedError {
+    if (set == null) {
+      throw new IllegalArgumentException("null set");
+    }
+    if (impl == null) {
+      return;
+    }
+    if (set instanceof BimodalMutableIntSet) {
+      BimodalMutableIntSet that = (BimodalMutableIntSet) set;
+      impl.intersectWith(that.impl);
+    } else {
+      Assertions.UNREACHABLE();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

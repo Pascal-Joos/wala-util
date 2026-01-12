@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public String toString() {
+    return impl == null ? "" : impl.toString();
+  }
+  ```
+    ]]>
+  </code>
+</response>

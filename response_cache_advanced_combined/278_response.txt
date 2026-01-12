@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean add(int i) {
+    if (impl == null) {
+      return false;
+    }
+    boolean result = impl.add(i);
+    if (result) {
+      maybeChangeRepresentation();
+    }
+    return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

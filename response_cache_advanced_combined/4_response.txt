@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public boolean newStatement(
+       T lhs, UnaryOperator<T> operator, T rhs, boolean toWorkList, boolean eager) {
+    if (operator == null) {
+      throw new IllegalArgumentException("operator is null");
+    }
+    // add to the list of graph
+    UnaryStatement<T> s = operator.makeEquation(lhs, Nullability.castToNonnull(rhs));
+    if (getFixedPointSystem().containsStatement(s)) {
+      return false;
+    }
+    if (lhs != null) {
+      lhs.setOrderNumber(nextOrderNumber++);
+    }
+    nCreated++;
+    getFixedPointSystem().addStatement(s);
+    incorporateNewStatement(toWorkList, eager, s);
+    topologicalCounter++;
+    return true;
+}
+  ```
+    ]]>
+  </code>
+</response>

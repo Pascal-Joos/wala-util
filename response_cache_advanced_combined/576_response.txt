@@ -1,0 +1,73 @@
+```xml
+<response>
+    <reason><![CDATA[
+Inside this method, the only use of `secondaryImpl` is:
+
+1. In the local variable initialization:
+   ```java
+   boolean sr = secondaryImpl == null || secondaryImpl.isEmpty();
+   ```
+   This expression is a short-circuit OR:
+   - If `secondaryImpl == null` is true, `secondaryImpl.isEmpty()` is not evaluated.
+   - If `secondaryImpl != null`, only then is `secondaryImpl.isEmpty()` called.
+
+   Therefore, the method call `secondaryImpl.isEmpty()` in this line is invoked only when `secondaryImpl` is guaranteed non-null.
+
+2. In the `if` statement:
+   ```java
+   if (primaryImpl.isEmpty() != sr) {
+       System.err.println(
+           primaryImpl
+               + ".isEmpty() = "
+               + primaryImpl.isEmpty()
+               + " and "
+               + secondaryImpl
+               + ".isEmpty() = "
+               + sr);
+       Assertions.UNREACHABLE();
+   }
+   ```
+   Here, the expression in question is `secondaryImpl` as part of string concatenation in:
+   ```java
+   + secondaryImpl
+   + ".isEmpty() = "
+   ```
+   This `if` is executed only if `primaryImpl.isEmpty() != sr`.
+
+   However, `sr` was computed solely as:
+   ```java
+   sr = (secondaryImpl == null) || secondaryImpl.isEmpty();
+   ```
+   independent of any other side effects. There is no reassignment to `secondaryImpl` between `sr`'s assignment and the `if` condition.
+
+   Therefore, there are two logical cases:
+
+   - Case A: `secondaryImpl == null`:
+     Then `sr` is `true`. The `if` condition becomes:
+     ```java
+     if (primaryImpl.isEmpty() != true)
+     ```
+     which simplifies to:
+     ```java
+     if (!primaryImpl.isEmpty())
+     ```
+     This can be either true or false, so the body of the `if` (and hence the `System.err.println` that concatenates `secondaryImpl`) may indeed be executed while `secondaryImpl` is still null.
+
+     In this case, `secondaryImpl` is dereferenced only via string concatenation. In Java, concatenating `null` with a String (`"" + null`) is allowed and results in the literal `"null"`. This is not a NullPointerException, but it does mean that the *value* of `secondaryImpl` at that use site can be null.
+
+   - Case B: `secondaryImpl != null`:
+     Then `sr` is the boolean value of `secondaryImpl.isEmpty()`. `secondaryImpl` is non-null for both the computation of `sr` and its later use in the `println`.
+
+   The key point is that the expression you’re asking about is specifically `secondaryImpl` in:
+   ```java
+   + secondaryImpl
+   + ".isEmpty() = "
+   ```
+   For that expression, there is no prior null-check that excludes the `secondaryImpl == null` case before entering the `if` body. The only condition guarding the `println` depends on `primaryImpl.isEmpty()` and `sr`, not directly on `secondaryImpl != null`.
+
+   As a result, along some valid control-flow paths, `secondaryImpl` can be null when evaluated in the `println` concatenation.
+
+   This does not cause a runtime exception in Java string concatenation, but from a nullness-analysis standpoint, `secondaryImpl` is not provably non-null at that expression.]]></reason>
+    <value>YES</value>
+</response>
+```

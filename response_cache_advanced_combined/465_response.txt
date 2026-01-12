@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void foreachExcluding(IntSet X, IntSetAction action) {
+    if (sparsePart != null) {
+      sparsePart.foreachExcluding(X, action);
+    }
+    if (densePart != null) {
+      for (int b = densePart.nextSetBit(0); b != -1; b = densePart.nextSetBit(b + 1)) {
+        if (!X.contains(b)) {
+          action.act(b);
+        }
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

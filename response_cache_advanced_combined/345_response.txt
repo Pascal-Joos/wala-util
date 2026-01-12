@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void intersectWith(IntSet set) {
+    if (set == null) {
+      throw new IllegalArgumentException("null set");
+    }
+    if (set instanceof SparseIntSet) {
+      intersectWith((SparseIntSet) set);
+    } else {
+      if (elements == null) {
+        size = 0;
+        return;
+      }
+      int j = 0;
+      for (int i = 0; i < size; i++)
+        if (set.contains(elements[i])) {
+          elements[j++] = elements[i];
+        }
+      size = j;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

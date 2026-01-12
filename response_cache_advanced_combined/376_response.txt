@@ -1,0 +1,4 @@
+<response>
+    <reason><![CDATA[The method name `cloneState` does not match any of the known framework-style initializer patterns (e.g., `onCreate`, `init`, `initialize`), nor does it start with "init" or "initialize" as specified. It appears to be a helper/clone operation rather than a lifecycle or framework-driven initializer. Therefore, under the given definition, it should not be treated as an initializer method for NullAway.]]></reason>
+    <value>NO</value>
+</response>

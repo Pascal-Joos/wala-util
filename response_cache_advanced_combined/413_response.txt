@@ -1,0 +1,47 @@
+```xml
+<response>
+    <reason><![CDATA[
+At the line in question:
+
+    if (that.size == 1) {
+        if (that.elements == null) {
+            return false;
+        }
+        boolean result = add(that.elements[0]);
+        return result;
+    }
+
+control flow guarantees that `that.elements` is not null before `that.elements[0]` is accessed.
+
+Detailed path analysis:
+
+1. The method immediately rejects a null `that`:
+       if (that == null) {
+           throw new IllegalArgumentException("null that");
+       }
+   So `that` itself is never null after this point.
+
+2. For the specific line:
+       if (that.size == 1) {
+           if (that.elements == null) {
+               return false;
+           }
+           boolean result = add(that.elements[0]);
+           return result;
+       }
+   the access `that.elements[0]` is executed only in the branch where:
+       - `that.size == 1` is true, and
+       - the earlier null check `if (that.elements == null)` did *not* trigger a return.
+   Therefore, to reach `add(that.elements[0])`, it must be that `that.elements != null`.
+
+3. The other uses of `that.elements` after this block (`if (that.elements == null) { return false; } long[] br = that.elements;`) do not affect the earlier access inside the `that.size == 1` branch.
+
+There is no other assignment to `that.elements` within this method, and the null check is immediately before the dereference, with no intervening operations that could change `that.elements`. Thus, within this method’s control flow, `that.elements` cannot be null at the line `add(that.elements[0])`.
+
+(Separately, the code does not validate that `that.size == 1` implies `that.elements.length > 0`, so an `ArrayIndexOutOfBoundsException` would be possible if an inconsistent `SparseLongSet` instance were passed, but that is unrelated to nullability.)
+
+Conclusion: at the dereference `that.elements[0]`, `that.elements` is guaranteed non-null by the explicit null check immediately above it.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

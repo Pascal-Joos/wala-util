@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+          public int getSuccNodeCount(E N) {
+            if (!succs.containsKey(N)) {
+              setSuccNodes(N);
+            }
+            return Nullability.castToNonnull(succs.get(N)).size();
+}
+  ```
+    ]]>
+  </code>
+</response>

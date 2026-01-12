@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public void intersectWith(IntSet set) {
+      if (set == null) {
+        throw new IllegalArgumentException("set == null");
+      }
+      if (set instanceof DebuggingMutableIntSet) {
+        DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
+        primaryImpl.intersectWith(db.primaryImpl);
+        if (secondaryImpl != null) {
+          secondaryImpl.intersectWith(db.secondaryImpl);
+        }
+  
+        if (!primaryImpl.sameValue(secondaryImpl))
+          assert false
+              : this
+                  + " ("
+                  + primaryImpl.size()
+                  + ", "
+                  + secondaryImpl.size()
+                  + ") inconsistent after intersecting with "
+                  + set;
+      } else {
+        Assertions.UNREACHABLE();
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean contains(int i) {
+      if (impl == null) {
+        return false;
+      }
+      return Nullability.castToNonnull(impl).contains(i);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  int getSize() {
+      return bits == null ? 0 : bits.length;
+  }
+  ```
+    ]]>
+  </code>
+</response>

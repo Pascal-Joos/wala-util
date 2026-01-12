@@ -1,0 +1,42 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+        public boolean containsAny(IntSet that) throws IllegalArgumentException, UnimplementedError {
+          if (that == null) {
+            throw new IllegalArgumentException("that == null");
+          }
+          if (impl == null) {
+            return false;
+          }
+          if (that instanceof BimodalMutableIntSet) {
+            BimodalMutableIntSet b = (BimodalMutableIntSet) that;
+            IntSet bImpl = b.impl;
+            if (bImpl == null) {
+              return false;
+            }
+            IntSet localImpl = impl;
+            if (localImpl == null) {
+              return false;
+            }
+            return localImpl.containsAny(bImpl);
+          } else if (that instanceof SparseIntSet) {
+            if (impl == null) {
+              return false;
+            }
+            return impl.containsAny(that);
+          } else if (that instanceof BitVectorIntSet) {
+            if (impl == null) {
+              return false;
+            }
+            return impl.containsAny(that);
+          } else {
+            Assertions.UNREACHABLE("unsupported " + that.getClass());
+            return false;
+          }
+  }
+  ```
+    ]]>
+  </code>
+</response>

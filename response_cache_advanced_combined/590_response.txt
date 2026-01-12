@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean isEmpty() {
+      if (primaryImpl == null) {
+        throw new IllegalStateException("primaryImpl == null");
+      }
+      boolean sr = secondaryImpl == null || secondaryImpl.isEmpty();
+      if (primaryImpl.isEmpty() != sr) {
+        System.err.println(
+            primaryImpl
+                + ".isEmpty() = "
+                + primaryImpl.isEmpty()
+                + " and "
+                + secondaryImpl
+                + ".isEmpty() = "
+                + sr);
+        Assertions.UNREACHABLE();
+      }
+  
+      return primaryImpl.isEmpty();
+  }
+  ```
+    ]]>
+  </code>
+</response>

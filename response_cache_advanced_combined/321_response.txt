@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public static LongSet diff(LongSet A, LongSet B, MutableLongSetFactory factory) {
+    if (A == null) {
+      throw new IllegalArgumentException("null A");
+    }
+    if (B == null) {
+      throw new IllegalArgumentException("null B");
+    }
+    if (A instanceof SparseLongSet && B instanceof SparseLongSet) {
+      return SparseLongSet.diff((SparseLongSet) A, (SparseLongSet) B);
+    } else {
+      return defaultSlowDiff(A, B, Nullability.castToNonnull(factory));
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

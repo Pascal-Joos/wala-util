@@ -1,0 +1,31 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean add(int i) {
+      boolean pr = primaryImpl.add(i);
+      boolean sr = secondaryImpl != null && Nullability.castToNonnull(secondaryImpl).add(i);
+  
+      if (pr != sr) {
+        assert pr == sr
+            : "adding "
+                + i
+                + " to "
+                + primaryImpl
+                + " returns "
+                + pr
+                + ", but adding "
+                + i
+                + " to "
+                + secondaryImpl
+                + " returns "
+                + sr;
+      }
+  
+      return pr;
+}
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public String toString() {
+    if (primaryImpl == null || secondaryImpl == null) {
+      throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+    }
+    return "[[P " + primaryImpl.toString() + ", S " + secondaryImpl.toString() + " ]]";
+  }
+  ```
+    ]]>
+  </code>
+</response>

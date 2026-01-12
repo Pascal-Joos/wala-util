@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean containsAny(IntSet set) {
+      if (set instanceof SparseIntSet) {
+        return containsAny((SparseIntSet) set);
+      } else if (set instanceof BimodalMutableIntSet) {
+        return set.containsAny(this);
+      } else {
+        if (elements == null) {
+          return false;
+        }
+        for (int i = 0; i < size; i++) {
+          if (set.contains(Nullability.castToNonnull(elements)[i])) {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,35 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public IntSet intersection(IntSet that) throws UnimplementedError {
+      if (impl == null) {
+        return IntSetUtil.getDefaultIntSetFactory().make();
+      }
+      if (that instanceof BimodalMutableIntSet) {
+        BimodalMutableIntSet b = (BimodalMutableIntSet) that;
+        IntSet bImpl = b.impl;
+        if (bImpl == null) {
+          return IntSetUtil.getDefaultIntSetFactory().make();
+        }
+        IntSet localImpl = impl;
+        if (localImpl == null) {
+          return IntSetUtil.getDefaultIntSetFactory().make();
+        }
+        return localImpl.intersection(bImpl);
+      } else if (that instanceof BitVectorIntSet) {
+        IntSet localImpl = impl;
+        if (localImpl == null) {
+          return IntSetUtil.getDefaultIntSetFactory().make();
+        }
+        return localImpl.intersection(that);
+      } else {
+        Assertions.UNREACHABLE("Unexpected: " + that);
+        return null;
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

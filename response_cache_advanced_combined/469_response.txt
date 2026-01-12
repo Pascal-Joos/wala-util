@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int size() {
+    if (sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    }
+    return sparsePart.size() + (densePart == null ? 0 : densePart.populationCount());
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private void ensureCapacity(BitVector set) {
+    if (bits == null || set.bits.length > bits.length) {
+      expand(BITS_PER_UNIT * set.bits.length - 1);
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

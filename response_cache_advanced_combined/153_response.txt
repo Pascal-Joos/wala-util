@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean intersectionEmpty(OffsetBitVector set) throws IllegalArgumentException {
+    if (set == null) {
+      throw new IllegalArgumentException("set == null");
+    }
+    if (this == set) {
+      return isZero();
+    }
+    if (set.bits == null) {
+      throw new IllegalArgumentException("set.bits == null");
+    }
+
+    int wordDiff = wordDiff(offset, set.offset);
+    int maxWord = Math.min(bits.length, set.bits.length - wordDiff);
+
+    int i = Math.max(0, -wordDiff);
+
+    for (; i < maxWord; i++) {
+      if ((bits[i] & set.bits[i + wordDiff]) != 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

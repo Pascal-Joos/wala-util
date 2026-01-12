@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void copySet(IntSet set) {
+    if (set instanceof DebuggingMutableIntSet) {
+      if (primaryImpl == null || secondaryImpl == null) {
+        throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+      }
+
+      DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
+      primaryImpl.copySet(db.primaryImpl);
+      secondaryImpl.copySet(db.secondaryImpl);
+
+      assert primaryImpl.sameValue(secondaryImpl);
+    } else {
+      Assertions.UNREACHABLE();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

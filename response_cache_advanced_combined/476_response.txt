@@ -1,0 +1,183 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private void fixAfterSparseInsert() {
+    if (sparsePart != null
+        && sparsePart.size() % FIX_SPARSE_MOD == FIX_SPARSE_MOD - 1
+        && (densePart == null
+            || (densePart != null && sparsePart.size() > FIX_SPARSE_RATIO * densePart.getSize()))) {
+      assert assertDisjoint() : this.toString();
+
+      if (densePart == null) {
+        IntIterator sparseBits = sparsePart.intIterator();
+
+        int maxOffset = -1;
+        int maxCount = -1;
+        int maxMax = -1;
+
+        int offset = 0;
+        int bits = 0;
+        int count = 0;
+        int oldBit = 0;
+        while (sparseBits.hasNext()) {
+          int nextBit = sparseBits.next();
+
+          int newBits = bits + (nextBit - oldBit);
+          int newCount = count + 1;
+
+          if (newBits < (32 * newCount)) {
+            count = newCount;
+            bits = newBits;
+            if (count > maxCount) {
+              maxOffset = offset;
+              maxMax = nextBit;
+              maxCount = count;
+            }
+          } else {
+            offset = nextBit;
+            count = 1;
+            bits = 32;
+          }
+          oldBit = nextBit;
+        }
+
+        if (maxOffset != -1) {
+          densePart = new OffsetBitVector(maxOffset, maxMax - maxOffset);
+          sparseBits = sparsePart.intIterator();
+          int bit;
+          while ((bit = sparseBits.next()) < maxOffset) {
+            // do nothing
+          }
+
+          densePart.set(bit);
+          for (int i = 1; i < maxCount; i++) {
+            densePart.set(sparseBits.next());
+          }
+          sparsePart.removeAll(densePart);
+        }
+
+        assert assertDisjoint()
+            : this + ", maxOffset=" + maxOffset + ", maxMax=" + maxMax + ", maxCount=" + maxCount;
+
+      } else {
+        IntIterator sparseBits = sparsePart.intIterator();
+        int thisBit = sparseBits.next();
+
+        int moveCount = 0;
+        int newOffset = -1;
+        int newCount = -1;
+        int newLength = -1;
+
+        // push stuff just below dense part into it, if it saves space
+        if (thisBit < densePart.getOffset()) {
+          newOffset = thisBit;
+          int bits = 32;
+          int count = 1;
+          while (sparseBits.hasNext()) {
+            int nextBit = sparseBits.next();
+            if (nextBit >= densePart.getOffset() || !sparseBits.hasNext()) {
+              if (nextBit < densePart.getOffset() && !sparseBits.hasNext()) {
+                count++;
+              }
+              if (densePart.getOffset() - newOffset < (32 * count)) {
+                moveCount += count;
+              } else {
+                newOffset = -1;
+              }
+              thisBit = nextBit;
+              break;
+            } else {
+              bits += (nextBit - thisBit);
+              count++;
+
+              if (bits > (32 * count)) {
+                newOffset = nextBit;
+                count = 1;
+                bits = 32;
+              }
+
+              thisBit = nextBit;
+            }
+          }
+        }
+
+        while (thisBit < densePart.length() && sparseBits.hasNext()) {
+          thisBit = sparseBits.next();
+        }
+
+        // push stuff just above dense part into it, if it saves space
+        if (thisBit >= densePart.length()) {
+          int count = 1;
+          int bits = (thisBit + 1 - densePart.length());
+          if (32 * count > bits) {
+            newLength = thisBit;
+            newCount = 1;
+          }
+          while (sparseBits.hasNext()) {
+            thisBit = sparseBits.next();
+            count++;
+            bits = (thisBit + 1 - densePart.length());
+            if ((32 * count) > bits) {
+              newLength = thisBit;
+              newCount = count;
+            }
+          }
+          if (newLength > -1) {
+            moveCount += newCount;
+          }
+        }
+
+        // actually move bits from sparse to dense
+        if (moveCount > 0) {
+          int index = 0;
+          int[] bits = new int[moveCount];
+          for (sparseBits = sparsePart.intIterator(); sparseBits.hasNext(); ) {
+            int bit = sparseBits.next();
+            if (newOffset != -1 && bit >= newOffset && bit < densePart.getOffset()) {
+              bits[index++] = bit;
+            }
+            if (newLength != -1 && bit >= densePart.length() && bit <= newLength) {
+              bits[index++] = bit;
+            }
+          }
+
+          if (index != moveCount) {
+            assert index == moveCount
+                : "index is " + index + ", but moveCount is " + moveCount + " for " + this;
+          }
+
+          if (newLength != -1 && bits[index - 1] == sparsePart.max()) {
+            int base = densePart.getOffset();
+            int currentSize = densePart.length() - base;
+            float newSize = 1.1f * (bits[index - 1] - base);
+            float fraction = newSize / currentSize;
+            assert fraction > 1;
+            densePart.growCapacity(fraction);
+          }
+
+          for (int i = index - 1; i >= 0; i--) {
+            sparsePart.remove(bits[i]);
+            densePart.set(bits[i]);
+          }
+        }
+
+        assert assertDisjoint()
+            : this
+                + ", densePart.length()="
+                + densePart.length()
+                + ", newOffset="
+                + newOffset
+                + ", newLength="
+                + newLength
+                + ", newCount="
+                + newCount
+                + ", moveCount="
+                + moveCount;
+      }
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

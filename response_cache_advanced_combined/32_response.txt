@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public T getChildValue(int i) {
+    return (children.get(i) == null) ? null : children.get(i).getRootValue();
+  }
+  ```
+    ]]>
+  </code>
+</response>

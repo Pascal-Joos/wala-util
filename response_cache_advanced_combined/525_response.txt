@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  @SuppressWarnings("unchecked")
+  public V get(Object key) {
+
+    if (keysAndValues == null) {
+      return null;
+    }
+
+    Object[] localKeysAndValues = keysAndValues;
+
+    if (key != null)
+      for (int i = 0; i < size(); i++) {
+        if (Nullability.castToNonnull(localKeysAndValues)[i] != null
+            && Nullability.castToNonnull(localKeysAndValues)[i].equals(key)) {
+          return (V) Nullability.castToNonnull(localKeysAndValues)[size() + i];
+        }
+      }
+
+    return null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

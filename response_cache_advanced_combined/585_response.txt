@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+      public boolean remove(int i) {
+        boolean result = primaryImpl.remove(i);
+        if (secondaryImpl != null) {
+          Nullability.castToNonnull(secondaryImpl).remove(i);
+        }
+        assertEquiv();
+        return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

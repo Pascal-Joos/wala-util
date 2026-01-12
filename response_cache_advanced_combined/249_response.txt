@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int max() {
+    if (primaryImpl == null || secondaryImpl == null) {
+      throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+    }
+
+    assert primaryImpl.max() == secondaryImpl.max();
+    return primaryImpl.max();
+  }
+  ```
+    ]]>
+  </code>
+</response>

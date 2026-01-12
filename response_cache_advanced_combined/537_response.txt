@@ -1,0 +1,108 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+IntSet tos = G.getSuccNodeNumbers(from);
+```
+
+`G` is a `NumberedGraph<T>` used inside `FloydWarshall.allPairsShortestPaths()`.
+
+The dynamic dispatch chain for `getSuccNodeNumbers` at this site is:
+
+1. `AbstractNumberedGraph.getSuccNodeNumbers(T node)`:
+   ```java
+   public IntSet getSuccNodeNumbers(T node) throws IllegalArgumentException {
+     return getEdgeManager().getSuccNodeNumbers(node);
+   }
+   ```
+   This simply delegates to the graph’s edge manager. No non‑null guarantee here.
+
+2. Possible concrete edge managers shown in the call chain:
+
+   **a) `EdgeFilteredNumberedGraph$Edges`**
+   ```java
+   @Override
+   public IntSet getSuccNodeNumbers(T node) {
+     return getFilteredNodeNumbers(node, Nullability.castToNonnull(delegate.getSuccNodeNumbers(node)));
+   }
+   ```
+   This calls `delegate.getSuccNodeNumbers(node)` and immediately passes the result to `Nullability.castToNonnull(...)`. For this call to even execute without throwing, `delegate.getSuccNodeNumbers(node)` must be non‑null. If it *is* null, an exception is thrown, not a null return. However, we have no information about:
+   - `delegate`’s concrete type, nor
+   - its `getSuccNodeNumbers` implementation.
+
+   So from this path alone, if `delegate.getSuccNodeNumbers(node)` returns null, we get an exception (not a null result). If it returns non‑null, `getFilteredNodeNumbers(...)` could in principle return null, but we do not have its implementation.
+
+   **b) `ExtensionGraph$1` (an `EdgeManager` implementation)**
+   ```java
+   @Override
+   public IntSet getSuccNodeNumbers(T node) {
+     if (original.containsNode(node)) {
+       if (outEdges.containsKey(node)) {
+         MutableIntSet x = IntSetUtil.makeMutableCopy(
+             Nullability.castToNonnull(original.getSuccNodeNumbers(node)));
+         x.addAll(outEdges.get(node));
+         return x;
+       } else {
+         return original.getSuccNodeNumbers(node);
+       }
+     } else {
+       if (outEdges.containsKey(node)) {
+         return outEdges.get(node);
+       } else {
+         return EmptyIntSet.instance;
+       }
+     }
+   }
+   ```
+   Here:
+   - If `original.containsNode(node)` and `outEdges.containsKey(node)`:  
+     `original.getSuccNodeNumbers(node)` is forced through `Nullability.castToNonnull(...)`. If that call returns null, an exception is thrown, not a null value; the method does not return null in this branch.
+   - If `original.containsNode(node)` and `!outEdges.containsKey(node)`:  
+     It returns `original.getSuccNodeNumbers(node)` **directly**, with no null check or cast. If `original.getSuccNodeNumbers(node)` can return null, then this branch can return null.
+   - If `!original.containsNode(node)` and `outEdges.containsKey(node)`:  
+     Returns `outEdges.get(node)`; we have no guarantee it’s non‑null.
+   - If `!original.containsNode(node)` and `!outEdges.containsKey(node)`:  
+     Returns `EmptyIntSet.instance`, which is non‑null.
+
+   Therefore, `ExtensionGraph$1.getSuccNodeNumbers` can return null unless we know:
+   - `original.getSuccNodeNumbers` never returns null, and
+   - `outEdges.get(node)` never returns null.
+   The code given does not provide such guarantees.
+
+   **c) `InvertingNumberedEdgeManager`**
+   ```java
+   @Override
+   public IntSet getPredNodeNumbers(T node) throws IllegalArgumentException {
+     return original.getSuccNodeNumbers(node);
+   }
+   ```
+   This shows a similar delegation pattern: the library is willing to propagate `original.getSuccNodeNumbers(node)` directly. Again, this offers no inherent non‑null guarantee for `getSuccNodeNumbers`.
+
+3. In `FloydWarshall.allPairsShortestPaths()` the result of `G.getSuccNodeNumbers(from)` is immediately wrapped:
+
+   ```java
+   IntSet tos = Nullability.castToNonnull(G.getSuccNodeNumbers(from));
+   Nullability.castToNonnull(tos).foreach(x -> result[fn][x] = edgeCost());
+   ```
+
+   This shows the *intended* invariant: callers expect `G.getSuccNodeNumbers(from)` to be non‑null, but the enforcement mechanism is `Nullability.castToNonnull(...)`, which will throw if passed null. It does not transform a null into a non‑null value.
+
+4. Crucially, `NumberedGraph<T> G` is only known by its interface and the abstract base `AbstractNumberedGraph`. The actual graph implementation used with `FloydWarshall.shortestPathLengths(G)` is not specified. We are given possible implementations (`ExtensionGraph`, `EdgeFilteredNumberedGraph`), but nothing states that `G` is necessarily one of them, nor are we given their complete `getSuccNodeNumbers` call chains (e.g., `original.getSuccNodeNumbers`, `getFilteredNodeNumbers`, `outEdges.get`).
+
+According to the analysis rules:
+
+- We may not assume behaviors of called methods without full declarations.
+- Several code paths explicitly return the result of another `getSuccNodeNumbers` or a map lookup (`outEdges.get(node)`) without null checks.
+- The library’s own use of `Nullability.castToNonnull(...)` indicates that null returns are possible and must be guarded against by throwing, not by construction of a default non‑null value.
+
+Because:
+
+- `ExtensionGraph$1.getSuccNodeNumbers` has direct return paths that can relay null (`original.getSuccNodeNumbers(node)` and `outEdges.get(node)`), and
+- We lack the declarations of `original.getSuccNodeNumbers`, `getFilteredNodeNumbers`, `outEdges.get`, and the concrete `NumberedGraph` implementation used at the call site,
+
+we cannot soundly conclude that `G.getSuccNodeNumbers(from)` is guaranteed non‑null at this specific invocation. From the code we have, it is entirely plausible that a null could be returned and only then cause an exception when passed to `Nullability.castToNonnull`.
+
+Therefore, at this call site, the method **can** return null (even though passing that null to `castToNonnull` would then throw an exception rather than let the null propagate further).]]></reason>
+  <value>YES</value>
+</response>

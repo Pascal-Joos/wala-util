@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean hasNext() {
+    return densePart != null && densePart.nextSetBit(i + 1) != -1;
+  }
+  ```
+    ]]>
+  </code>
+</response>

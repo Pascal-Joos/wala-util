@@ -1,0 +1,35 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean isSubset(IntSet that) {
+    if (that == null) {
+      throw new IllegalArgumentException("that is null");
+    }
+    if (size() > that.size()) {
+      return false;
+    }
+
+    if (sparsePart != null) {
+      for (IntIterator bits = sparsePart.intIterator(); bits.hasNext(); ) {
+        if (!that.contains(bits.next())) {
+          return false;
+        }
+      }
+    }
+
+    if (densePart != null) {
+      for (int b = densePart.nextSetBit(0); b != -1; b = densePart.nextSetBit(b + 1)) {
+        if (!that.contains(b)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+        public IntSet getSuccNodeNumbers(T node) {
+          if (original.containsNode(node)) {
+            if (outEdges.containsKey(node)) {
+              MutableIntSet x = IntSetUtil.makeMutableCopy(Nullability.castToNonnull(original.getSuccNodeNumbers(node)));
+              x.addAll(outEdges.get(node));
+              return x;
+            } else {
+              return original.getSuccNodeNumbers(node);
+            }
+          } else {
+            if (outEdges.containsKey(node)) {
+              return outEdges.get(node);
+            } else {
+              return EmptyIntSet.instance;
+            }
+          }
+  }
+  ```
+    ]]>
+  </code>
+</response>

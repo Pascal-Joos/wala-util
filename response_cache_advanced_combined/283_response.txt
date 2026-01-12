@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean isSubset(IntSet that) throws IllegalArgumentException {
+    if (that == null) {
+      throw new IllegalArgumentException("that == null");
+    }
+    if (that instanceof BimodalMutableIntSet) {
+      BimodalMutableIntSet b = (BimodalMutableIntSet) that;
+      if (impl == null || b.impl == null) {
+        return false;
+      }
+      return impl.isSubset(b.impl);
+    } else {
+      // slow!
+      BitVectorIntSet a = new BitVectorIntSet(this);
+      BitVectorIntSet b = new BitVectorIntSet(that);
+      return a.isSubset(b);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

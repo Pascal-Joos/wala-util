@@ -1,0 +1,34 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method, there is an explicit null check on `impl`:
+
+    if (impl == null) {
+      return false;
+    }
+
+This guarantees that any execution reaching the line
+
+    boolean result = impl.addAll(set);
+
+must have `impl != null` at that point.
+
+The only assignment to `impl` inside the method is:
+
+    impl = new BitVectorIntSet(impl);
+
+This assignment is executed only when the condition
+
+    set instanceof BitVectorIntSet && !(impl instanceof BitVectorIntSet)
+
+is true. Since `impl` is known to be non-null when this condition is evaluated (the method would already have returned otherwise), the constructor call `new BitVectorIntSet(impl)` receives a non-null argument. We assume normal Java semantics where the constructor either returns a valid (non-null) object or throws, and does not assign `null` to `impl`. Therefore, after this assignment, `impl` is still non-null.
+
+No other assignments to `impl` occur in the method, and there are no code paths that could reset `impl` to null between the initial null check and the call `impl.addAll(set)`.
+
+Under standard Java semantics (constructors never producing null references and absent external mutation of `impl` between these lines), `impl` cannot be null at the point of:
+
+    boolean result = impl.addAll(set);
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

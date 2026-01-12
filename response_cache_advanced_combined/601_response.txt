@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+@Override
+  public boolean addAllInIntersection(IntSet other, IntSet filter) {
+    if (impl == null) {
+      return false;
+    }
+    if (other instanceof BitVectorIntSet && !(impl instanceof BitVectorIntSet)) {
+      // change the representation before performing the operation
+      impl = new BitVectorIntSet(impl);
+    }
+    boolean result = impl.addAllInIntersection(other, filter);
+    if (result) {
+      maybeChangeRepresentation();
+    }
+    return result;
+}
+  ```
+    ]]>
+  </code>
+</response>

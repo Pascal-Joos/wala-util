@@ -1,0 +1,45 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  @SuppressWarnings({"unchecked", "unused"})
+  public V put(Object key, Object value) {
+    if (key == null) {
+      throw new IllegalArgumentException("null key");
+    }
+    Object[] localKeysAndValues = keysAndValues;
+    if (localKeysAndValues == null) {
+      growByOne();
+      if (keysAndValues == null) {
+        return null;
+      }
+      Object[] nonNullKeysAndValues = Nullability.castToNonnull(keysAndValues);
+      nonNullKeysAndValues[size() - 1] = key;
+      nonNullKeysAndValues[nonNullKeysAndValues.length - 1] = value;
+      return null;
+    }
+    for (int i = 0; i < size(); i++) {
+      if (Nullability.castToNonnull(localKeysAndValues)[i] != null
+          && Nullability.castToNonnull(localKeysAndValues)[i].equals(key)) {
+        V result = (V) Nullability.castToNonnull(localKeysAndValues)[size() + i];
+        Nullability.castToNonnull(localKeysAndValues)[size() + i] = value;
+        return result;
+      }
+    }
+    if (DEBUG_USAGE && size() >= DEBUG_MAX_SIZE) {
+      Assertions.UNREACHABLE("too many elements in a SmallMap");
+    }
+    growByOne();
+    if (keysAndValues == null) {
+      return null;
+    }
+    Object[] nonNullKeysAndValues = Nullability.castToNonnull(keysAndValues);
+    nonNullKeysAndValues[size() - 1] = key;
+    nonNullKeysAndValues[nonNullKeysAndValues.length - 1] = value;
+    return null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

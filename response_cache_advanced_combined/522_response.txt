@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean containsKey(Object key) {
+    if (keysAndValues == null) {
+      return false;
+    }
+    for (int i = 0; i < size(); i++) {
+      Object k = keysAndValues[i];
+      if (k == null) {
+        if (key == null) {
+          return true;
+        }
+      } else {
+        if (k.equals(key)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  ```
+    ]]>
+  </code>
+</response>

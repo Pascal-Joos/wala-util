@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private final boolean assertDisjoint() {
+      if (DEBUG) {
+        if (densePart != null && sparsePart != null) {
+          for (IntIterator sparseBits = sparsePart.intIterator(); sparseBits.hasNext(); ) {
+            int bit = sparseBits.next();
+            if (densePart.contains(bit)) {
+              return false;
+            }
+            if (inDenseRange(bit)) {
+              return false;
+            }
+          }
+        }
+      }
+
+      return true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

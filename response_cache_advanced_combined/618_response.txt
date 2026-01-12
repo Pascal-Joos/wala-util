@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int max() throws IllegalStateException {
+    if (impl == null) {
+      throw new IllegalStateException("set is empty");
+    }
+    return impl.max();
+  }
+  ```
+    ]]>
+  </code>
+</response>

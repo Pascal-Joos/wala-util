@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void transferBackingStore() {
+      assert backingStore instanceof SmallMap;
+      SmallMap<K, V> S = (SmallMap<K, V>) backingStore;
+      backingStore = HashMapFactory.make(2 * Nullability.castToNonnull(S).size());
+      backingStore.putAll(S);
+  }
+  ```
+    ]]>
+  </code>
+</response>

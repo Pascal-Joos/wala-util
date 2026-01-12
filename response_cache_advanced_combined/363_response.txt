@@ -1,0 +1,52 @@
+```xml
+<response>
+    <reason><![CDATA[
+The expression in question is used only inside the branch:
+
+    // common-case optimization
+    if (that.size == 1) {
+      if (that.elements == null) {
+        return false;
+      }
+      boolean result = add(that.elements[0]);
+      return result;
+    }
+
+Execution can only reach the line:
+
+    boolean result = add(that.elements[0]);
+
+if all of the following conditions are true:
+
+1. `that` is not null:
+   - At the start of the method:
+     
+         if (that == null) {
+           throw new IllegalArgumentException("null that");
+         }
+
+   This guarantees `that` itself is never null for the rest of the method.
+
+2. `that.size == 1`:
+   - We are in the `if (that.size == 1)` branch.
+
+3. `that.elements` is not null:
+   - Immediately inside the `size == 1` branch:
+     
+         if (that.elements == null) {
+           return false;
+         }
+
+   So if `that.elements` were null, the method would return before reaching the `add(that.elements[0])` call.
+
+Given these checks, by the time we evaluate `that.elements[0]`, we know:
+
+- `that` is non-null (enforced at method entry).
+- `that.elements` is non-null (enforced by the explicit null check and early return).
+
+Therefore, on all code paths that reach `boolean result = add(that.elements[0]);`, `that.elements` cannot be null.
+
+Note: This reasoning assumes no concurrent modification of `that.elements` between the null check and the `add` call (e.g., from another thread mutating `that`). Under standard single-threaded or properly encapsulated usage of `SparseIntSet`, the null-check guarantees non-nullness at the point of access.]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static MutableIntSet make() {
+      if (defaultIntSetFactory == null) {
+          throw new IllegalStateException("defaultIntSetFactory not initialized");
+      }
+      return defaultIntSetFactory.make();
+  }
+  ```
+    ]]>
+  </code>
+</response>

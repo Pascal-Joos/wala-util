@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int size() {
+    if (primaryImpl.size() != secondaryImpl.size()) {
+      assert primaryImpl != null;
+      assert secondaryImpl != null;
+      assert primaryImpl.size() == secondaryImpl.size()
+          : "size "
+              + primaryImpl.size()
+              + " of "
+              + primaryImpl
+              + " differs from "
+              + "size "
+              + secondaryImpl.size()
+              + " of "
+              + secondaryImpl;
+    }
+
+    return primaryImpl.size();
+  }
+  ```
+    ]]>
+  </code>
+</response>

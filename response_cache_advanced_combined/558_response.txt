@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void clear() {
+    primaryImpl.clear();
+    if (secondaryImpl != null) {
+      secondaryImpl.clear();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+        public void copySet(IntSet set) {
+          if (set == null) {
+            throw new IllegalArgumentException("null set");
+          }
+          if (set instanceof BimodalMutableIntSet) {
+            IntSet otherImpl = ((BimodalMutableIntSet) set).impl;
+            if (otherImpl == null) {
+              impl = null;
+            } else {
+              impl = IntSetUtil.makeMutableCopy(Nullability.castToNonnull(((BimodalMutableIntSet) set).impl));
+            }
+          } else if (impl != null && sameRepresentation(impl, set)) {
+            // V and other.V use the same representation. update in place.
+            impl.copySet(set);
+          } else if (set instanceof BitVectorIntSet || set instanceof SparseIntSet) {
+            // other.V has a different representation. make a new copy
+            impl = IntSetUtil.makeMutableCopy(set);
+          } else if (set instanceof MutableSharedBitVectorIntSet) {
+            impl = IntSetUtil.makeMutableCopy(((MutableSharedBitVectorIntSet) set).makeSparseCopy());
+          } else {
+            Assertions.UNREACHABLE("Unexpected type " + set.getClass());
+          }
+          assert impl == null || impl instanceof BitVectorIntSet || impl instanceof MutableSparseIntSet;
+}
+  ```
+    ]]>
+  </code>
+</response>

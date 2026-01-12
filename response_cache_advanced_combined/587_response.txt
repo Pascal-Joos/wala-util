@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean containsAny(IntSet set) {
+      if (set instanceof DebuggingMutableIntSet) {
+        DebuggingMutableIntSet db = (DebuggingMutableIntSet) set;
+        boolean ppr = primaryImpl.containsAny(db.primaryImpl);
+        boolean ssr = secondaryImpl != null && db.secondaryImpl != null && Nullability.castToNonnull(secondaryImpl).containsAny(db.secondaryImpl);
+  
+        if (ppr != ssr) {
+          assert ppr == ssr : "containsAny " + this + ' ' + set + ' ' + ppr + ' ' + ssr;
+        }
+        return ppr;
+      } else {
+        Assertions.UNREACHABLE();
+        return false;
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

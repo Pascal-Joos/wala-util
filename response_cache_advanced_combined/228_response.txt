@@ -1,0 +1,35 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean add(int i) {
+      if (primaryImpl == null || secondaryImpl == null) {
+        throw new IllegalArgumentException("primaryImpl or secondaryImpl is null");
+      }
+  
+      boolean pr = primaryImpl.add(i);
+      boolean sr = Nullability.castToNonnull(secondaryImpl).add(i);
+  
+      if (pr != sr) {
+        assert pr == sr
+            : "adding "
+                + i
+                + " to "
+                + primaryImpl
+                + " returns "
+                + pr
+                + ", but adding "
+                + i
+                + " to "
+                + secondaryImpl
+                + " returns "
+                + sr;
+      }
+  
+      return pr;
+}
+  ```
+    ]]>
+  </code>
+</response>

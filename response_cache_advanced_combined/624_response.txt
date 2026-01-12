@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+      public IntIterator intIterator() {
+        if (impl == null) {
+          return IntSetUtil.getEmptyIntSet().intIterator();
+        }
+        return Nullability.castToNonnull(impl).intIterator();
+  }
+  ```
+    ]]>
+  </code>
+</response>

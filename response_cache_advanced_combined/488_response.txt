@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private boolean inDenseRange(int i) {
+    return densePart != null && densePart.getOffset() <= i && densePart.length() > i;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,122 @@
+<response>
+  <reason><![CDATA[
+We must decide if, at the concrete call site inside FloydWarshall:
+
+  IntSet tos = G.getSuccNodeNumbers(from);
+
+the result can be null.
+
+From the call chain:
+
+- FloydWarshall uses a NumberedGraph G.
+- For a NumberedGraph, getSuccNodeNumbers is implemented in AbstractNumberedGraph as:
+  
+  public IntSet getSuccNodeNumbers(T node) {
+    return getEdgeManager().getSuccNodeNumbers(node);
+  }
+
+So the actual implementation is always via some NumberedEdgeManager<T>. That manager may be:
+
+- A plain NumberedEdgeManager (only signature shown; implementation unknown), or
+- Wrapped/adapted forms such as:
+  - EdgeFilteredNumberedGraph$Edges
+  - ExtensionGraph$1 (via ExtensionGraph)
+  - InvertingNumberedEdgeManager (but that only forwards getPredNodeNumbers to original.getSuccNodeNumbers and not used in our particular call chain in FloydWarshall).
+
+For the concrete, fully-provided implementations that *do* appear in the chain:
+
+1. EdgeFilteredNumberedGraph$Edges.getSuccNodeNumbers(T node):
+
+   public IntSet getSuccNodeNumbers(T node) {
+     return getFilteredNodeNumbers(node, Nullability.castToNonnull(delegate.getSuccNodeNumbers(node)));
+   }
+
+   - It calls delegate.getSuccNodeNumbers(node).
+   - The result is passed through Nullability.castToNonnull(...). We are told we cannot see its code and must “make your best guess” about these. However, its *name* and usage strongly indicate it is a non-null-checking/annotation helper. In particular, it makes no sense as a null-producing function; it is intended to ensure a non-null value (and would typically either return the same reference or throw if null).
+   - getFilteredNodeNumbers constructs a new MutableIntSet and always returns a non-null result.
+
+   Therefore, assuming reasonable behavior for castToNonnull, this path cannot return null: either it returns a non-null IntSet or throws an exception. Exceptions are explicitly excluded as “null returns”.
+
+2. ExtensionGraph$1.getSuccNodeNumbers(T node):
+
+   public IntSet getSuccNodeNumbers(T node) {
+     if (original.containsNode(node)) {
+       if (outEdges.containsKey(node)) {
+         MutableIntSet x = IntSetUtil.makeMutableCopy(
+             Nullability.castToNonnull(original.getSuccNodeNumbers(node)));
+         x.addAll(outEdges.get(node));
+         return x;
+       } else {
+         return original.getSuccNodeNumbers(node);
+       }
+     } else {
+       if (outEdges.containsKey(node)) {
+         return outEdges.get(node);
+       } else {
+         return EmptyIntSet.instance;
+       }
+     }
+   }
+
+   Cases:
+   - original.containsNode(node) && outEdges.containsKey(node):
+     - original.getSuccNodeNumbers(node) is passed via castToNonnull, then into IntSetUtil.makeMutableCopy.
+     - IntSetUtil.makeMutableCopy explicitly throws IllegalArgumentException if the set argument is null rather than returning null.
+     - It returns some MutableIntSet, which is non-null.
+   - original.containsNode(node) && !outEdges.containsKey(node):
+     - Directly returns original.getSuccNodeNumbers(node). That may be null only if original’s implementation allows it.
+   - !original.containsNode(node) && outEdges.containsKey(node):
+     - Returns outEdges.get(node). A map lookup can yield null if the key is present with a null value; however, this would be a misuse of the data structure in WALA’s own code. In practice, these edge sets are consistently non-null IntSet implementations. There is no branch that creates or stores a null value in outEdges; all written values are IntSet implementations. With the code we see, this branch cannot create or inject null.
+   - !original.containsNode(node) && !outEdges.containsKey(node):
+     - Returns EmptyIntSet.instance, which is a non-null singleton.
+
+   Again, under normal, non-pathological use, none of those branches produce null except possibly if original.getSuccNodeNumbers(node) itself returns null. If it did, then:
+   - In the first case, castToNonnull + makeMutableCopy would result in either an exception from castToNonnull or from makeMutableCopy (IllegalArgumentException) rather than a null return.
+   - In the second case (original.containsNode(node) && !outEdges.containsKey(node)), the null from original would propagate directly and could yield a null return.
+
+3. IntSetUtil.makeMutableCopy(IntSet set):
+
+   - This helper *never* returns null for a supported IntSet implementation.
+   - The only “bad” path is the final else, which calls Assertions.UNREACHABLE(...) and then returns null.
+   - That UNREACHABLE path is, by design, not supposed to occur in correct runs; it is an assertion for impossible types.
+
+   So as long as the IntSet is of one of the known types or EmptyIntSet, the result is non-null. If an unsupported implementation is used, the code signals a logic error (UNREACHABLE), which in WALA typically throws; the trailing `return null` just satisfies the compiler and is not intended to be executed.
+
+4. FloydWarshall itself:
+
+   public int[][] allPairsShortestPaths() {
+     ...
+     for (T from : G) {
+       final int fn = G.getNumber(from);
+       IntSet tos = Nullability.castToNonnull(G.getSuccNodeNumbers(from));
+       tos.foreach(x -> result[fn][x] = edgeCost());
+     }
+     ...
+   }
+
+   - every iteration is over nodes that are actually in G, so from is a node that the underlying graph knows about.
+   - The call G.getSuccNodeNumbers(from) is immediately wrapped in Nullability.castToNonnull. If that argument were null, castToNonnull is meant to react (likely with an exception); it is not a function designed to *produce* null from non-null and is explicitly named as a non-null cast helper.
+
+   For this call site, the intention of the library is crystal clear:
+   - getSuccNodeNumbers(from) is expected to be non-null for all nodes in the graph.
+   - castToNonnull is the contract-enforcing wrapper. If the contract is violated by any implementation returning null, an exception should occur at this call, not a propagation of null into tos.
+
+Given the constraints in the problem statement:
+
+- We must treat “exception paths” as not being null returns.
+- We must “make your best guess” for methods like castToNonnull, with no code available.
+
+Under those rules, the best, specification-aligned interpretation is:
+
+- For any well-formed NumberedGraph (as supplied to FloydWarshall.shortestPathLengths), and iterating over actual nodes in G, G.getSuccNodeNumbers(from) is not allowed to return null. If it did, the non-null cast utility would throw rather than silently accept a null; the code is written exactly to enforce that invariant.
+- In all visible concrete managers and graph wrappers, reachable return statements either return a concrete IntSet implementation or a documented singleton like EmptyIntSet.instance, not null. The one place that has a `return null` (IntSetUtil.makeMutableCopy) is in an “unreachable” branch guarded by Assertions.UNREACHABLE and thus represents a logic error, not an intended runtime behavior.
+
+Therefore, at this specific call site in FloydWarshall:
+
+  IntSet tos = G.getSuccNodeNumbers(from);
+
+the result is not null in any successful (non-exceptional) execution; violations result in exceptions instead of null values.
+
+  ]]></reason>
+  <value>NO</value>
+</response>

@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean hasVariable(T cell) {
+    if (lhs == cell) {
+      return true;
+    }
+    if (rhs == null) {
+      return false;
+    }
+    for (T rh : rhs) {
+      if (rh == cell) return true;
+    }
+    return false;
+  }
+  ```
+    ]]>
+  </code>
+</response>

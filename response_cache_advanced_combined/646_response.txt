@@ -1,0 +1,163 @@
+```xml
+<response>
+    <reason><![CDATA[
+There are two occurrences of the pattern
+
+    MutableSparseIntSet currentSparsePart = sparsePart;
+    for (IntIterator bits = currentSparsePart.intIterator(); bits.hasNext(); ) {
+
+We need to determine whether `sparsePart` can be null at those points.
+
+The method has an outer split:
+
+1. `if (densePart == null) { ... } else { ... }`
+
+Inside each of these major branches, the specific `for` loop is guarded by code that ensures `sparsePart` is non-null before entering the loop.
+
+---
+
+### Case 1: `densePart == null`
+
+Relevant branch:
+
+```java
+if (densePart == null) {
+  if (B.densePart == null) {
+    ...
+  } else {
+    if (sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    }
+    if (B.sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    } else {
+      MutableSparseIntSet C = MutableSparseIntSet.diff(
+          MutableSparseIntSet.make(sparsePart),
+          MutableSparseIntSet.make(B.sparsePart));
+      MutableSparseIntSet currentSparsePart = sparsePart;
+      for (IntIterator bits = currentSparsePart.intIterator(); bits.hasNext(); ) {
+        int bit = bits.next();
+        if (B.densePart.get(bit)) {
+          C.remove(bit);
+        }
+      }
+      sparsePart = C;
+    }
+  }
+}
+```
+
+To reach the `for` loop:
+
+- We must be in the `else` of `if (B.densePart == null)`, so `B.densePart != null`.
+- Then execution proceeds:
+  - `if (sparsePart == null) { sparsePart = MutableSparseIntSet.makeEmpty(); }`
+    - After this, `sparsePart` is guaranteed non-null.
+  - `if (B.sparsePart == null) { sparsePart = MutableSparseIntSet.makeEmpty(); } else { ... }`
+    - To enter the `else`, we must have `B.sparsePart != null`.
+    - Inside the `else`, `MutableSparseIntSet.make(sparsePart)` is called. For this not to NPE, `sparsePart` must be non-null.
+    - That is already guaranteed by the prior initialization to `MutableSparseIntSet.makeEmpty()` when `sparsePart` was null.
+
+Therefore, in this branch, just before:
+
+```java
+MutableSparseIntSet currentSparsePart = sparsePart;
+for (IntIterator bits = currentSparsePart.intIterator(); bits.hasNext(); ) {
+```
+
+`sparsePart` has been set to a non-null `MutableSparseIntSet` in all paths that reach this code. So `currentSparsePart` (and therefore the receiver of `intIterator()`) cannot be null.
+
+---
+
+### Case 2: `densePart != null`
+
+Relevant branch:
+
+```java
+} else { // densePart != null
+  if (B.densePart == null) {
+    ...
+  } else {
+    densePart.andNot(B.densePart);
+    if (B.sparsePart != null) {
+      MutableSparseIntSet currentSparsePartB = B.sparsePart;
+      for (IntIterator bits = currentSparsePartB.intIterator(); bits.hasNext(); ) {
+        densePart.clear(bits.next());
+      }
+    }
+
+    if (sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    }
+    if (B.sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    } else {
+      MutableSparseIntSet C = MutableSparseIntSet.diff(
+          MutableSparseIntSet.make(sparsePart),
+          MutableSparseIntSet.make(B.sparsePart));
+      MutableSparseIntSet currentSparsePart = sparsePart;
+      for (IntIterator bits = currentSparsePart.intIterator(); bits.hasNext(); ) {
+        int bit = bits.next();
+        if (B.densePart.get(bit)) {
+          C.remove(bit);
+        }
+      }
+
+      sparsePart = C;
+    }
+  }
+}
+```
+
+To reach this `for` loop:
+
+- We must be in the `else` of `if (B.densePart == null)`, so `B.densePart != null`.
+- Inside that:
+  - If `sparsePart == null`, it is explicitly initialized:
+    ```java
+    if (sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    }
+    ```
+    After this, `sparsePart` is non-null.
+  - Then:
+    ```java
+    if (B.sparsePart == null) {
+      sparsePart = MutableSparseIntSet.makeEmpty();
+    } else {
+      MutableSparseIntSet C = MutableSparseIntSet.diff(
+          MutableSparseIntSet.make(sparsePart),
+          MutableSparseIntSet.make(B.sparsePart));
+      ...
+    }
+    ```
+    To enter the `else` containing the loop, we need `B.sparsePart != null`. In this `else` we again call `MutableSparseIntSet.make(sparsePart)`, implying `sparsePart` must be non-null there. This is guaranteed by the prior `if (sparsePart == null) { ... }` initializer.
+
+Thus, before:
+
+```java
+MutableSparseIntSet currentSparsePart = sparsePart;
+for (IntIterator bits = currentSparsePart.intIterator(); bits.hasNext(); ) {
+```
+
+`sparsePart` is guaranteed to have been set to a non-null `MutableSparseIntSet` if this code is reached.
+
+---
+
+### About method contracts
+
+The only possible uncertainty would arise if:
+
+- `MutableSparseIntSet.makeEmpty()` could legally return null, or
+- `MutableSparseIntSet.diff()` or `MutableSparseIntSet.make()` could mutate `sparsePart` to null (they do not, given typical naming and usage), or
+- Some external thread modified `sparsePart` concurrently (not suggested by the given code and generally not assumed in such analysis).
+
+Under standard Java semantics and conventional API design for such utility methods, these factory and diff methods return non-null `MutableSparseIntSet` instances and do not null out existing references. There is also no re-assignment to `sparsePart` between the last null-check/initialization and the loop besides assignments from these factory/diff calls, which are assumed non-null.
+
+Given typical contracts, all control paths leading to the `for (IntIterator bits = sparsePart.intIterator(); ...)` pattern first ensure `sparsePart` is non-null.
+
+Therefore, within this method and under standard assumptions for these helper methods, `sparsePart` cannot be null at the point where its `intIterator()` is invoked in the shown loops.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

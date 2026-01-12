@@ -1,0 +1,44 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public boolean isSubset(OffsetBitVector other) throws IllegalArgumentException {
+      if (other == null || other.bits == null) {
+        throw new IllegalArgumentException("other == null");
+      }
+      if (this == other) { // should help alias analysis
+        return true;
+      }
+      if (bits == null) {
+        throw new IllegalArgumentException("bits == null");
+      }
+      int wordDiff = wordDiff(offset, other.offset);
+      int maxWord = Math.min(bits.length, other.bits.length - wordDiff);
+  
+      int i = 0;
+  
+      for (; i < -wordDiff; i++) {
+        if (bits[i] != 0) {
+          return false;
+        }
+      }
+  
+      for (; i < maxWord; i++) {
+        if ((bits[i] & ~other.bits[i + wordDiff]) != 0) {
+          return false;
+        }
+      }
+  
+      for (; i < bits.length; i++) {
+        if (bits[i] != 0) {
+          return false;
+        }
+      }
+  
+      return true;
+}
+  ```
+    ]]>
+  </code>
+</response>

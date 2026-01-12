@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void copyBits(BitVectorBase set) {
+      if (set == null || set.bits == null) {
+        throw new IllegalArgumentException("set is null");
+      }
+      int setLength = set.bits.length;
+      bits = new int[setLength];
+      for (int i = setLength - 1; i >= 0; ) {
+        bits[i] = set.bits[i];
+        i--;
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

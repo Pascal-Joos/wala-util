@@ -1,0 +1,64 @@
+```xml
+<response>
+    <reason><![CDATA[
+We are asked specifically about the expression at the end of the method:
+
+    growByOne();
+    if (keysAndValues == null) {
+      return null;
+    }
+    Object[] nonNullKeysAndValues = Nullability.castToNonnull(keysAndValues);
+    nonNullKeysAndValues[size() - 1] = key;
+    nonNullKeysAndValues[nonNullKeysAndValues.length - 1] = value;
+
+The question text says: "expression 'keysAndValues' at line 'keysAndValues[size() - 1] = key;'", but the actual code at that point is using nonNullKeysAndValues. However, the analysis is the same: is the underlying field/array reference possibly null at that point?
+
+Examine relevant paths:
+
+1. Initial branch when localKeysAndValues == null:
+
+   - localKeysAndValues = keysAndValues;
+   - if (localKeysAndValues == null) { 
+       growByOne();
+       if (keysAndValues == null) {
+         return null;
+       }
+       Object[] nonNullKeysAndValues = Nullability.castToNonnull(keysAndValues);
+       nonNullKeysAndValues[size() - 1] = key;
+       ...
+     }
+
+   Here, the store to the array occurs only after:
+
+       if (keysAndValues == null) {
+         return null;
+       }
+
+   So along any path that reaches `nonNullKeysAndValues[size() - 1] = key`, `keysAndValues` is definitely non-null. Moreover, `Nullability.castToNonnull` is invoked with this non-null value and its result is immediately used. Unless `castToNonnull` itself can return null for a non-null argument (which would violate its name/contract and be contrary to typical use in nullability helpers), `nonNullKeysAndValues` is non-null here.
+
+2. Main branch when localKeysAndValues != null:
+
+   - Object[] nonNullLocalKeysAndValues = Nullability.castToNonnull(localKeysAndValues);
+   - The loop and possible early return do not modify `keysAndValues`.
+   - If no key is found:
+       growByOne();
+       if (keysAndValues == null) {
+         return null;
+       }
+       Object[] nonNullKeysAndValues = Nullability.castToNonnull(keysAndValues);
+       nonNullKeysAndValues[size() - 1] = key;
+       ...
+
+   Again, the same pattern: after `growByOne()`, we immediately check `if (keysAndValues == null) { return null; }`. Only if that check passes do we execute the assignment. Thus, at the point of the assignment, the field `keysAndValues` is guaranteed to be non-null along all executed paths.
+
+Therefore, along any path that reaches the line in question, `keysAndValues` (and consequently the local alias `nonNullKeysAndValues`) cannot be null: a prior null check short-circuits and returns before the assignment. The only way for the expression to be null would be:
+
+- `growByOne()` sets `keysAndValues` to null, and
+- the subsequent `if (keysAndValues == null)` somehow fails to detect that (impossible in normal Java semantics), or
+- `Nullability.castToNonnull` returns null given a non-null argument (which would contradict its naming/intent and make the code blatantly unsafe).
+
+Under standard Java semantics and the apparent contract of `Nullability.castToNonnull`, the array reference at the assignment site cannot be null.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```
